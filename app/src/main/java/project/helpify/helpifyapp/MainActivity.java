@@ -95,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 //finish current activity and start profile
                                 finish();
                                 startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
+                                Toast.makeText(MainActivity.this,"Siin peaks suunama", Toast.LENGTH_SHORT).show();
+
 
                         }else{
                             Toast.makeText(MainActivity.this,"Something went wrong, try again :(", Toast.LENGTH_SHORT).show();

@@ -24,7 +24,7 @@
         android:baselineAligned="false"
         tools:layout_editor_absoluteY="114dp">
 
-        <EditText
+        <TextView
             android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
