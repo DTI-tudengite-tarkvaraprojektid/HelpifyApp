@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
     }
-            
+           // TEST
     @Override
     public void onClick(View view) {
         if (view == buttonSignIn){
