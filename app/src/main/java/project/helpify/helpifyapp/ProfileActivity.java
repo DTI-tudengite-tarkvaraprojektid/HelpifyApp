@@ -21,6 +21,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        openGoogleMapsLayout();
         firebaseAuth = FirebaseAuth.getInstance();  //firebase object
 
         textViewUserEmail = (TextView) findViewById(R.id.textViewUserEmail);
@@ -38,6 +39,17 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         textViewUserEmail.setText("Welcome " + user.getEmail());
 
+    }
+
+    private void openGoogleMapsLayout(){
+        Button gotoGoogleMapsBtn = (Button) findViewById(R.id.buttonMaps);
+        gotoGoogleMapsBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(ProfileActivity.this, MapsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
