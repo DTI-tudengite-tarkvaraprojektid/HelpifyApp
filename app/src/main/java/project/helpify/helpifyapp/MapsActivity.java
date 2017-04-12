@@ -34,6 +34,8 @@ public class MapsActivity
     private LocationManager locationManager;
     private LocationListener locationListener;
     private GoogleApiClient mGoogleApiClient;
+    int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 0x00111;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +76,9 @@ public class MapsActivity
     public void onConnected(@Nullable Bundle bundle) {
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            return;
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
+            finish();
+            startActivity(getIntent());
         }
 
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -84,7 +88,6 @@ public class MapsActivity
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
         }
     }
-
 
     @Override
     public void onConnectionSuspended(int i) {
