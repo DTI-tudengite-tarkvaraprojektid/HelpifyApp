@@ -3,6 +3,8 @@ package project.helpify.helpifyapp;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -20,6 +23,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -35,6 +40,9 @@ public class MapsActivity
     private LocationListener locationListener;
     private GoogleApiClient mGoogleApiClient;
     int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 0x00111;
+
+    private static final int MARKER_ICON_HEIGHT = 96;
+    private static final int MARKER_ICON_WIDTH = 96;
 
 
     @Override
@@ -76,13 +84,32 @@ public class MapsActivity
     public void onConnected(@Nullable Bundle bundle) {
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
+            ActivityCompat
+                    .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                            MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
         }
 
-        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        Location mLastLocation = LocationServices
+                .FusedLocationApi
+                .getLastLocation(mGoogleApiClient);
+
         if(mLastLocation != null){
             LatLng lastKnownLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(lastKnownLocation).title("You!"));
+
+            BitmapDrawable markerIcon = (BitmapDrawable) ResourcesCompat
+                    .getDrawable(getResources(), R.drawable.circle_512, null);
+            Bitmap markerIconBitmap = markerIcon
+                    .getBitmap();
+            Bitmap smallerIcon = Bitmap
+                    .createScaledBitmap(markerIconBitmap, MARKER_ICON_WIDTH, MARKER_ICON_HEIGHT, false);
+
+            mMap
+                    .addMarker(new MarkerOptions()
+                            .icon(BitmapDescriptorFactory.fromBitmap(smallerIcon))
+                            .position(lastKnownLocation)
+                            .title("You!"));
+
+
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
         }
     }
