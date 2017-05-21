@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -16,6 +17,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -31,6 +33,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MapsActivity
         extends FragmentActivity
         implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
@@ -39,6 +44,8 @@ public class MapsActivity
     private LocationManager locationManager;
     private LocationListener locationListener;
     private GoogleApiClient mGoogleApiClient;
+    private LatLng lastUserLocation;
+    private Timer autoUpdate;
     int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 0x00111;
 
     private static final int MARKER_ICON_HEIGHT = 96;
@@ -75,43 +82,31 @@ public class MapsActivity
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        autoUpdate = new Timer();
+        autoUpdate.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        generateMap();
+                    }
+                });
+            }
+        }, 0, 30000);
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.M)
     public void onConnected(@Nullable Bundle bundle) {
-        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat
-                    .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                            MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
-        }
-
-        Location mLastLocation = LocationServices
-                .FusedLocationApi
-                .getLastLocation(mGoogleApiClient);
-
-        if(mLastLocation != null){
-            LatLng lastKnownLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-
-            BitmapDrawable markerIcon = (BitmapDrawable) ResourcesCompat
-                    .getDrawable(getResources(), R.drawable.circle_512, null);
-            Bitmap markerIconBitmap = markerIcon
-                    .getBitmap();
-            Bitmap smallerIcon = Bitmap
-                    .createScaledBitmap(markerIconBitmap, MARKER_ICON_WIDTH, MARKER_ICON_HEIGHT, false);
-
-            mMap
-                    .addMarker(new MarkerOptions()
-                            .icon(BitmapDescriptorFactory.fromBitmap(smallerIcon))
-                            .position(lastKnownLocation)
-                            .title("You!"));
-
-
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
-        }
+        getParent().findViewById(R.id.message).setVisibility(View.INVISIBLE);
+        generateMap();
     }
 
     @Override
@@ -128,11 +123,56 @@ public class MapsActivity
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        getParent().findViewById(R.id.message).setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        getParent().findViewById(R.id.message).setVisibility(View.VISIBLE);
+    }
 
+    @TargetApi(Build.VERSION_CODES.M)
+    private void generateMap(){
+        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat
+                    .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                            MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
+        }
+        mMap.clear();
+        Location mLastLocation = LocationServices
+                .FusedLocationApi
+                .getLastLocation(mGoogleApiClient);
+
+        if(mLastLocation != null){
+            LatLng lastKnownLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            if(lastUserLocation != null && !lastUserLocation.equals(lastKnownLocation) ) {
+                    lastUserLocation = lastKnownLocation;
+            }
+
+            //Clear the map for regeneration
+            mMap.clear();
+            BitmapDrawable markerIcon = (BitmapDrawable) ResourcesCompat
+                    .getDrawable(getResources(), R.drawable.circle_512, null);
+            Bitmap markerIconBitmap = markerIcon
+                    .getBitmap();
+            Bitmap smallerIcon = Bitmap
+                    .createScaledBitmap(markerIconBitmap, MARKER_ICON_WIDTH, MARKER_ICON_HEIGHT, false);
+
+            //USER LOCATION MARKER
+            mMap
+                .addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromBitmap(smallerIcon))
+                .position(lastKnownLocation)
+                .title("You!"));
+
+
+            //OTHER LOCATION MARKERS
+
+
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
+        } else {
+            getParent().findViewById(R.id.message).setVisibility(View.VISIBLE);
+        }
     }
 }
