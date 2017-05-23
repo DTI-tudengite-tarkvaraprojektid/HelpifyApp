@@ -17,7 +17,9 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.widget.TextViewCompat;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -27,11 +29,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+
+import org.w3c.dom.Text;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -48,8 +56,8 @@ public class MapsActivity
     private Timer autoUpdate;
     int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 0x00111;
 
-    private static final int MARKER_ICON_HEIGHT = 96;
-    private static final int MARKER_ICON_WIDTH = 96;
+    private static final int MARKER_ICON_HEIGHT = 100;
+    private static final int MARKER_ICON_WIDTH = 100;
 
 
     @Override
@@ -105,7 +113,7 @@ public class MapsActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        getParent().findViewById(R.id.message).setVisibility(View.INVISIBLE);
+        setMessage(false);
         generateMap();
     }
 
@@ -123,12 +131,17 @@ public class MapsActivity
 
     @Override
     public void onConnectionSuspended(int i) {
-        getParent().findViewById(R.id.message).setVisibility(View.VISIBLE);
+        setMessage(true, "No internet connection. Please connect the device.");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        getParent().findViewById(R.id.message).setVisibility(View.VISIBLE);
+        setMessage(true, "No internet connection. Please connect the device.");
+    }
+
+    //If user clicks a marker, do what?
+    public boolean onMarkerClick(final Marker marker){
+        return false;
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -146,33 +159,92 @@ public class MapsActivity
 
         if(mLastLocation != null){
             LatLng lastKnownLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            if(lastUserLocation != null && !lastUserLocation.equals(lastKnownLocation) ) {
                     lastUserLocation = lastKnownLocation;
-            }
 
-            //Clear the map for regeneration
-            mMap.clear();
+
+            //USER LOCATION MARKER
+            addMarker(lastKnownLocation, "You!");
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
+        } else {
+            setMessage(true, "Your location could not be accessed.");
+        }
+
+        //OTHER LOCATION MARKERS
+
+    }
+
+    private void setMessage(boolean visibility){
+        final TextView message = (TextView) findViewById(R.id.message);
+        if(visibility){
+            message.setVisibility(View.VISIBLE);
+        } else {
+            message.setVisibility(View.INVISIBLE);
+
+        }
+    }
+
+    private void setMessage(boolean visibility, String text){
+        final TextView message = (TextView) findViewById(R.id.message);
+        message.setText(text);
+
+        if(visibility){
+            message.setVisibility(View.VISIBLE);
+        } else {
+            message.setVisibility(View.INVISIBLE);
+        }
+    }
+
+
+
+    private void addMarker(LatLng location, String title){
+
+
+        try{
+
             BitmapDrawable markerIcon = (BitmapDrawable) ResourcesCompat
                     .getDrawable(getResources(), R.drawable.circle_512, null);
+            assert markerIcon != null;
             Bitmap markerIconBitmap = markerIcon
                     .getBitmap();
             Bitmap smallerIcon = Bitmap
-                    .createScaledBitmap(markerIconBitmap, MARKER_ICON_WIDTH, MARKER_ICON_HEIGHT, false);
+                    .createScaledBitmap(markerIconBitmap, MARKER_ICON_WIDTH/10, MARKER_ICON_HEIGHT/10, false);
 
-            //USER LOCATION MARKER
+
+            LatLng nwCorner = new LatLng(
+                    lastUserLocation.latitude - (MARKER_ICON_HEIGHT/75), //KORGUS
+                    lastUserLocation.longitude - (MARKER_ICON_WIDTH/75) //PIKKUS
+            );
+
+            LatLng seCorner = new LatLng(
+                    lastUserLocation.latitude + (MARKER_ICON_HEIGHT/75), //KORGUS
+                    lastUserLocation.longitude + (MARKER_ICON_WIDTH/75) //PIKKUS
+
+            );
+
+            setMessage(true, "NW:" + nwCorner.toString() + "\nSE: " + seCorner.toString() + "\nUser:" + lastUserLocation.toString());
+            LatLngBounds latLngBounds = new LatLngBounds(
+                    nwCorner,
+                    seCorner
+            );
+
+           mMap.addGroundOverlay(new GroundOverlayOptions()
+                .image(BitmapDescriptorFactory.fromBitmap(smallerIcon))
+                .positionFromBounds(latLngBounds));
+
+//            mMap
+//                    .addMarker(new MarkerOptions()
+//                            .icon(BitmapDescriptorFactory.fromBitmap(smallerIcon))
+//                            .position(location)
+//                            .title(title)
+//                            .flat(false));
+        } catch (java.lang.NullPointerException e){
+            //Image not found, resetting to default pin image
             mMap
-                .addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromBitmap(smallerIcon))
-                .position(lastKnownLocation)
-                .title("You!"));
-
-
-            //OTHER LOCATION MARKERS
-
-
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
-        } else {
-            getParent().findViewById(R.id.message).setVisibility(View.VISIBLE);
+                    .addMarker(new MarkerOptions()
+                            .position(location)
+                            .title(title)
+                            .flat(false));
+            setMessage(true, "Some files could not be found. Please reinstall! 233");
         }
     }
 }
