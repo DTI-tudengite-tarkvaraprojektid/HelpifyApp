@@ -43,7 +43,7 @@
             android:height="25dp"
             android:hint="Enter your email"
             android:inputType="textEmailAddress"
-             />
+            />
 
 
         <EditText

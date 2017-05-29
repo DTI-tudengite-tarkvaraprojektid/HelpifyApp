@@ -92,10 +92,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onComplete(@NonNull Task<AuthResult> task){
                         //CHECKING IF REGISTRATION WAS SUCCESSFUL
                         if(task.isSuccessful()){
-                                //finish current activity and start profile
-                                finish();
-                                startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
-                                Toast.makeText(MainActivity.this,"Siin peaks suunama", Toast.LENGTH_SHORT).show();
+                            //finish current activity and start profile
+                            finish();
+                            startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
+                            Toast.makeText(MainActivity.this,"Siin peaks suunama", Toast.LENGTH_SHORT).show();
 
 
                         }else{
