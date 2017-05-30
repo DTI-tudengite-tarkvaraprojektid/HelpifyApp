@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText editTextEmail;
     private EditText editTextPassword;
     private TextView textViewSignup;
+    private TextView textResetPassword;
 
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
@@ -39,9 +40,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         buttonSignIn = (Button) findViewById(R.id.buttonSignIn);
         textViewSignup = (TextView) findViewById(R.id.textViewSignup);
+        textResetPassword =(TextView)findViewById(R.id.textResetPassword);
 
         buttonSignIn.setOnClickListener(this);
         textViewSignup.setOnClickListener(this);
+        textResetPassword.setOnClickListener(this);
 
         progressDialog = new ProgressDialog(this);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -107,6 +110,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             //If user doesnt't have an excisting account
             finish(); // Close this activity
             startActivity(new Intent(this,MainActivity.class));//Start activity with registration form.
+        }
+        if(view == textResetPassword){
+            //Password reset page opens here
+            finish();
+            startActivity(new Intent(this, ResetPasswordActivity.class));
         }
     }
 }

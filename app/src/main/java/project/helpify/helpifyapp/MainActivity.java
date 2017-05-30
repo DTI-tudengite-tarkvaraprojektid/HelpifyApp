@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText editTextEmail;
     private EditText editTextPassword;
     private TextView textViewSignin;
+    private TextView textResetPassword;
 
     private ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth; //Firebase object
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editTextPassword = (EditText )findViewById(R.id.editTextPassword);
 
         textViewSignin = (TextView)findViewById(R.id.textViewSignin);
+        textResetPassword = (TextView)findViewById(R.id.textResetPassword);
 
         if(firebaseAuth.getCurrentUser() != null){
             finish();
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         buttonRegister.setOnClickListener(this);
         textViewSignin.setOnClickListener(this);
+        textResetPassword.setOnClickListener(this);
     }
 
     private void registerUser(){
@@ -115,6 +118,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(view == textViewSignin){
             finish();
             startActivity(new Intent(this,LoginActivity.class));
+        }
+        if(view == textResetPassword){
+            finish();
+            startActivity(new Intent(this, ResetPasswordActivity.class));
         }
     }
 }
