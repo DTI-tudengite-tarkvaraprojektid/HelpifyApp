@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingBottom="16dp"
@@ -34,12 +35,15 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:text="User Registration"
+            android:textColor="@android:color/white"
             android:textAlignment="center"
             tools:layout_editor_absoluteX="85dp"
             tools:layout_editor_absoluteY="68dp" />
 
         <EditText
             android:id="@+id/editTextEmail"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
             android:layout_width="269dp"
             android:layout_height="54dp"
             android:layout_margin="15dp"
@@ -51,6 +55,8 @@
 
         <EditText
             android:id="@+id/editTextPassword"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="54dp"
             android:layout_margin="15dp"
@@ -64,11 +70,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
+            android:background="@color/colorAccent"
+            android:textColor="@android:color/black"
             android:text="Register User"
             android:textAlignment="center" />
 
         <TextView
             android:id="@+id/textViewSignin"
+            android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Already have an account? Sign in here"
@@ -76,6 +85,7 @@
 
         <TextView
             android:id="@+id/textResetPassword"
+            android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Fogot password? Verify by email here."
