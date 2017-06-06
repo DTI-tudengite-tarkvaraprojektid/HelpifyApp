@@ -139,14 +139,8 @@ public class MapsActivity
         setMessage(true, "No internet connection. Please connect the device.");
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    private void generateMap(){
-        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat
-                    .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-       // ContextCompat.checkSelfPermission()
 
+    private void generateMap(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -177,7 +171,7 @@ public class MapsActivity
 
         if(mLastLocation != null){
             LatLng lastKnownLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                    lastKnownLocation = lastUserLocation;
+                lastUserLocation = lastKnownLocation;
 
 
             //USER LOCATION MARKER
@@ -239,7 +233,7 @@ public class MapsActivity
 
             );
 
-            setMessage(true, "NW:" + nwCorner.toString() + "\nSE: " + seCorner.toString() + "\nUser:" + lastUserLocation.toString());
+            //setMessage(true, "NW:" + nwCorner.toString() + "\nSE: " + seCorner.toString() + "\nUser:" + lastUserLocation.toString());
             LatLngBounds latLngBounds = new LatLngBounds(
                     nwCorner,
                     seCorner
@@ -250,12 +244,12 @@ public class MapsActivity
                 .positionFromBounds(latLngBounds));
         } catch (java.lang.NullPointerException e){
             //Image not found, resetting to default pin image
-            mMap
-                    .addMarker(new MarkerOptions()
-                            .position(location)
-                            .title(title)
-                            .flat(false));
-            setMessage(true, "Some files could not be found. Please reinstall! 233");
+//            mMap
+//                    .addMarker(new MarkerOptions()
+//                            .position(location)
+//                            .title(title)
+//                            .flat(false));
+            setMessage(true, "Some files could not be found. Please reinstall! (" + Thread.currentThread().getStackTrace()[2].getLineNumber() + ")");
         }
     }
 }
