@@ -193,12 +193,12 @@ public class MapsActivity
 
           String userId =  firebaseAuth.getCurrentUser().getUid();
             String userEmail =  firebaseAuth.getCurrentUser().getEmail();
-            Map<String,Object> checkoutData=new HashMap<>();
-            checkoutData.put("time",ServerValue.TIMESTAMP);
+          /*  Map<String,Object> checkoutData=new HashMap<>();
+            checkoutData.put("time",ServerValue.TIMESTAMP);*/
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
 
-            User user = new User(userEmail,mLastLocation.getLatitude(),mLastLocation.getLongitude(),checkoutData);
+            User user = new User(userEmail,mLastLocation.getLatitude(),mLastLocation.getLongitude());
 
             mDatabase.child("users").child(userId).setValue(user);
 
