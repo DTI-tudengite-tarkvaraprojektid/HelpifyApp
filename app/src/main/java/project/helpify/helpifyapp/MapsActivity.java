@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -16,6 +17,9 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.widget.TextViewCompat;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -25,11 +29,20 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+
+import org.w3c.dom.Text;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MapsActivity
         extends FragmentActivity
@@ -39,10 +52,12 @@ public class MapsActivity
     private LocationManager locationManager;
     private LocationListener locationListener;
     private GoogleApiClient mGoogleApiClient;
+    private LatLng lastUserLocation;
+    private Timer autoUpdate;
     int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 0x00111;
 
-    private static final int MARKER_ICON_HEIGHT = 96;
-    private static final int MARKER_ICON_WIDTH = 96;
+    private static final int MARKER_ICON_HEIGHT = 100;
+    private static final int MARKER_ICON_WIDTH = 100;
 
 
     @Override
@@ -75,78 +90,31 @@ public class MapsActivity
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        autoUpdate = new Timer();
+        autoUpdate.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        generateMap();
+                    }
+                });
+            }
+        }, 0, 30000);
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.M)
     public void onConnected(@Nullable Bundle bundle) {
-       // ContextCompat.checkSelfPermission()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat
-                        .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
-            }
-        }
-
-        else{
-            // Here, thisActivity is the current activity
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED &&  ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                // Should we show an explanation?
-                ActivityCompat
-                        .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                                MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
-
-                    // Show an expanation to the user *asynchronously* -- don't block
-                    // this thread waiting for the user's response! After the user
-                    // sees the explanation, try again to request the permission.
-
-                /* else {
-
-                    // No explanation needed, we can request the permission.
-
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                            MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
-
-                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                    // app-defined int constant. The callback method gets the
-                    // result of the request.
-                }*/
-            }
-        }
-
-
-        Location mLastLocation = LocationServices
-                .FusedLocationApi
-                .getLastLocation(mGoogleApiClient);
-
-        if(mLastLocation != null){
-            LatLng lastKnownLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-
-            BitmapDrawable markerIcon = (BitmapDrawable) ResourcesCompat
-                    .getDrawable(getResources(), R.drawable.circle_512, null);
-            Bitmap markerIconBitmap = markerIcon
-                    .getBitmap();
-            Bitmap smallerIcon = Bitmap
-                    .createScaledBitmap(markerIconBitmap, MARKER_ICON_WIDTH, MARKER_ICON_HEIGHT, false);
-
-            mMap
-                    .addMarker(new MarkerOptions()
-                            .icon(BitmapDescriptorFactory.fromBitmap(smallerIcon))
-                            .position(lastKnownLocation)
-                            .title("You!"));
-
-
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
-        }
+        setMessage(false);
+        generateMap();
     }
 
     @Override
@@ -163,12 +131,126 @@ public class MapsActivity
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        setMessage(true, "No internet connection. Please connect the device.");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        setMessage(true, "No internet connection. Please connect the device.");
+    }
 
+
+    private void generateMap(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat
+                        .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                                MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
+            }
+        }
+        else {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED &&  ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                
+                ActivityCompat
+                        .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                                MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
+
+        
+            }
+        }
+
+        mMap.clear();
+
+        Location mLastLocation = LocationServices
+                .FusedLocationApi
+                .getLastLocation(mGoogleApiClient);
+
+        if(mLastLocation != null){
+            LatLng lastKnownLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                lastUserLocation = lastKnownLocation;
+
+
+            //USER LOCATION MARKER
+            addMarker(lastKnownLocation, "You!");
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
+        } else {
+            setMessage(true, "Your location could not be accessed.");
+        }
+
+        //OTHER LOCATION MARKERS
+
+    }
+
+    private void setMessage(boolean visibility){
+        final TextView message = (TextView) findViewById(R.id.message);
+        if(visibility){
+            message.setVisibility(View.VISIBLE);
+        } else {
+            message.setVisibility(View.INVISIBLE);
+
+        }
+    }
+
+    private void setMessage(boolean visibility, String text){
+        final TextView message = (TextView) findViewById(R.id.message);
+        message.setText(text);
+
+        if(visibility){
+            message.setVisibility(View.VISIBLE);
+        } else {
+            message.setVisibility(View.INVISIBLE);
+        }
+    }
+
+
+
+    private void addMarker(LatLng location, String title){
+
+
+        try{
+
+            BitmapDrawable markerIcon = (BitmapDrawable) ResourcesCompat
+                    .getDrawable(getResources(), R.drawable.circle_512, null);
+            assert markerIcon != null;
+            Bitmap markerIconBitmap = markerIcon
+                    .getBitmap();
+            Bitmap smallerIcon = Bitmap
+                    .createScaledBitmap(markerIconBitmap, MARKER_ICON_WIDTH/10, MARKER_ICON_HEIGHT/10, false);
+
+
+            LatLng nwCorner = new LatLng(
+                    lastUserLocation.latitude - (MARKER_ICON_HEIGHT/75), //KORGUS
+                    lastUserLocation.longitude - (MARKER_ICON_WIDTH/75) //PIKKUS
+            );
+
+            LatLng seCorner = new LatLng(
+                    lastUserLocation.latitude + (MARKER_ICON_HEIGHT/75), //KORGUS
+                    lastUserLocation.longitude + (MARKER_ICON_WIDTH/75) //PIKKUS
+
+            );
+
+            //setMessage(true, "NW:" + nwCorner.toString() + "\nSE: " + seCorner.toString() + "\nUser:" + lastUserLocation.toString());
+            LatLngBounds latLngBounds = new LatLngBounds(
+                    nwCorner,
+                    seCorner
+            );
+
+           mMap.addGroundOverlay(new GroundOverlayOptions()
+                .image(BitmapDescriptorFactory.fromBitmap(smallerIcon))
+                .positionFromBounds(latLngBounds));
+        } catch (java.lang.NullPointerException e){
+            //Image not found, resetting to default pin image
+//            mMap
+//                    .addMarker(new MarkerOptions()
+//                            .position(location)
+//                            .title(title)
+//                            .flat(false));
+            setMessage(true, "Some files could not be found. Please reinstall! (" + Thread.currentThread().getStackTrace()[2].getLineNumber() + ")");
+        }
     }
 }
 
