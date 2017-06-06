@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HelpifyApp</string>
+    <string name="app_name">Helpify</string>
     <string name="title_activity_maps">Map</string>
 
 <string name="action_sign_in_short">Register</string>

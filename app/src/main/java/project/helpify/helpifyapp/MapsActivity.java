@@ -171,3 +171,6 @@ public class MapsActivity
 
     }
 }
+
+
+//https://stackoverflow.com/questions/3438276/how-to-change-the-text-on-the-action-bar/3438352#3438352
