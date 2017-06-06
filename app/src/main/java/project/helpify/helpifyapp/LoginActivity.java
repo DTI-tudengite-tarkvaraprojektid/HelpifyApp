@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +24,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText editTextEmail;
     private EditText editTextPassword;
     private TextView textViewSignup;
+    private TextView textResetPassword;
 
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
@@ -38,9 +40,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         buttonSignIn = (Button) findViewById(R.id.buttonSignIn);
         textViewSignup = (TextView) findViewById(R.id.textViewSignup);
+        textResetPassword =(TextView)findViewById(R.id.textResetPassword);
 
         buttonSignIn.setOnClickListener(this);
         textViewSignup.setOnClickListener(this);
+        textResetPassword.setOnClickListener(this);
 
         progressDialog = new ProgressDialog(this);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -50,6 +54,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             finish();
             startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
         }
+
+        //Text in forms centered
+        EditText t = (EditText) findViewById(R.id.editTextEmail);
+        t.setGravity(Gravity.CENTER);
+        EditText p = (EditText) findViewById(R.id.editTextPassword);
+        p.setGravity(Gravity.CENTER);
 
     }
 
@@ -100,6 +110,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             //If user doesnt't have an excisting account
             finish(); // Close this activity
             startActivity(new Intent(this,MainActivity.class));//Start activity with registration form.
+        }
+        if(view == textResetPassword){
+            //Password reset page opens here
+            finish();
+            startActivity(new Intent(this, ResetPasswordActivity.class));
         }
     }
 }

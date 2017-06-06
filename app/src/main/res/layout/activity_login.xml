@@ -2,30 +2,52 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorPrimary"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="project.helpify.helpifyapp.LoginActivity">
 
 
     <LinearLayout
-        android:layout_width="352dp"
-        android:layout_height="314dp"
+        android:layout_width="342dp"
+        android:layout_height="378dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="137dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
         android:baselineAligned="false"
         android:orientation="vertical"
         android:weightSum="1"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.068">
+
+        <TextView
+            android:id="@+id/editText"
+            android:textColor="@android:color/white"
+            android:layout_width="306dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:ems="10"
+            android:text="User Login"
+            android:textAlignment="center"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:layout_editor_absoluteY="68dp" />
 
         <EditText
             android:id="@+id/editTextEmail"
-            android:layout_width="322dp"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:layout_width="match_parent"
             android:layout_height="54dp"
             android:layout_margin="15dp"
-            android:layout_weight="0.08"
+            android:layout_weight="0.01"
             android:height="25dp"
             android:hint="Enter your email"
             android:inputType="textEmailAddress" />
@@ -33,6 +55,8 @@
 
         <EditText
             android:id="@+id/editTextPassword"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="54dp"
             android:layout_margin="15dp"
@@ -43,6 +67,8 @@
 
         <Button
             android:id="@+id/buttonSignIn"
+            android:background="@color/colorAccent"
+            android:textColor="@android:color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
@@ -51,25 +77,25 @@
 
         <TextView
             android:id="@+id/textViewSignup"
+            android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="I don't have an account. Register here."
             android:textAlignment="center" />
 
+        <TextView
+            android:id="@+id/textResetPassword"
+            android:textColor="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="Fogot password? Verify by email here."
+            android:textAlignment="center"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:layout_editor_absoluteY="418dp" />
 
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="User Login"
-        tools:layout_editor_absoluteY="68dp"
-        android:textAlignment="center"
-        android:layout_marginLeft="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="16dp"
-        app:layout_constraintRight_toRightOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

@@ -139,27 +139,45 @@ public class MapsActivity
         setMessage(true, "No internet connection. Please connect the device.");
     }
 
-    //If user clicks a marker, do what?
-    public boolean onMarkerClick(final Marker marker){
-        return false;
-    }
-
     @TargetApi(Build.VERSION_CODES.M)
     private void generateMap(){
         if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat
                     .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                            MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
+       // ContextCompat.checkSelfPermission()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat
+                        .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                                MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
+            }
         }
+        else {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED &&  ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                
+                ActivityCompat
+                        .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                                MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
+
+        
+            }
+        }
+
         mMap.clear();
+
         Location mLastLocation = LocationServices
                 .FusedLocationApi
                 .getLastLocation(mGoogleApiClient);
 
         if(mLastLocation != null){
             LatLng lastKnownLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                    lastUserLocation = lastKnownLocation;
+                    lastKnownLocation = lastUserLocation;
 
 
             //USER LOCATION MARKER
@@ -230,13 +248,6 @@ public class MapsActivity
            mMap.addGroundOverlay(new GroundOverlayOptions()
                 .image(BitmapDescriptorFactory.fromBitmap(smallerIcon))
                 .positionFromBounds(latLngBounds));
-
-//            mMap
-//                    .addMarker(new MarkerOptions()
-//                            .icon(BitmapDescriptorFactory.fromBitmap(smallerIcon))
-//                            .position(location)
-//                            .title(title)
-//                            .flat(false));
         } catch (java.lang.NullPointerException e){
             //Image not found, resetting to default pin image
             mMap
