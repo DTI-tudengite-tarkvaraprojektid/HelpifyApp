@@ -38,9 +38,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -59,6 +66,9 @@ public class MapsActivity
     private static final int MARKER_ICON_HEIGHT = 100;
     private static final int MARKER_ICON_WIDTH = 100;
 
+    // FIREBASE
+    private DatabaseReference mDatabase;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +86,11 @@ public class MapsActivity
                     .addApi(LocationServices.API)
                     .build();
         }
+
+
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
 
@@ -173,6 +188,19 @@ public class MapsActivity
             LatLng lastKnownLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
                 lastUserLocation = lastKnownLocation;
 
+
+            // working here, save data to database
+
+          String userId =  firebaseAuth.getCurrentUser().getUid();
+            String userEmail =  firebaseAuth.getCurrentUser().getEmail();
+          /*  Map<String,Object> checkoutData=new HashMap<>();
+            checkoutData.put("time",ServerValue.TIMESTAMP);*/
+
+            mDatabase = FirebaseDatabase.getInstance().getReference();
+
+            User user = new User(userEmail,mLastLocation.getLatitude(),mLastLocation.getLongitude());
+
+            mDatabase.child("users").child(userId).setValue(user);
 
             //USER LOCATION MARKER
             addMarker(lastKnownLocation, "You!");
