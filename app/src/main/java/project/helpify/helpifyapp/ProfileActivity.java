@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -20,6 +22,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Button buttonLogout;
     private EditText editTextName;
     private EditText editTextQuest;
+    private Button buttonSaveUserData;
+
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,40 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         t.setGravity(Gravity.CENTER);
         EditText p = (EditText) findViewById(R.id.editTextQuest);
         p.setGravity(Gravity.CENTER);
+
+        buttonSaveUserData = (Button) findViewById(R.id.buttonSaveUserData);
+
+        buttonSaveUserData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v == buttonSaveUserData){
+                    EditText quest = (EditText) findViewById(R.id.editTextQuest);
+                    EditText name = (EditText) findViewById((R.id.editTextName));
+
+                    String user_quest = quest.getText().toString();
+                    String user_name = name.getText().toString();
+
+                    String userId = firebaseAuth.getCurrentUser().getUid();
+
+                    mDatabase = FirebaseDatabase.getInstance().getReference();
+
+                    if(user_quest.equals("") || user_quest == null){
+                        mDatabase.child("users").child(userId).child("Quest").setValue("NULL");
+                    }
+                    else {
+                        mDatabase.child("users").child(userId).child("Quest").setValue(user_quest);
+                    }
+                    if(user_name.equals("") || user_name == null){
+                        mDatabase.child("users").child(userId).child("Name").setValue("NULL");
+                    } else {
+                       // mDatabase.child("users").child(userId).child("Quest").setValue(user_quest);
+                        mDatabase.child("users").child(userId).child("Name").setValue(user_name);
+                    }
+            }
+
+            }
+        });
+
     }
 
 
@@ -63,7 +102,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-
     @Override
     public void onClick(View view) {
         if (view == buttonLogout){
@@ -71,5 +109,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
+
     }
 }
