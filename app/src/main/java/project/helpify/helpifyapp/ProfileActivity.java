@@ -3,8 +3,10 @@ package project.helpify.helpifyapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,6 +18,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private TextView textViewUserEmail;
     private Button buttonLogout;
+    private EditText editTextName;
+    private EditText editTextQuest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         textViewUserEmail = (TextView) findViewById(R.id.textViewUserEmail);
         buttonLogout = (Button) findViewById(R.id.buttonLogout);
+
 
         buttonLogout.setOnClickListener(this);
 
@@ -39,7 +44,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         textViewUserEmail.setText("Welcome " + user.getEmail());
 
+        //Text in forms centered
+        EditText t = (EditText) findViewById(R.id.editTextName);
+        t.setGravity(Gravity.CENTER);
+        EditText p = (EditText) findViewById(R.id.editTextQuest);
+        p.setGravity(Gravity.CENTER);
     }
+
 
     private void openGoogleMapsLayout(){
         Button gotoGoogleMapsBtn = (Button) findViewById(R.id.buttonMaps);
@@ -51,6 +62,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
     }
+
 
     @Override
     public void onClick(View view) {
