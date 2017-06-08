@@ -1,12 +1,8 @@
 package project.helpify.helpifyapp;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,8 +13,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.widget.TextViewCompat;
 import android.view.View;
 import android.widget.TextView;
 
@@ -28,29 +22,18 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
-
-import org.w3c.dom.Text;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.google.firebase.database.ValueEventListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -72,8 +55,10 @@ public class MapsActivity
     private static final int MARKER_ICON_WIDTH = 100;
 
     // FIREBASE
+
     private DatabaseReference mDatabase;
     private FirebaseAuth firebaseAuth;
+    private DataSnapshot dataSnapshot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +81,27 @@ public class MapsActivity
 
         firebaseAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
     }
+
+    private void generateUserMarkers(){
+        FirebaseDatabase.getInstance().getReference().child("users")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            User user = snapshot.getValue(User.class);
+                            if(user.isOnline){
+                                addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED);
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+    }
+
 
 
     protected void onStart(){
@@ -160,6 +165,8 @@ public class MapsActivity
     }
 
 
+
+
     private void generateMap(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -195,7 +202,6 @@ public class MapsActivity
 
 
             // working here, save data to database
-
           String userId =  firebaseAuth.getCurrentUser().getUid();
             String userEmail =  firebaseAuth.getCurrentUser().getEmail();
           /*  Map<String,Object> checkoutData=new HashMap<>();
@@ -203,12 +209,14 @@ public class MapsActivity
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
 
-            User user = new User(userEmail,mLastLocation.getLatitude(),mLastLocation.getLongitude());
-
+            Boolean isOnline = true;
+            User user = new User(userEmail,mLastLocation.getLatitude(),mLastLocation.getLongitude(), isOnline);
             mDatabase.child("users").child(userId).setValue(user);
-
+            isOnline = false;
+            user = new User(userEmail,mLastLocation.getLatitude(),mLastLocation.getLongitude(), isOnline);
+            mDatabase.child("users").child(userId).onDisconnect().setValue(user);
             //USER LOCATION MARKER
-            addMarker(lastKnownLocation);
+            addMarker(lastKnownLocation, 10, Color.GREEN);
             if(!startingCameraPosition){
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
                 startingCameraPosition = true;
@@ -218,8 +226,16 @@ public class MapsActivity
         }
 
         //OTHER LOCATION MARKERS
+        generateUserMarkers();
 
     }
+    Integer amountOfUsers = 0;
+
+
+    private void createUserMarkers() {
+
+    }
+
 
     private void setMessage(boolean visibility){
         final TextView message = (TextView) findViewById(R.id.message);
@@ -243,17 +259,16 @@ public class MapsActivity
     }
 
 
-
-    private void addMarker(LatLng location){
+    private void addMarker(LatLng location, Integer size, Integer color){
         try {
             Circle circle = mMap.addCircle(new CircleOptions()
                     .center(location)
                     .radius(10)
-                    .strokeColor(Color.GREEN)
+                    .strokeColor(color)
                     .fillColor(Color.GREEN));
         } catch (java.lang.NullPointerException e){
 
-            setMessage(true, "Error generating circles! (" + Thread.currentThread().getStackTrace()[2].getLineNumber() + ")");
+            setMessage(true, "Error M" + Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
     }
 }

@@ -13,15 +13,17 @@ public  class User {
     public String email;
     public Double latitude;
     public Double longitude;
+    public Boolean isOnline;
     public Long timestamp;
   public User() {
       // Default constructor required for calls to DataSnapshot.getValue(User.class)
   }
 
-    public User(String email, Double latitude, Double longitude) {
+    public User(String email, Double latitude, Double longitude, Boolean isOnline) {
         this.email = email;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.isOnline = isOnline;
     }
 
 
