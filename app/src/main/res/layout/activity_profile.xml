@@ -13,23 +13,23 @@
     <Button
         android:id="@+id/buttonMaps"
         android:layout_width="140dp"
-        android:layout_height="40dp"
+        android:layout_height="48dp"
         android:text="Map"
         android:background="@color/colorAccent"
         android:textColor="@android:color/black"
-        tools:layout_editor_absoluteX="122dp"
-        tools:layout_editor_absoluteY="391dp"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="60dp"/>
+        android:layout_marginBottom="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
 
     <Button
         android:id="@+id/buttonLogout"
         android:layout_width="140dp"
-        android:layout_height="40dp"
+        android:layout_height="48dp"
         android:background="@color/colorAccent"
         android:textColor="@android:color/black"
         android:text="Sign Out"
@@ -39,28 +39,28 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="16dp"
-        tools:layout_editor_absoluteY="455dp" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
 
-    <RelativeLayout
-        android:layout_width="336dp"
-        android:layout_height="400dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="328dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="4dp"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="-2dp">
 
 
         <TextView
             android:id="@+id/textViewUserEmail"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_weight="1"
             android:ems="10"
             android:text="userEmail"
             android:textAlignment="center"
@@ -70,12 +70,10 @@
 
         <TextView
             android:id="@+id/textUserName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textViewUserEmail"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="33dp"
-            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:layout_weight="0.06"
             android:ems="10"
             android:text="@string/textUserName"
             android:textAlignment="center"
@@ -85,12 +83,9 @@
         <EditText
             android:id="@+id/editTextName"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/textUserName"
-            android:layout_weight="0.01"
+            android:layout_height="64dp"
             android:height="25dp"
+            android:layout_marginTop="0dp"
             android:background="@android:color/white"
             android:hint="Enter your name"
             android:inputType="text"
@@ -99,50 +94,43 @@
 
         <TextView
             android:id="@+id/textUserQuest"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:ems="10"
+            android:layout_marginTop="20dp"
             android:text="@string/textUserQuest"
             android:textAlignment="center"
             android:textColor="@android:color/white"
-            android:textSize="20dp"
-            android:layout_above="@+id/editTextQuest"
-            android:layout_alignLeft="@+id/textUserName"
-            android:layout_alignStart="@+id/textUserName" />
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/editTextQuest"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_weight="0.01"
+            android:layout_height="71dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="0dp"
             android:height="25dp"
             android:background="@android:color/white"
             android:ellipsize="start"
             android:hint="Enter a quest"
             android:inputType="textEmailAddress"
             android:textColor="@android:color/black"
-            android:textColorHint="@android:color/black"
-            android:layout_above="@+id/buttonSaveUserData"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="10dp" />
+            android:textColorHint="@android:color/black" />
 
         <Button
             android:id="@+id/buttonSaveUserData"
-            android:layout_width="140dp"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_marginTop="20dp"
             android:background="@color/colorAccent"
             android:text="Save data"
             android:textColor="@android:color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            tools:layout_editor_absoluteY="455dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true" />
+            tools:layout_editor_absoluteY="455dp" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </android.support.constraint.ConstraintLayout>
