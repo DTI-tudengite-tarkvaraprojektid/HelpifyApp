@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -29,6 +30,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -61,7 +64,9 @@ public class MapsActivity
     private GoogleApiClient mGoogleApiClient;
     private LatLng lastUserLocation;
     private Timer autoUpdate;
+    private Boolean startingCameraPosition = false;
     int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 0x00111;
+
 
     private static final int MARKER_ICON_HEIGHT = 100;
     private static final int MARKER_ICON_WIDTH = 100;
@@ -203,8 +208,11 @@ public class MapsActivity
             mDatabase.child("users").child(userId).setValue(user);
 
             //USER LOCATION MARKER
-            addMarker(lastKnownLocation, "You!");
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
+            addMarker(lastKnownLocation);
+            if(!startingCameraPosition){
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
+                startingCameraPosition = true;
+            }
         } else {
             setMessage(true, "Your location could not be accessed.");
         }
@@ -236,48 +244,16 @@ public class MapsActivity
 
 
 
-    private void addMarker(LatLng location, String title){
-
-
-        try{
-
-            BitmapDrawable markerIcon = (BitmapDrawable) ResourcesCompat
-                    .getDrawable(getResources(), R.drawable.circle_512, null);
-            assert markerIcon != null;
-            Bitmap markerIconBitmap = markerIcon
-                    .getBitmap();
-            Bitmap smallerIcon = Bitmap
-                    .createScaledBitmap(markerIconBitmap, MARKER_ICON_WIDTH/10, MARKER_ICON_HEIGHT/10, false);
-
-
-            LatLng nwCorner = new LatLng(
-                    lastUserLocation.latitude - (MARKER_ICON_HEIGHT/75), //KORGUS
-                    lastUserLocation.longitude - (MARKER_ICON_WIDTH/75) //PIKKUS
-            );
-
-            LatLng seCorner = new LatLng(
-                    lastUserLocation.latitude + (MARKER_ICON_HEIGHT/75), //KORGUS
-                    lastUserLocation.longitude + (MARKER_ICON_WIDTH/75) //PIKKUS
-
-            );
-
-            //setMessage(true, "NW:" + nwCorner.toString() + "\nSE: " + seCorner.toString() + "\nUser:" + lastUserLocation.toString());
-            LatLngBounds latLngBounds = new LatLngBounds(
-                    nwCorner,
-                    seCorner
-            );
-
-           mMap.addGroundOverlay(new GroundOverlayOptions()
-                .image(BitmapDescriptorFactory.fromBitmap(smallerIcon))
-                .positionFromBounds(latLngBounds));
+    private void addMarker(LatLng location){
+        try {
+            Circle circle = mMap.addCircle(new CircleOptions()
+                    .center(location)
+                    .radius(10)
+                    .strokeColor(Color.GREEN)
+                    .fillColor(Color.GREEN));
         } catch (java.lang.NullPointerException e){
-            //Image not found, resetting to default pin image
-//            mMap
-//                    .addMarker(new MarkerOptions()
-//                            .position(location)
-//                            .title(title)
-//                            .flat(false));
-            setMessage(true, "Some files could not be found. Please reinstall! (" + Thread.currentThread().getStackTrace()[2].getLineNumber() + ")");
+
+            setMessage(true, "Error generating circles! (" + Thread.currentThread().getStackTrace()[2].getLineNumber() + ")");
         }
     }
 }
