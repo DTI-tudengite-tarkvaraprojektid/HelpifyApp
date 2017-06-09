@@ -10,7 +10,7 @@
     android:parentActivityName="project.helpify.helpifyapp.MapsActivity" >
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/uEmail"
         android:layout_width="334dp"
         android:layout_height="41dp"
         android:contentDescription="Taskview username"

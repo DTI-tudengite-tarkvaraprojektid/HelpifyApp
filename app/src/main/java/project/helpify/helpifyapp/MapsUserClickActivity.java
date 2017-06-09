@@ -34,8 +34,8 @@ public class MapsUserClickActivity extends AppCompatActivity implements Serializ
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-//        final TextView message = (TextView) findViewById(R.id.uEmail);
-//        message.setText(intentExtras.getString("username"));
+        final TextView message = (TextView) findViewById(R.id.uEmail);
+        message.setText(intentExtras.getString("username"));
 
     }
 
