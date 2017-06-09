@@ -15,7 +15,7 @@
         android:layout_height="41dp"
         android:contentDescription="Taskview username"
         android:text="TextView"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textAppearance="@style/TextAppearance.AppCompat"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="16dp"
         tools:text="User name" />
