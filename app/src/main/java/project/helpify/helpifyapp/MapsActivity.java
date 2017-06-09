@@ -93,13 +93,7 @@ public class MapsActivity
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             User user = snapshot.getValue(User.class);
-                            if(user.isOnline){
-                                if(hasUserTasks(user)){
-                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
-                                } else {
-                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
-                                }
-                            }
+                            hasUserTasks(user);
                         }
                     }
                     @Override
@@ -108,17 +102,28 @@ public class MapsActivity
                 });
     }
 
-    private Boolean hasUserTasks(final User user){
-        final Boolean[] flag = {false};
+    private void hasUserTasks(final User user){
+
         FirebaseDatabase.getInstance().getReference().child("quests")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Quest quest = dataSnapshot.getValue(Quest.class);
-                        setMessage(true, quest.email + "\n" + user.email + "\n" + user.email.equals(quest.email));
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Quest quest = snapshot.getValue(Quest.class);
+                            setMessage(true, quest.email + "\n" + user.email + "\n" + quest.quest);
 
-                        if(user.email.equals(quest.email) && !quest.quest.equals("NULL")){
-                                flag[0] = true;
+                            if(user.isOnline) {
+
+                                // IF USER HAS ENTERED QUEST, THEN HIS MARKER WILL BE RED, OTHERWISE BLUE
+
+                                if (user.email.equals(quest.email) && quest.quest.equals("NULL")) {
+                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
+                                    break;
+                                }
+                                else {
+                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
+                                }
+                            }
                         }
                     }
 
@@ -127,7 +132,7 @@ public class MapsActivity
 
                     }
                 });
-        return flag[0];
+
     }
 
 
