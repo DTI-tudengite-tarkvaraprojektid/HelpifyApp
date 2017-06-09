@@ -1,20 +1,29 @@
 package project.helpify.helpifyapp;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.icu.util.Calendar;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.text.format.DateFormat;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener{
+
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth firebaseAuth;
 
@@ -23,6 +32,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private EditText editTextName;
     private EditText editTextQuest;
     private Button buttonSaveUserData;
+    private EditText questDate;
 
     private DatabaseReference mDatabase;
 
@@ -40,7 +50,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         buttonLogout.setOnClickListener(this);
 
         //Check if user is not signed in
-        if(firebaseAuth.getCurrentUser() == null){
+        if (firebaseAuth.getCurrentUser() == null) {
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
@@ -57,51 +67,53 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         buttonSaveUserData = (Button) findViewById(R.id.buttonSaveUserData);
 
+        questDate = (EditText) findViewById(R.id.questDate);
+        questDate.setGravity(Gravity.CENTER);
+
         buttonSaveUserData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v == buttonSaveUserData){
+                if (v == buttonSaveUserData) {
                     EditText quest = (EditText) findViewById(R.id.editTextQuest);
                     EditText name = (EditText) findViewById((R.id.editTextName));
 
                     String user_quest = quest.getText().toString();
                     String user_name = name.getText().toString();
-
+                    String start_date = questDate.getText().toString();
 
                     String userId = firebaseAuth.getCurrentUser().getUid();
                     String userEmail = firebaseAuth.getCurrentUser().getEmail();
 
                     mDatabase = FirebaseDatabase.getInstance().getReference();
 
-                    if(user_quest.equals("") || user_quest == null){
-                        mDatabase.child("quests").child(userId).child("email").setValue(userEmail);
+                    mDatabase.child("quests").child(userId).child("email").setValue(userEmail);
+
+                    if (user_quest.equals("") || start_date.equals("") || user_name.equals("")) {
                         mDatabase.child("quests").child(userId).child("quest").setValue("NULL");
+                        mDatabase.child("quests").child(userId).child("date").setValue("NULL");
+                        mDatabase.child("quests").child(userId).child("name").setValue("NULL");
+                        Toast.makeText(ProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                     } else {
-                        mDatabase.child("quests").child(userId).child("email").setValue(userEmail);
                         mDatabase.child("quests").child(userId).child("quest").setValue(user_quest);
+                        mDatabase.child("quests").child(userId).child("name").setValue(user_name);
+                        mDatabase.child("quests").child(userId).child("date").setValue(start_date);
+                        Toast.makeText(ProfileActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
                     }
 
-                    if(user_name.equals("") || user_name == null){
-                        mDatabase.child("quests").child(userId).child("email").setValue(userEmail);
-                        mDatabase.child("quests").child(userId).child("name").setValue("NULL");
-                    } else {
-                        mDatabase.child("quests").child(userId).child("email").setValue(userEmail);
-                       // mDatabase.child("users").child(userId).child("Quest").setValue(user_quest);
-                        mDatabase.child("quests").child(userId).child("name").setValue(user_name);
-                    }
-            }
+                }
 
             }
         });
 
+
     }
 
 
-    private void openGoogleMapsLayout(){
+    private void openGoogleMapsLayout() {
         Button gotoGoogleMapsBtn = (Button) findViewById(R.id.buttonMaps);
-        gotoGoogleMapsBtn.setOnClickListener(new View.OnClickListener(){
+        gotoGoogleMapsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 Intent intent = new Intent(ProfileActivity.this, MapsActivity.class);
                 startActivity(intent);
             }
@@ -110,7 +122,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        if (view == buttonLogout){
+        if (view == buttonLogout) {
             User user = new User();
             String userId = firebaseAuth.getCurrentUser().getUid();
 
