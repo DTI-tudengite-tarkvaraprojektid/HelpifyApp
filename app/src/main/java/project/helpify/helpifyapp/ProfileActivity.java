@@ -67,19 +67,25 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     String user_quest = quest.getText().toString();
                     String user_name = name.getText().toString();
 
+
                     String userId = firebaseAuth.getCurrentUser().getUid();
+                    String userEmail = firebaseAuth.getCurrentUser().getEmail();
 
                     mDatabase = FirebaseDatabase.getInstance().getReference();
 
                     if(user_quest.equals("") || user_quest == null){
+                        mDatabase.child("quests").child(userId).child("email").setValue(userEmail);
                         mDatabase.child("quests").child(userId).child("quest").setValue("NULL");
                     } else {
+                        mDatabase.child("quests").child(userId).child("email").setValue(userEmail);
                         mDatabase.child("quests").child(userId).child("quest").setValue(user_quest);
                     }
 
                     if(user_name.equals("") || user_name == null){
+                        mDatabase.child("quests").child(userId).child("email").setValue(userEmail);
                         mDatabase.child("quests").child(userId).child("name").setValue("NULL");
                     } else {
+                        mDatabase.child("quests").child(userId).child("email").setValue(userEmail);
                        // mDatabase.child("users").child(userId).child("Quest").setValue(user_quest);
                         mDatabase.child("quests").child(userId).child("name").setValue(user_name);
                     }
