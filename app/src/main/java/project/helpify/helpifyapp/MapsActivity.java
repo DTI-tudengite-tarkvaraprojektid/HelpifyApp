@@ -15,6 +15,9 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -172,10 +175,20 @@ public class MapsActivity
         mMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
             @Override
             public void onCircleClick(Circle circle) {
-                Intent i = new Intent(MapsActivity.this, MapsUserClickActivity.class);
-                String username = circle.getTag().toString();
-                i.putExtra("username", username);
-                startActivity(i);
+//                Intent i = new Intent(MapsActivity.this, MapsUserClickActivity.class);
+//                String username = circle.getTag().toString();
+//                i.putExtra("username", username);
+//                startActivity(i);
+                Animation bottomUp = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
+                        R.anim.bottom_up);
+                ViewGroup hiddenPanel = (ViewGroup)findViewById(R.id.hidden_panel);
+                TextView uEmail = (TextView) findViewById(R.id.uEmail);
+
+                hiddenPanel.startAnimation(bottomUp);
+                hiddenPanel.setVisibility(View.VISIBLE);
+                if(circle.getTag() != null){
+                    uEmail.setText(circle.getTag().toString());
+                }
             }
         });
     }
