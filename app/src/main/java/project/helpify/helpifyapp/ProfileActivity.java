@@ -111,9 +111,19 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         if (view == buttonLogout){
+            User user = new User();
+            String userId = firebaseAuth.getCurrentUser().getUid();
+
+            user.isOnline = false;
+
+            mDatabase = FirebaseDatabase.getInstance().getReference();
+            mDatabase.child("users").child(userId).child("isOnline").setValue(user.isOnline);
+
             firebaseAuth.signOut();
+
             finish();
             startActivity(new Intent(this, LoginActivity.class));
+
         }
 
     }
