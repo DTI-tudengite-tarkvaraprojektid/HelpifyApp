@@ -60,6 +60,7 @@ public class MapsActivity
     private DatabaseReference mDatabase;
     private FirebaseAuth firebaseAuth;
     private DataSnapshot dataSnapshot;
+    private DataSnapshot questSnapshot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +94,11 @@ public class MapsActivity
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             User user = snapshot.getValue(User.class);
                             if(user.isOnline){
-                                addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
+                                if(hasUserTasks(user)){
+                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
+                                } else {
+                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
+                                }
                             }
                         }
                     }
@@ -101,6 +106,28 @@ public class MapsActivity
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
+    }
+
+    private Boolean hasUserTasks(final User user){
+        final Boolean[] flag = {false};
+        FirebaseDatabase.getInstance().getReference().child("quests")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Quest quest = dataSnapshot.getValue(Quest.class);
+                        setMessage(true, quest.email + "\n" + user.email + "\n" + user.email.equals(quest.email));
+
+                        if(user.email.equals(quest.email) && !quest.quest.equals("NULL")){
+                                flag[0] = true;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+        return flag[0];
     }
 
 
