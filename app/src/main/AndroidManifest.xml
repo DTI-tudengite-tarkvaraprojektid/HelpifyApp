@@ -48,11 +48,13 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
+        <!-- !!!!!!!! MapsUserClickActivity theme must have NO action bar!!!!!!!!!!!!-->
         <activity
             android:name=".MapsUserClickActivity"
             android:label="@string/title_activity_maps_user_click"
             android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:parentActivityName="project.helpify.helpifyapp.MapsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="project.helpify.helpifyapp.MapsActivity" />

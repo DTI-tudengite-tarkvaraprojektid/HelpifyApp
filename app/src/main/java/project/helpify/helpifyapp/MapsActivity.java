@@ -140,7 +140,6 @@ public class MapsActivity
         mMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
             @Override
             public void onCircleClick(Circle circle) {
-                finish();
                 Intent i = new Intent(MapsActivity.this, MapsUserClickActivity.class);
                 String username = circle.getTag().toString();
                 i.putExtra("username", username);

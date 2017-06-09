@@ -24,6 +24,9 @@ public class MapsUserClickActivity extends AppCompatActivity implements Serializ
         Intent intent = getIntent();
         Bundle intentExtras = intent.getExtras();
 
+        Intent h = NavUtils.getParentActivityIntent(this);
+        h.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null){
@@ -33,6 +36,7 @@ public class MapsUserClickActivity extends AppCompatActivity implements Serializ
 
         final TextView message = (TextView) findViewById(R.id.uEmail);
         message.setText(intentExtras.getString("username"));
+
     }
 
     @Override
