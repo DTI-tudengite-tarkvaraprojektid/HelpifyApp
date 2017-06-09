@@ -1,6 +1,7 @@
 package project.helpify.helpifyapp;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -92,7 +93,7 @@ public class MapsActivity
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             User user = snapshot.getValue(User.class);
                             if(user.isOnline){
-                                addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED);
+                                addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
                             }
                         }
                     }
@@ -101,7 +102,6 @@ public class MapsActivity
                     }
                 });
     }
-
 
 
     protected void onStart(){
@@ -134,6 +134,19 @@ public class MapsActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        /*
+        Starts activity when a circle is clicked.
+         */
+        mMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
+            @Override
+            public void onCircleClick(Circle circle) {
+                finish();
+                Intent i = new Intent(MapsActivity.this, MapsUserClickActivity.class);
+                String username = circle.getTag().toString();
+                i.putExtra("username", username);
+                startActivity(i);
+            }
+        });
     }
 
     @Override
@@ -168,6 +181,9 @@ public class MapsActivity
 
 
     private void generateMap(){
+        /*
+        Check Android GPS permissions
+         */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -189,7 +205,7 @@ public class MapsActivity
         
             }
         }
-
+        // Clear map for regeneration of circles
         mMap.clear();
 
         Location mLastLocation = LocationServices
@@ -199,7 +215,6 @@ public class MapsActivity
         if(mLastLocation != null){
             LatLng lastKnownLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
                 lastUserLocation = lastKnownLocation;
-
 
             // working here, save data to database
           String userId =  firebaseAuth.getCurrentUser().getUid();
@@ -215,8 +230,9 @@ public class MapsActivity
             isOnline = false;
             user = new User(userEmail,mLastLocation.getLatitude(),mLastLocation.getLongitude(), isOnline);
             mDatabase.child("users").child(userId).onDisconnect().setValue(user);
+
             //USER LOCATION MARKER
-            addMarker(lastKnownLocation, 10, Color.GREEN);
+            addMarker(lastKnownLocation, 10, Color.GREEN, "USER");
             if(!startingCameraPosition){
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
                 startingCameraPosition = true;
@@ -227,12 +243,6 @@ public class MapsActivity
 
         //OTHER LOCATION MARKERS
         generateUserMarkers();
-
-    }
-    Integer amountOfUsers = 0;
-
-
-    private void createUserMarkers() {
 
     }
 
@@ -259,13 +269,16 @@ public class MapsActivity
     }
 
 
-    private void addMarker(LatLng location, Integer size, Integer color){
+    private void addMarker(LatLng location, Integer size, Integer color, String tag){
         try {
             Circle circle = mMap.addCircle(new CircleOptions()
                     .center(location)
                     .radius(10)
                     .strokeColor(color)
-                    .fillColor(Color.GREEN));
+                    .fillColor(color));
+            circle.setTag(tag);
+            circle.setClickable(true);
+            circle.setZIndex(1000-size);
         } catch (java.lang.NullPointerException e){
 
             setMessage(true, "Error M" + Thread.currentThread().getStackTrace()[2].getLineNumber());

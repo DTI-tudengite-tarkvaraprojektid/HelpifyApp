@@ -47,7 +47,16 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"/>
+            android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".MapsUserClickActivity"
+            android:label="@string/title_activity_maps_user_click"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="project.helpify.helpifyapp.MapsActivity" />
+        </activity>
     </application>
 
 </manifest>
