@@ -38,6 +38,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -111,15 +113,26 @@ public class MapsActivity
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        ArrayList<String> quests = new ArrayList<>();
+                        for ( DataSnapshot snapshot : dataSnapshot.getChildren())
+                        {
+                            Quest quest = snapshot.getValue(Quest.class);
+                            quests.add(quest.email);
+                        }
+
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Quest quest = snapshot.getValue(Quest.class);
-                            setMessage(true, quest.email + "\n" + user.email + "\n" + quest.quest);
+                            //  setMessage(true, quest.email + "\n" + user.email + "\n" + quest.quest);
 
                             if(user.isOnline) {
 
                                 // IF USER HAS ENTERED QUEST, THEN HIS MARKER WILL BE RED, OTHERWISE BLUE
 
                                 if (user.email.equals(quest.email) && quest.quest.equals("NULL")) {
+                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
+                                    break;
+                                }
+                                else if (!quests.contains(user.email)) {
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
                                     break;
                                 }
