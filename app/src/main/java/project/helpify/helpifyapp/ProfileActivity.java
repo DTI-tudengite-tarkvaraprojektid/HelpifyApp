@@ -1,26 +1,25 @@
 package project.helpify.helpifyapp;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.icu.util.Calendar;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.text.format.DateFormat;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
@@ -86,18 +85,53 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                     mDatabase = FirebaseDatabase.getInstance().getReference();
 
-                    mDatabase.child("quests").child(userId).child("email").setValue(userEmail);
+                    //http://tutorials.jenkov.com/java-internationalization/simpledateformat.html
+                    String date_pattern = "dd/MM/yyyy HH:mm";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(date_pattern, Locale.US);
 
-                    if (user_quest.equals("") || start_date.equals("") || user_name.equals("")) {
-                        mDatabase.child("quests").child(userId).child("quest").setValue("NULL");
-                        mDatabase.child("quests").child(userId).child("date").setValue("NULL");
-                        mDatabase.child("quests").child(userId).child("name").setValue("NULL");
-                        Toast.makeText(ProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                    } else {
-                        mDatabase.child("quests").child(userId).child("quest").setValue(user_quest);
-                        mDatabase.child("quests").child(userId).child("name").setValue(user_name);
-                        mDatabase.child("quests").child(userId).child("date").setValue(start_date);
-                        Toast.makeText(ProfileActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
+                    String current_date = simpleDateFormat.format(new Date());
+
+
+                    try {
+
+                        Date c_Date = simpleDateFormat.parse(current_date);
+                        Date d_Date = simpleDateFormat.parse(start_date);
+
+                        System.out.println(c_Date.compareTo(d_Date));
+                        System.out.println(start_date);
+
+                        //https://stackoverflow.com/questions/23360599/regular-expression-for-dd-mm-yyyy-hhmm
+                        boolean pattern_check = start_date.matches("(0[1-9]|1\\d|2\\d|3[01])/(0[1-9]|1[12])/(20)\\d{2}\\s+(0[0-9]|1[0-9]|2[0-3])\\:(0[0-9]|[1-5][0-9])$");
+
+                        System.out.println(pattern_check);
+
+                        if(pattern_check){
+                            if(c_Date.compareTo(d_Date) == 0 || c_Date.compareTo(d_Date) < 0){
+                                if(user_quest.equals("") || start_date.equals("") || user_name.equals("")){
+
+                                    Quest new_quest = new Quest("NULL", userEmail, "NULL", "NULL");
+                                    mDatabase.child("quests").child(userId).setValue(new_quest);
+                                    Toast.makeText(ProfileActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
+
+                                } else {
+
+                                    Quest new_user_quest = new Quest(start_date,userEmail,user_name,user_quest);
+                                    mDatabase.child("quests").child(userId).setValue(new_user_quest);
+                                    Toast.makeText(ProfileActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
+
+                                }
+
+                            } else if(c_Date.compareTo(d_Date) > 0){
+                                Toast.makeText(ProfileActivity.this, "Dates must be in the future", Toast.LENGTH_SHORT).show();
+                            }
+
+                        } else {
+                            Toast.makeText(ProfileActivity.this, "Wrong date format", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        Toast.makeText(ProfileActivity.this, "Wrong date format", Toast.LENGTH_SHORT).show();
                     }
 
                 }
