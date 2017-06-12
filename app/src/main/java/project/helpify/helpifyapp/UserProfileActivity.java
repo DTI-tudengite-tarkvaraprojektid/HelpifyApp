@@ -33,6 +33,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private EditText questDate;
     private DatabaseReference mDatabase;
     private ImageButton buttonBack;
+    private EditText questEndDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,8 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         buttonBack = (ImageButton) findViewById(R.id.buttonBack);
 
         questDate = (EditText) findViewById(R.id.questDate);
+        questEndDate = (EditText) findViewById(R.id.questEndDate);
+        questEndDate.setGravity(Gravity.CENTER);
         questDate.setGravity(Gravity.CENTER);
 
         buttonBack.setOnClickListener(this);
@@ -65,6 +68,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     String user_quest = quest.getText().toString();
                     String user_name = name.getText().toString();
                     String start_date = questDate.getText().toString();
+                    String end_date = questEndDate.getText().toString();
 
                     String userId = firebaseAuth.getCurrentUser().getUid();
                     String userEmail = firebaseAuth.getCurrentUser().getEmail();
@@ -82,6 +86,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
                         Date c_Date = simpleDateFormat.parse(current_date);
                         Date d_Date = simpleDateFormat.parse(start_date);
+                        Date e_Date = simpleDateFormat.parse(end_date);
 
                         System.out.println(c_Date.compareTo(d_Date));
                         System.out.println(start_date);
@@ -93,18 +98,22 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
                         if(pattern_check){
                             if(c_Date.compareTo(d_Date) == 0 || c_Date.compareTo(d_Date) < 0){
-                                if(user_quest.equals("") || start_date.equals("") || user_name.equals("")){
+                                if(e_Date.compareTo(d_Date) > 0){
+                                    if(user_quest.equals("") || start_date.equals("") || user_name.equals("")){
 
-                                    Quest new_quest = new Quest("NULL", userEmail, "NULL", "NULL");
-                                    mDatabase.child("quests").child(userId).setValue(new_quest);
-                                    Toast.makeText(UserProfileActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
+                                        Quest new_quest = new Quest("NULL","NULL", userEmail, "NULL", "NULL");
+                                        mDatabase.child("quests").child(userId).setValue(new_quest);
+                                        Toast.makeText(UserProfileActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
 
+                                    } else {
+
+                                        Quest new_user_quest = new Quest(start_date,end_date,userEmail,user_name,user_quest);
+                                        mDatabase.child("quests").child(userId).setValue(new_user_quest);
+                                        Toast.makeText(UserProfileActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
+
+                                    }
                                 } else {
-
-                                    Quest new_user_quest = new Quest(start_date,userEmail,user_name,user_quest);
-                                    mDatabase.child("quests").child(userId).setValue(new_user_quest);
-                                    Toast.makeText(UserProfileActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
-
+                                    Toast.makeText(UserProfileActivity.this, "End date must be after start date", Toast.LENGTH_SHORT).show();
                                 }
 
                             } else if(c_Date.compareTo(d_Date) > 0){
@@ -124,6 +133,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
             }
         });
+
 
     }
 
