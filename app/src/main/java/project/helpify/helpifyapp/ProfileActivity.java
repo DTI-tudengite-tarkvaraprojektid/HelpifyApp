@@ -16,22 +16,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.ParseException;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+
 
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth firebaseAuth;
-
     private TextView textViewUserEmail;
     private Button buttonLogout;
-    private EditText editTextName;
-    private EditText editTextQuest;
-    private Button buttonSaveUserData;
-    private EditText questDate;
+    private Button buttonProfile;
 
     private DatabaseReference mDatabase;
 
@@ -44,9 +37,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         textViewUserEmail = (TextView) findViewById(R.id.textViewUserEmail);
         buttonLogout = (Button) findViewById(R.id.buttonLogout);
+        buttonProfile = (Button) findViewById(R.id.buttonProfile);
 
 
         buttonLogout.setOnClickListener(this);
+        buttonProfile.setOnClickListener(this);
 
         //Check if user is not signed in
         if (firebaseAuth.getCurrentUser() == null) {
@@ -58,86 +53,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         textViewUserEmail.setText("Welcome " + user.getEmail());
 
-        //Text in forms centered
-        EditText t = (EditText) findViewById(R.id.editTextName);
-        t.setGravity(Gravity.CENTER);
-        EditText p = (EditText) findViewById(R.id.editTextQuest);
-        p.setGravity(Gravity.CENTER);
-
-        buttonSaveUserData = (Button) findViewById(R.id.buttonSaveUserData);
-
-        questDate = (EditText) findViewById(R.id.questDate);
-        questDate.setGravity(Gravity.CENTER);
-
-        buttonSaveUserData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v == buttonSaveUserData) {
-                    EditText quest = (EditText) findViewById(R.id.editTextQuest);
-                    EditText name = (EditText) findViewById((R.id.editTextName));
-
-                    String user_quest = quest.getText().toString();
-                    String user_name = name.getText().toString();
-                    String start_date = questDate.getText().toString();
-
-                    String userId = firebaseAuth.getCurrentUser().getUid();
-                    String userEmail = firebaseAuth.getCurrentUser().getEmail();
-
-                    mDatabase = FirebaseDatabase.getInstance().getReference();
-
-                    //http://tutorials.jenkov.com/java-internationalization/simpledateformat.html
-                    String date_pattern = "dd/MM/yyyy HH:mm";
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(date_pattern, Locale.US);
-
-                    String current_date = simpleDateFormat.format(new Date());
 
 
-                    try {
 
-                        Date c_Date = simpleDateFormat.parse(current_date);
-                        Date d_Date = simpleDateFormat.parse(start_date);
 
-                        System.out.println(c_Date.compareTo(d_Date));
-                        System.out.println(start_date);
 
-                        //https://stackoverflow.com/questions/23360599/regular-expression-for-dd-mm-yyyy-hhmm
-                        boolean pattern_check = start_date.matches("(0[1-9]|1\\d|2\\d|3[01])/(0[1-9]|1[12])/(20)\\d{2}\\s+(0[0-9]|1[0-9]|2[0-3])\\:(0[0-9]|[1-5][0-9])$");
-
-                        System.out.println(pattern_check);
-
-                        if(pattern_check){
-                            if(c_Date.compareTo(d_Date) == 0 || c_Date.compareTo(d_Date) < 0){
-                                if(user_quest.equals("") || start_date.equals("") || user_name.equals("")){
-
-                                    Quest new_quest = new Quest("NULL", userEmail, "NULL", "NULL");
-                                    mDatabase.child("quests").child(userId).setValue(new_quest);
-                                    Toast.makeText(ProfileActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
-
-                                } else {
-
-                                    Quest new_user_quest = new Quest(start_date,userEmail,user_name,user_quest);
-                                    mDatabase.child("quests").child(userId).setValue(new_user_quest);
-                                    Toast.makeText(ProfileActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
-
-                                }
-
-                            } else if(c_Date.compareTo(d_Date) > 0){
-                                Toast.makeText(ProfileActivity.this, "Dates must be in the future", Toast.LENGTH_SHORT).show();
-                            }
-
-                        } else {
-                            Toast.makeText(ProfileActivity.this, "Wrong date format", Toast.LENGTH_SHORT).show();
-                        }
-
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        Toast.makeText(ProfileActivity.this, "Wrong date format", Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-
-            }
-        });
 
 
     }
@@ -170,6 +90,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             finish();
             startActivity(new Intent(this, LoginActivity.class));
 
+        }
+        if(view == buttonProfile){
+            finish();
+            startActivity(new Intent(this, UserProfileActivity.class));
         }
 
     }

@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
  */
 
 @IgnoreExtraProperties
-class Quest {
+public class Quest {
     public String date;
     public String email;
     public String name;
