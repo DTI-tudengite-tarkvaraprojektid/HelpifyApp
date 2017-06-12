@@ -1,5 +1,6 @@
 package project.helpify.helpifyapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,13 +13,19 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
 
 
 /**
@@ -34,6 +41,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private DatabaseReference mDatabase;
     private ImageButton buttonBack;
     private EditText questEndDate;
+    private ProgressDialog progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +49,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_userprofile);
         firebaseAuth = FirebaseAuth.getInstance();  //firebase object
         FirebaseUser user = firebaseAuth.getCurrentUser();
+
 
         //Text in forms centered
         EditText t = (EditText) findViewById(R.id.editTextName);
@@ -96,18 +105,18 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
                         System.out.println(pattern_check);
 
-                        if(pattern_check){
-                            if(c_Date.compareTo(d_Date) == 0 || c_Date.compareTo(d_Date) < 0){
-                                if(e_Date.compareTo(d_Date) > 0){
-                                    if(user_quest.equals("") || start_date.equals("") || user_name.equals("")){
+                        if (pattern_check) {
+                            if (c_Date.compareTo(d_Date) == 0 || c_Date.compareTo(d_Date) < 0) {
+                                if (e_Date.compareTo(d_Date) > 0) {
+                                    if (user_quest.equals("") || start_date.equals("") || user_name.equals("")) {
 
-                                        Quest new_quest = new Quest("NULL","NULL", userEmail, "NULL", "NULL");
+                                        Quest new_quest = new Quest("NULL", "NULL", userEmail, "NULL", "NULL");
                                         mDatabase.child("quests").child(userId).setValue(new_quest);
                                         Toast.makeText(UserProfileActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
 
                                     } else {
 
-                                        Quest new_user_quest = new Quest(start_date,end_date,userEmail,user_name,user_quest);
+                                        Quest new_user_quest = new Quest(start_date, end_date, userEmail, user_name, user_quest);
                                         mDatabase.child("quests").child(userId).setValue(new_user_quest);
                                         Toast.makeText(UserProfileActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
 
@@ -116,7 +125,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                                     Toast.makeText(UserProfileActivity.this, "End date must be after start date", Toast.LENGTH_SHORT).show();
                                 }
 
-                            } else if(c_Date.compareTo(d_Date) > 0){
+                            } else if (c_Date.compareTo(d_Date) > 0) {
                                 Toast.makeText(UserProfileActivity.this, "Dates must be in the future", Toast.LENGTH_SHORT).show();
                             }
 
@@ -135,14 +144,17 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         });
 
 
+
+
     }
 
     @Override
-    public void onClick(View v) {
-        if (v == buttonBack){
+    public void onClick (View v) {
+        if (v == buttonBack) {
             finish();
             startActivity(new Intent(this, ProfileActivity.class));
         }
+        ;
 
-    }
+    };
 }
