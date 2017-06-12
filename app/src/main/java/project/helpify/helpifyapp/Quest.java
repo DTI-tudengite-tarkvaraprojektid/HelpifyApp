@@ -11,8 +11,9 @@ import java.util.StringTokenizer;
  */
 
 @IgnoreExtraProperties
-public class Quest {
-    public String date;
+class Quest {
+    public String startDate;
+    public String endDate;
     public String email;
     public String name;
     public String quest;
@@ -21,8 +22,9 @@ public class Quest {
 
     }
 
-    public Quest(String date, String email, String name, String quest){
-        this.date = date;
+    public Quest(String startDate, String endDate, String email, String name, String quest){
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.email = email;
         this.name = name;
         this.quest = quest;
