@@ -45,7 +45,7 @@ import java.util.TimerTask;
 
 public class MapsActivity
         extends FragmentActivity
-        implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
+        implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener, GoogleMap.OnCameraMoveListener {
 
     private GoogleMap mMap;
     private LocationManager locationManager;
@@ -54,6 +54,7 @@ public class MapsActivity
     private LatLng lastUserLocation;
     private Timer autoUpdate;
     private Boolean startingCameraPosition = false;
+    private Boolean drawerUp = false;
     int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 0x00111;
 
 
@@ -85,13 +86,12 @@ public class MapsActivity
         }
 
 
-
         firebaseAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
     }
 
-    private void generateUserMarkers(){
+    private void generateUserMarkers() {
         FirebaseDatabase.getInstance().getReference().child("users")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -101,21 +101,21 @@ public class MapsActivity
                             hasUserTasks(user);
                         }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
     }
 
-    private void hasUserTasks(final User user){
+    private void hasUserTasks(final User user) {
 
         FirebaseDatabase.getInstance().getReference().child("quests")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         ArrayList<String> quests = new ArrayList<>();
-                        for ( DataSnapshot snapshot : dataSnapshot.getChildren())
-                        {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Quest quest = snapshot.getValue(Quest.class);
                             quests.add(quest.email);
                         }
@@ -124,19 +124,17 @@ public class MapsActivity
                             Quest quest = snapshot.getValue(Quest.class);
                             //  setMessage(true, quest.email + "\n" + user.email + "\n" + quest.quest);
 
-                            if(user.isOnline) {
+                            if (user.isOnline) {
 
                                 // IF USER HAS ENTERED QUEST, THEN HIS MARKER WILL BE RED, OTHERWISE BLUE
 
                                 if (user.email.equals(quest.email) && quest.quest.equals("NULL")) {
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
                                     break;
-                                }
-                                else if (!quests.contains(user.email)) {
+                                } else if (!quests.contains(user.email)) {
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
                                     break;
-                                }
-                                else {
+                                } else {
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
                                 }
                             }
@@ -152,18 +150,18 @@ public class MapsActivity
     }
 
 
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
     }
 
-    protected void onStop(){
+    protected void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         autoUpdate = new Timer();
         autoUpdate.schedule(new TimerTask() {
@@ -194,12 +192,13 @@ public class MapsActivity
 //                startActivity(i);
                 Animation bottomUp = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
                         R.anim.bottom_up);
-                ViewGroup hiddenPanel = (ViewGroup)findViewById(R.id.hidden_panel);
+                ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
                 TextView uEmail = (TextView) findViewById(R.id.uEmail);
 
                 hiddenPanel.startAnimation(bottomUp);
                 hiddenPanel.setVisibility(View.VISIBLE);
-                if(circle.getTag() != null){
+                drawerUp = true;
+                if (circle.getTag() != null) {
                     uEmail.setText(circle.getTag().toString());
                 }
             }
@@ -215,8 +214,8 @@ public class MapsActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == MY_PERMISSIONS_REQUEST_COARSE_LOCATION) {
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_COARSE_LOCATION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //Permission granted
                 finish();
                 startActivity(getIntent());
@@ -235,9 +234,7 @@ public class MapsActivity
     }
 
 
-
-
-    private void generateMap(){
+    private void generateMap() {
         /*
         Check Android GPS permissions
          */
@@ -248,18 +245,17 @@ public class MapsActivity
                         .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                                 MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
             }
-        }
-        else {
+        } else {
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_COARSE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED &&  ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-                
+
                 ActivityCompat
                         .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                                 MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
 
-        
+
             }
         }
         // Clear map for regeneration of circles
@@ -269,28 +265,28 @@ public class MapsActivity
                 .FusedLocationApi
                 .getLastLocation(mGoogleApiClient);
 
-        if(mLastLocation != null){
+        if (mLastLocation != null) {
             LatLng lastKnownLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                lastUserLocation = lastKnownLocation;
+            lastUserLocation = lastKnownLocation;
 
             // working here, save data to database
-          String userId =  firebaseAuth.getCurrentUser().getUid();
-            String userEmail =  firebaseAuth.getCurrentUser().getEmail();
+            String userId = firebaseAuth.getCurrentUser().getUid();
+            String userEmail = firebaseAuth.getCurrentUser().getEmail();
           /*  Map<String,Object> checkoutData=new HashMap<>();
             checkoutData.put("time",ServerValue.TIMESTAMP);*/
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
 
             Boolean isOnline = true;
-            User user = new User(userEmail,mLastLocation.getLatitude(),mLastLocation.getLongitude(), isOnline);
+            User user = new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), isOnline);
             mDatabase.child("users").child(userId).setValue(user);
             isOnline = false;
-            user = new User(userEmail,mLastLocation.getLatitude(),mLastLocation.getLongitude(), isOnline);
+            user = new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), isOnline);
             mDatabase.child("users").child(userId).onDisconnect().setValue(user);
 
             //USER LOCATION MARKER
             addMarker(lastKnownLocation, 10, Color.GREEN, "USER");
-            if(!startingCameraPosition){
+            if (!startingCameraPosition) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
                 startingCameraPosition = true;
             }
@@ -304,9 +300,9 @@ public class MapsActivity
     }
 
 
-    private void setMessage(boolean visibility){
+    private void setMessage(boolean visibility) {
         final TextView message = (TextView) findViewById(R.id.message);
-        if(visibility){
+        if (visibility) {
             message.setVisibility(View.VISIBLE);
         } else {
             message.setVisibility(View.INVISIBLE);
@@ -314,11 +310,11 @@ public class MapsActivity
         }
     }
 
-    private void setMessage(boolean visibility, String text){
+    private void setMessage(boolean visibility, String text) {
         final TextView message = (TextView) findViewById(R.id.message);
         message.setText(text);
 
-        if(visibility){
+        if (visibility) {
             message.setVisibility(View.VISIBLE);
         } else {
             message.setVisibility(View.INVISIBLE);
@@ -326,7 +322,7 @@ public class MapsActivity
     }
 
 
-    private void addMarker(LatLng location, Integer size, Integer color, String tag){
+    private void addMarker(LatLng location, Integer size, Integer color, String tag) {
         try {
             Circle circle = mMap.addCircle(new CircleOptions()
                     .center(location)
@@ -335,10 +331,25 @@ public class MapsActivity
                     .fillColor(color));
             circle.setTag(tag);
             circle.setClickable(true);
-            circle.setZIndex(1000-size);
-        } catch (java.lang.NullPointerException e){
-
+            circle.setZIndex(1000 - size);
+        } catch (java.lang.NullPointerException e) {
             setMessage(true, "Error M" + Thread.currentThread().getStackTrace()[2].getLineNumber());
+        }
+    }
+
+
+    @Override
+    public void onCameraMove() {
+        if (drawerUp){
+            setMessage(true, "drawerUp");
+            Animation bottomDown = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
+                    R.anim.bottom_down);
+            ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
+            TextView uEmail = (TextView) findViewById(R.id.uEmail);
+            uEmail.setText(null);
+            hiddenPanel.startAnimation(bottomDown);
+            hiddenPanel.setVisibility(View.INVISIBLE);
+            drawerUp = false;
         }
     }
 }
