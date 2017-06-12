@@ -32,6 +32,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private EditText editTextQuest;
     private Button buttonSaveUserData;
     private EditText questDate;
+    private EditText questEndDate;
 
     private DatabaseReference mDatabase;
 
@@ -69,6 +70,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         questDate = (EditText) findViewById(R.id.questDate);
         questDate.setGravity(Gravity.CENTER);
 
+        questEndDate = (EditText) findViewById(R.id.questEndDate);
+        questEndDate.setGravity(Gravity.CENTER);
+
         buttonSaveUserData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +83,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     String user_quest = quest.getText().toString();
                     String user_name = name.getText().toString();
                     String start_date = questDate.getText().toString();
+                    String end_date = questEndDate.getText().toString();
 
                     String userId = firebaseAuth.getCurrentUser().getUid();
                     String userEmail = firebaseAuth.getCurrentUser().getEmail();
@@ -96,6 +101,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                         Date c_Date = simpleDateFormat.parse(current_date);
                         Date d_Date = simpleDateFormat.parse(start_date);
+                        Date e_Date = simpleDateFormat.parse(end_date);
 
                         System.out.println(c_Date.compareTo(d_Date));
                         System.out.println(start_date);
@@ -103,22 +109,24 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         //https://stackoverflow.com/questions/23360599/regular-expression-for-dd-mm-yyyy-hhmm
                         boolean pattern_check = start_date.matches("(0[1-9]|1\\d|2\\d|3[01])/(0[1-9]|1[12])/(20)\\d{2}\\s+(0[0-9]|1[0-9]|2[0-3])\\:(0[0-9]|[1-5][0-9])$");
 
-                        System.out.println(pattern_check);
-
                         if(pattern_check){
                             if(c_Date.compareTo(d_Date) == 0 || c_Date.compareTo(d_Date) < 0){
-                                if(user_quest.equals("") || start_date.equals("") || user_name.equals("")){
+                                if(e_Date.compareTo(d_Date) > 0){
+                                    if(user_quest.equals("") || start_date.equals("") || user_name.equals("")){
 
-                                    Quest new_quest = new Quest("NULL", userEmail, "NULL", "NULL");
-                                    mDatabase.child("quests").child(userId).setValue(new_quest);
-                                    Toast.makeText(ProfileActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
+                                        Quest new_quest = new Quest("NULL","NULL", userEmail, "NULL", "NULL");
+                                        mDatabase.child("quests").child(userId).setValue(new_quest);
+                                        Toast.makeText(ProfileActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
 
+                                    } else {
+
+                                        Quest new_user_quest = new Quest(start_date,end_date,userEmail,user_name,user_quest);
+                                        mDatabase.child("quests").child(userId).setValue(new_user_quest);
+                                        Toast.makeText(ProfileActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
+
+                                    }
                                 } else {
-
-                                    Quest new_user_quest = new Quest(start_date,userEmail,user_name,user_quest);
-                                    mDatabase.child("quests").child(userId).setValue(new_user_quest);
-                                    Toast.makeText(ProfileActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
-
+                                    Toast.makeText(ProfileActivity.this, "End date must be after start date", Toast.LENGTH_SHORT).show();
                                 }
 
                             } else if(c_Date.compareTo(d_Date) > 0){
