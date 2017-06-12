@@ -1,5 +1,7 @@
 package project.helpify.helpifyapp;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.ServerValue;
 
@@ -22,6 +24,7 @@ class Quest {
 
     }
 
+
     public Quest(String startDate, String endDate, String email, String name, String quest){
         this.startDate = startDate;
         this.endDate = endDate;
@@ -29,5 +32,7 @@ class Quest {
         this.name = name;
         this.quest = quest;
     }
+
+
 
 }

@@ -13,8 +13,8 @@
 
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="495dp"
+        android:layout_width="349dp"
+        android:layout_height="325dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:orientation="vertical"
@@ -23,7 +23,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp">
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        tools:layout_editor_absoluteY="54dp">
 
 
         <TextView
@@ -36,6 +40,8 @@
             android:layout_gravity="center_horizontal"
             android:textColor="@color/colorAccent"
             android:textSize="30dp" />
+
+
 
 
 

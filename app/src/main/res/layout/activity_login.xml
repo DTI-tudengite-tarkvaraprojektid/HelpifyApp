@@ -9,8 +9,8 @@
 
 
     <LinearLayout
-        android:layout_width="342dp"
-        android:layout_height="378dp"
+        android:layout_width="314dp"
+        android:layout_height="348dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_marginBottom="8dp"
@@ -24,73 +24,74 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.068">
+        app:layout_constraintVertical_bias="0.408">
 
         <TextView
             android:id="@+id/editText"
-            android:textColor="@android:color/white"
-            android:layout_width="306dp"
+            android:layout_width="277dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:ems="10"
             android:text="User Login"
             android:textAlignment="center"
+            android:textColor="@android:color/white"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             tools:layout_editor_absoluteY="68dp" />
 
         <EditText
             android:id="@+id/editTextEmail"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="54dp"
             android:layout_margin="15dp"
             android:layout_weight="0.01"
             android:height="25dp"
             android:hint="Enter your email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white" />
 
 
         <EditText
             android:id="@+id/editTextPassword"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="54dp"
             android:layout_margin="15dp"
             android:layout_weight="0.28"
+            android:fontFamily="sans-serif"
             android:hint="Enter your password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white" />
 
 
         <Button
             android:id="@+id/buttonSignIn"
-            android:background="@drawable/mybutton"
-            android:textColor="@android:color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
+            android:background="@drawable/mybutton"
             android:text=" Log in "
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="@android:color/black" />
 
         <TextView
             android:id="@+id/textViewSignup"
-            android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="I don't have an account. Register here."
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/textResetPassword"
-            android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:text="Fogot password? Verify by email here."
             android:textAlignment="center"
+            android:textColor="@android:color/white"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             tools:layout_editor_absoluteY="418dp" />
