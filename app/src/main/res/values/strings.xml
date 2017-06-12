@@ -32,4 +32,11 @@
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
     <string name="title_activity_maps_user_click">User details</string>
+    <string-array name="skills_list">
+        <item>Physical Strength</item>
+        <item>Mathematical Thinking</item>
+        <item>Logical Thinking</item>
+        <item>Driving</item>
+        <item>Teaching</item>
+    </string-array>
 </resources>

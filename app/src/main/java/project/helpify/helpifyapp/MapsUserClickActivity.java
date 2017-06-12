@@ -20,22 +20,22 @@ public class MapsUserClickActivity extends AppCompatActivity implements Serializ
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps_user_click);
+        //setContentView(R.layout.activity_maps_user_click);
         Intent intent = getIntent();
         Bundle intentExtras = intent.getExtras();
 
         Intent h = NavUtils.getParentActivityIntent(this);
         h.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-
-        final TextView message = (TextView) findViewById(R.id.uEmail);
-        message.setText(intentExtras.getString("username"));
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        if (getSupportActionBar() != null){
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        }
+//
+//        final TextView message = (TextView) findViewById(R.id.uEmail);
+//        message.setText(intentExtras.getString("username"));
 
     }
 
