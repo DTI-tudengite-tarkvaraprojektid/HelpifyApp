@@ -39,7 +39,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -66,7 +73,6 @@ public class MapsActivity
     private DatabaseReference mDatabase;
     private FirebaseAuth firebaseAuth;
     private DataSnapshot dataSnapshot;
-    private DataSnapshot questSnapshot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,10 +135,10 @@ public class MapsActivity
                                 // IF USER HAS ENTERED QUEST, THEN HIS MARKER WILL BE RED, OTHERWISE BLUE
 
                                 if (user.email.equals(quest.email) && quest.quest.equals("NULL")) {
-                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
+                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, "NULL");
                                     break;
                                 } else if (!quests.contains(user.email)) {
-                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
+                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, "NULL");
                                     break;
                                 } else {
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
@@ -185,21 +191,35 @@ public class MapsActivity
          */
         mMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
             @Override
-            public void onCircleClick(Circle circle) {
+            public void onCircleClick(final Circle circle) {
 //                Intent i = new Intent(MapsActivity.this, MapsUserClickActivity.class);
 //                String username = circle.getTag().toString();
 //                i.putExtra("username", username);
 //                startActivity(i);
-                Animation bottomUp = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
-                        R.anim.bottom_up);
-                ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
-                TextView uEmail = (TextView) findViewById(R.id.uEmail);
 
-                hiddenPanel.startAnimation(bottomUp);
-                hiddenPanel.setVisibility(View.VISIBLE);
-                drawerUp = true;
-                if (circle.getTag() != null) {
-                    uEmail.setText(circle.getTag().toString());
+                //DATA INTO DRAWER
+                //SHOW DRAWER
+                if (circle.getTag().toString() != "NULL" && circle.getTag().toString() != "USER") {
+                    FirebaseDatabase.getInstance().getReference().child("quests")
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                        Quest quest = snapshot.getValue(Quest.class);
+                                        if(circle.getTag().toString().equals(quest.email)){
+                                            generateDrawer(quest.name, quest.email, quest.startDate, quest.endDate);
+                                            showDrawer();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        showDrawer();
+                } else {
+                        hideDrawer();
                 }
             }
         });
@@ -232,6 +252,61 @@ public class MapsActivity
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         setMessage(true, "No internet connection. Please connect the device.");
     }
+
+/* -------------------------DRAWER------------------------------------------------------------*/
+    public void generateDrawer(String name, String username, String start, String end) {
+        TextView uName = (TextView) findViewById(R.id.uName);
+        TextView missionTime = (TextView) findViewById(R.id.missionTime);
+        TextView missionName = (TextView) findViewById(R.id.missionName);
+        TextView timeLeft = (TextView) findViewById(R.id.timeLeft);
+
+        uName.setText(username);
+        missionName.setText(name);
+        Calendar now = Calendar.getInstance();
+        Calendar startDate = new GregorianCalendar();
+        Calendar endDate = new GregorianCalendar();
+        try{
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ENGLISH);
+            startDate.setTime(dateFormat.parse(start));
+            endDate.setTime(dateFormat.parse(end));
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+
+        String time = startDate.get(Calendar.HOUR_OF_DAY) + ":" + startDate.get(Calendar.MINUTE) +
+                " - " + endDate.get(Calendar.HOUR_OF_DAY) + ":" + endDate.get(Calendar.MINUTE);
+        missionTime.setText(time);
+
+        Long timeLeftMilliseconds = endDate.getTimeInMillis() - now.getTimeInMillis();
+        Long  timeLeftHours = timeLeftMilliseconds / (60 * 60 * 1000) % 24;
+        Long timeLeftMinutes = timeLeftMilliseconds / (60 * 1000) % 60;
+
+        timeLeft.setText(timeLeftHours + ":" + timeLeftMinutes);
+    }
+
+    private void showDrawer(){
+        if(!drawerUp){
+            Animation bottomUp = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
+                    R.anim.bottom_up);
+            ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
+            hiddenPanel.startAnimation(bottomUp);
+            hiddenPanel.setVisibility(View.VISIBLE);
+            drawerUp = true;
+        }
+    }
+
+    private void hideDrawer(){
+        if(drawerUp){
+            Animation bottomDown = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
+                    R.anim.bottom_down);
+            ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
+
+            hiddenPanel.startAnimation(bottomDown);
+            hiddenPanel.setVisibility(View.INVISIBLE);
+            drawerUp = false;
+        }
+    }
+/* -------------------------/DRAWER------------------------------------------------------------*/
 
 
     private void generateMap() {
@@ -298,6 +373,7 @@ public class MapsActivity
         generateUserMarkers();
 
     }
+
 
 
     private void setMessage(boolean visibility) {

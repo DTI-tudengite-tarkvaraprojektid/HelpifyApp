@@ -46,7 +46,29 @@
         android:visibility="invisible"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <TextView
+            android:id="@+id/timeLeftText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time left: "
+            tools:text="Time left: "
+            android:layout_below="@+id/missionTime"
+            android:layout_toLeftOf="@+id/timeLeft"
+            android:layout_toStartOf="@+id/timeLeft" />
+
+        <TextView
+            android:id="@+id/timeLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0:57"
+            android:layout_alignBaseline="@+id/timeLeftText"
+            android:layout_alignBottom="@+id/timeLeftText"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
         <TextView
             android:id="@+id/missionTime"
@@ -63,11 +85,11 @@
             android:id="@+id/acceptButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
             android:text="Accept"
-            tools:text="Accept" />
+            tools:text="Accept"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
         <TextView
             android:id="@+id/missionName"
@@ -77,14 +99,14 @@
             android:text="missionName" />
 
         <TextView
-            android:id="@+id/uEmail"
+            android:id="@+id/uName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/missionTime"
             android:layout_marginTop="19dp"
-            tools:text="test@mail.com" />
+            tools:text="Requester name" />
 
         <TextView
             android:id="@+id/requestType"
@@ -96,25 +118,5 @@
             tools:text="Public Request" />
 
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="38dp"
-        android:text="0:57" />
-
-    <TextView
-        android:id="@+id/timeLeftText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/textView5"
-        android:layout_toLeftOf="@+id/textView5"
-        android:layout_toStartOf="@+id/textView5"
-        android:text="Time left:"
-        tools:text="Time left:" />
 
 </RelativeLayout>
