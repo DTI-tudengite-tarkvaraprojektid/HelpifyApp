@@ -199,7 +199,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                                         }
 
                                         Quest new_user_quest = new Quest(start_date,end_date,userEmail,user_name,user_quest);
-                                        Quest new_user_quest = new Quest(start_date, end_date, userEmail, user_name, user_quest);
+                                       
                                         mDatabase.child("quests").child(userId).setValue(new_user_quest);
                                         for(int i = 0; i < mUserSkills.size(); i++){
                                             mDatabase.child("quests").child(userId).child("skill"+i).setValue(listSkills[mUserSkills.get(i)]);
