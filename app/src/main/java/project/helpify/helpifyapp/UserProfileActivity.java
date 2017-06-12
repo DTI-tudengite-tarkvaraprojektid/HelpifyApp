@@ -1,13 +1,16 @@
 package project.helpify.helpifyapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -34,6 +38,14 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     private DatabaseReference mDatabase;
     private ImageButton buttonBack;
     private EditText questEndDate;
+    private Button mSkills;
+    private TextView mSelectedSkills;
+
+    private String[] listSkills;
+    private boolean[] checkedSkills;
+    private ArrayList<Integer> mUserSkills = new ArrayList<>();
+    private int count;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +59,71 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         t.setGravity(Gravity.CENTER);
         EditText p = (EditText) findViewById(R.id.editTextQuest);
         p.setGravity(Gravity.CENTER);
+
+        mSkills = (Button) findViewById(R.id.SkillsSelect);
+
+        listSkills = getResources().getStringArray(R.array.skills_list);
+        checkedSkills = new boolean[listSkills.length];
+
+        mSelectedSkills = (TextView) findViewById(R.id.SkillsView);
+
+        https://github.com/codingdemos/MultichoiceTutorial/blob/master/app/src/main/java/com/example/multichoicetutorial/MainActivity.java
+        mSkills.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(UserProfileActivity.this);
+                mBuilder.setTitle("Choose what skills are needed");
+                mBuilder.setMultiChoiceItems(listSkills, checkedSkills, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        if(isChecked){
+                            mUserSkills.add(which);
+                        } else {
+                            mUserSkills.remove(Integer.valueOf(which));
+                        }
+                    }
+                });
+
+                mBuilder.setCancelable(false);
+                mBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String skill = "";
+                        for(int i = 0; i < mUserSkills.size(); i++){
+                            skill = skill + listSkills[mUserSkills.get(i)];
+                            if(i != mUserSkills.size() - 1){
+                                skill = skill + ",";
+                            }
+                        }
+
+                        mSelectedSkills.setText(skill);
+                    }
+                });
+
+                mBuilder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                mBuilder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for(int i = 0; i < checkedSkills.length; i++){
+                            checkedSkills[i] = false;
+                            mUserSkills.clear();
+                            mSelectedSkills.setText("");
+                        }
+                    }
+                });
+
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+
+            }
+        });
+
 
         buttonSaveUserData = (Button) findViewById(R.id.buttonSaveUserData);
         buttonBack = (ImageButton) findViewById(R.id.buttonBack);
@@ -69,6 +146,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     String user_name = name.getText().toString();
                     String start_date = questDate.getText().toString();
                     String end_date = questEndDate.getText().toString();
+
 
                     String userId = firebaseAuth.getCurrentUser().getUid();
                     String userEmail = firebaseAuth.getCurrentUser().getEmail();
@@ -107,8 +185,16 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
                                     } else {
 
+                                        if(mUserSkills.size() == 0){
+                                            Toast.makeText(UserProfileActivity.this, "At least one skill must be chosen", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+
                                         Quest new_user_quest = new Quest(start_date,end_date,userEmail,user_name,user_quest);
                                         mDatabase.child("quests").child(userId).setValue(new_user_quest);
+                                        for(int i = 0; i < mUserSkills.size(); i++){
+                                            mDatabase.child("quests").child(userId).child("skill"+i).setValue(listSkills[mUserSkills.get(i)]);
+                                        }
                                         Toast.makeText(UserProfileActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
 
                                     }
