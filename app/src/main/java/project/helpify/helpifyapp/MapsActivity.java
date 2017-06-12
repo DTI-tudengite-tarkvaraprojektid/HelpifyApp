@@ -47,6 +47,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -128,23 +129,37 @@ public class MapsActivity
 
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Quest quest = snapshot.getValue(Quest.class);
-                            //  setMessage(true, quest.email + "\n" + user.email + "\n" + quest.quest);
 
                             if (user.isOnline) {
+
 
                                 // IF USER HAS ENTERED QUEST, THEN HIS MARKER WILL BE RED, OTHERWISE BLUE
 
                                 if (user.email.equals(quest.email) && quest.quest.equals("NULL")) {
-                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, "NULL");
+
+
+                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
                                     break;
                                 } else if (!quests.contains(user.email)) {
-                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, "NULL");
+
+
+                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
+                                    break;
+                                } else if (user.email.equals(quest.email) && !quest.quest.equals("NULL")) {
+
+                                    questAfterUserTimestamp(user, quest);
                                     break;
                                 } else {
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
                                 }
+                            } else {
+
+                                questAfterUserTimestamp(user, quest);
+                                // break;
                             }
+
                         }
+
                     }
 
                     @Override
@@ -307,6 +322,89 @@ public class MapsActivity
         }
     }
 /* -------------------------/DRAWER------------------------------------------------------------*/
+
+    private void questAfterUserTimestamp(final User user, final Quest quest) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+        cal.setTimeInMillis(user.getgetTimestampLong());
+
+        String month = "";
+        String day = "";
+        String hour = "";
+        String minutes = "";
+
+        if (cal.get(Calendar.MINUTE) < 10) {
+            minutes = "0" + cal.get(Calendar.MINUTE);
+
+        } else {
+            minutes = "" + cal.get(Calendar.MINUTE);
+        }
+
+        if ((cal.get(Calendar.HOUR_OF_DAY) + 3) < 10) {
+            hour = "0" + (cal.get(Calendar.HOUR_OF_DAY) + 3);
+
+        } else {
+            hour = "" + (cal.get(Calendar.HOUR_OF_DAY) + 3);
+        }
+
+        if (cal.get(Calendar.DAY_OF_MONTH) < 10) {
+            day = "0" + cal.get(Calendar.DAY_OF_MONTH);
+
+        } else {
+            day = "" + cal.get(Calendar.DAY_OF_MONTH);
+        }
+
+        if ((cal.get(Calendar.MONTH) + 1) < 10) {
+            month = "0" + (cal.get(Calendar.MONTH) + 1);
+
+        } else {
+            month = "" + (cal.get(Calendar.MONTH) + 1);
+        }
+
+        String userTimestampToDate = day +
+                "/" + month +
+                "/" + cal.get(Calendar.YEAR) +
+                " " + hour +
+                ":" + minutes;
+
+        if (user.email.equals(quest.email)) {
+
+            if (!quest.endDate.equals("NULL")) {
+
+                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+                try {
+                    Date userDate = format.parse(userTimestampToDate);
+                    Date questDate = format.parse(quest.endDate);
+
+                    if (questDate.after(userDate)) {
+
+                        addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
+
+                    } else if (questDate.equals(userDate)) {
+                        if (Integer.parseInt(quest.endDate.substring(11, 13)) > Integer.parseInt(userTimestampToDate.substring(11, 13))) {
+
+                            setMessage(true, userDate.toString() + "\n" + questDate.toString());
+                        } else if (Integer.parseInt(quest.endDate.substring(11, 13)) == Integer.parseInt(userTimestampToDate.substring(11, 13))) {
+                            if (Integer.parseInt(quest.endDate.substring(14, 16)) >= Integer.parseInt(userTimestampToDate.substring(14, 16))) {
+                                addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
+                            }
+                        }
+                    } else {
+                        if (user.isOnline) {
+                            addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
+                        }
+                    }
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+
 
 
     private void generateMap() {
