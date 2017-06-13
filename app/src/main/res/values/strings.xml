@@ -34,9 +34,14 @@
     <string name="title_activity_maps_user_click">User details</string>
     <string-array name="skills_list">
         <item>Physical Strength</item>
-        <item>Mathematical Thinking</item>
         <item>Logical Thinking</item>
         <item>Driving</item>
-        <item>Teaching</item>
+        <item>Medical help</item>
+        <item>Beauty</item>
+        <item>Home and Garden </item>
+        <item>Renovation</item>
+        <item>Mechanics</item>
+        <item>Computers</item>
+
     </string-array>
 </resources>
