@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -281,41 +280,10 @@ public class MapsActivity
 
 /* -------------------------DRAWER------------------------------------------------------------*/
     public void generateDrawer(String name, String username, String start, String end) {
-        final TextView uName = (TextView) findViewById(R.id.uName);
+        TextView uName = (TextView) findViewById(R.id.uName);
         TextView missionTime = (TextView) findViewById(R.id.missionTime);
         TextView missionName = (TextView) findViewById(R.id.missionName);
         TextView timeLeft = (TextView) findViewById(R.id.timeLeft);
-        final Button accept = (Button) findViewById(R.id.acceptButton);
-
-        accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                mDatabase.child("quests").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                            String email = (String) snapshot.child("email").getValue();
-                            boolean status = (boolean) snapshot.child("accepted").getValue();
-                            String accepting_user = (String) snapshot.child("accepted_by").getValue();
-                            String key = (String) snapshot.getKey();
-                            String current_user = firebaseAuth.getCurrentUser().getEmail();
-                            String offering_user = uName.getText().toString();
-
-                            if(email.equals(offering_user) && v == accept){
-                                mDatabase.child("quests").child(key).child("accepted").setValue(true);
-                                mDatabase.child("quests").child(key).child("accepted_by").setValue(current_user);
-                                v.setVisibility(View.GONE);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-            }
-        });
 
         uName.setText(username);
         missionName.setText(name);
