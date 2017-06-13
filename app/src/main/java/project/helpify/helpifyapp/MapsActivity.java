@@ -121,8 +121,8 @@ public class MapsActivity
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        ArrayList<String> quests = new ArrayList<>();
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            ArrayList<String> quests = new ArrayList<>();
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Quest quest = snapshot.getValue(Quest.class);
                             quests.add(quest.email);
                         }
@@ -138,19 +138,19 @@ public class MapsActivity
                                 if (user.email.equals(quest.email) && quest.quest.equals("NULL")) {
 
 
-                                    addMarker(new LatLng(user.latitude, user.longitude), 20, Color.BLUE, "NULL");
+                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
                                     break;
                                 } else if (!quests.contains(user.email)) {
 
 
-                                    addMarker(new LatLng(user.latitude, user.longitude), 20, Color.BLUE, "NULL");
+                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
                                     break;
                                 } else if (user.email.equals(quest.email) && !quest.quest.equals("NULL")) {
 
                                     questAfterUserTimestamp(user, quest);
                                     break;
                                 } else {
-                                    addMarker(new LatLng(user.latitude, user.longitude), 20, Color.RED, user.email);
+                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
                                 }
                             } else {
 
@@ -394,7 +394,7 @@ public class MapsActivity
 
                     if (questDate.after(userDate)) {
 
-                        addMarker(new LatLng(user.latitude, user.longitude), 20, Color.RED, user.email);
+                        addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
 
                     } else if (questDate.equals(userDate)) {
                         if (Integer.parseInt(quest.endDate.substring(11, 13)) > Integer.parseInt(userTimestampToDate.substring(11, 13))) {
@@ -402,12 +402,12 @@ public class MapsActivity
                             setMessage(true, userDate.toString() + "\n" + questDate.toString());
                         } else if (Integer.parseInt(quest.endDate.substring(11, 13)) == Integer.parseInt(userTimestampToDate.substring(11, 13))) {
                             if (Integer.parseInt(quest.endDate.substring(14, 16)) >= Integer.parseInt(userTimestampToDate.substring(14, 16))) {
-                                addMarker(new LatLng(user.latitude, user.longitude), 20, Color.RED, user.email);
+                                addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
                             }
                         }
                     } else {
                         if (user.isOnline) {
-                            addMarker(new LatLng(user.latitude, user.longitude), 20, Color.BLUE, "NULL");
+                            addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
                         }
                     }
 
@@ -473,7 +473,7 @@ public class MapsActivity
             mDatabase.child("users").child(userId).onDisconnect().setValue(user);
 
             //USER LOCATION MARKER
-            addMarker(lastKnownLocation, 20, Color.GREEN, "USER");
+            addMarker(lastKnownLocation, 10, Color.GREEN, "USER");
             if (!startingCameraPosition) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
                 startingCameraPosition = true;
@@ -513,23 +513,25 @@ public class MapsActivity
 
     private void addMarker(LatLng location, Integer size, Integer color, String tag) {
         try {
-            Circle outerCircle = mMap.addCircle(new CircleOptions()
+            Circle circle = mMap.addCircle(new CircleOptions()
                     .center(location)
-                    .radius(size)
-                    .strokeColor(Color.BLUE)
-                    .strokeWidth(1)
-                    .fillColor(Color.TRANSPARENT));
-            outerCircle.setTag(tag);
-            outerCircle.setClickable(true);
-            outerCircle.setZIndex(1000 - size);
+                    .radius(10)
+                    .strokeColor(Color.TRANSPARENT)
+                    .fillColor(color));
 
-            Circle innerCircle = mMap.addCircle(new CircleOptions()
-            .center(location)
-            .radius(size/10)
-            .strokeColor(Color.TRANSPARENT)
-            .strokeWidth(1)
-            .fillColor(color));
-            innerCircle.setZIndex(1000 - size);
+            circle.setTag(tag);
+            circle.setClickable(true);
+            circle.setZIndex(1000 - size);
+
+            Circle circleOuter = mMap.addCircle(new CircleOptions()
+                    .center(location)
+                    .radius(20)
+                    .strokeColor(Color.BLUE)
+                    .strokeWidth(1.5f));
+
+            circle.setTag(tag);
+            circle.setClickable(true);
+            circle.setZIndex(1000 - size);
 
         } catch (java.lang.NullPointerException e) {
             setMessage(true, "Error M" + Thread.currentThread().getStackTrace()[2].getLineNumber());
