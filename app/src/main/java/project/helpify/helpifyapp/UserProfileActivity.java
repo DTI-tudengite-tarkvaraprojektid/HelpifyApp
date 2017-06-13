@@ -3,9 +3,12 @@ package project.helpify.helpifyapp;
 import android.content.DialogInterface;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -79,7 +82,8 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         mSkills.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(UserProfileActivity.this);
+
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(new ContextThemeWrapper(UserProfileActivity.this, R.style.AlertDialogCustom));
                 mBuilder.setTitle("Choose what skills are needed");
                 mBuilder.setMultiChoiceItems(listSkills, checkedSkills, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
