@@ -121,8 +121,8 @@ public class MapsActivity
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        ArrayList<String> quests = new ArrayList<>();
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            ArrayList<String> quests = new ArrayList<>();
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Quest quest = snapshot.getValue(Quest.class);
                             quests.add(quest.email);
                         }
@@ -211,10 +211,7 @@ public class MapsActivity
 //                String username = circle.getTag().toString();
 //                i.putExtra("username", username);
 //                startActivity(i);
-
-                //DATA INTO DRAWER
-                //SHOW DRAWER
-                if (circle.getTag().toString() != "NULL" && circle.getTag().toString() != "USER") {
+                if (!circle.getTag().toString().equals("NULL") && !circle.getTag().toString().equals("USER")) {
                     FirebaseDatabase.getInstance().getReference().child("quests")
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -288,23 +285,28 @@ public class MapsActivity
             e.printStackTrace();
         }
 
-        String time = startDate.get(Calendar.HOUR_OF_DAY) + ":" + startDate.get(Calendar.MINUTE) +
-                " - " + endDate.get(Calendar.HOUR_OF_DAY) + ":" + endDate.get(Calendar.MINUTE);
+        String time = stringifyNumber(startDate.get(Calendar.HOUR_OF_DAY)) + ":" + stringifyNumber(startDate.get(Calendar.MINUTE)) +
+                " - " + stringifyNumber(endDate.get(Calendar.HOUR_OF_DAY)) + ":" + stringifyNumber(endDate.get(Calendar.MINUTE));
         missionTime.setText(time);
 
         Long timeLeftMilliseconds = endDate.getTimeInMillis() - now.getTimeInMillis();
-        Long  timeLeftHours = timeLeftMilliseconds / (60 * 60 * 1000) % 24;
-        Long timeLeftMinutes = timeLeftMilliseconds / (60 * 1000) % 60;
+        if (timeLeftMilliseconds >= 6.048e+8){
+            timeLeft.setText("More than a week");
+        } else {
+            Long  timeLeftHours = timeLeftMilliseconds / (60 * 60 * 1000) % 24;
+            Long timeLeftMinutes = timeLeftMilliseconds / (60 * 1000) % 60;
 
-        timeLeft.setText(timeLeftHours + ":" + timeLeftMinutes);
+            timeLeft.setText(stringifyNumber(timeLeftHours) + ":" + stringifyNumber(timeLeftMinutes));
+        }
+
     }
 
     private void showDrawer(){
         if(!drawerUp){
-            Animation bottomUp = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
-                    R.anim.bottom_up);
+//            Animation bottomUp = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
+//                    R.anim.bottom_up);
             ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
-            hiddenPanel.startAnimation(bottomUp);
+//            hiddenPanel.startAnimation(bottomUp);
             hiddenPanel.setVisibility(View.VISIBLE);
             drawerUp = true;
         }
@@ -312,16 +314,29 @@ public class MapsActivity
 
     private void hideDrawer(){
         if(drawerUp){
-            Animation bottomDown = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
-                    R.anim.bottom_down);
+//            Animation bottomDown = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
+//                    R.anim.bottom_down);
             ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
-
-            hiddenPanel.startAnimation(bottomDown);
+//
+//            hiddenPanel.startAnimation(bottomDown);
             hiddenPanel.setVisibility(View.INVISIBLE);
             drawerUp = false;
         }
     }
 /* -------------------------/DRAWER------------------------------------------------------------*/
+    private String stringifyNumber(Integer number){
+        if (number<10){
+            return "0" + number.toString();
+        }
+        return number.toString();
+    }
+
+    private String stringifyNumber(Long number){
+        if (number<10){
+            return "0" + number.toString();
+        }
+        return number.toString();
+    }
 
     private void questAfterUserTimestamp(final User user, final Quest quest) {
         Calendar cal = Calendar.getInstance();
@@ -501,11 +516,23 @@ public class MapsActivity
             Circle circle = mMap.addCircle(new CircleOptions()
                     .center(location)
                     .radius(10)
-                    .strokeColor(color)
+                    .strokeColor(Color.TRANSPARENT)
                     .fillColor(color));
+
             circle.setTag(tag);
             circle.setClickable(true);
             circle.setZIndex(1000 - size);
+
+            Circle circleOuter = mMap.addCircle(new CircleOptions()
+                    .center(location)
+                    .radius(20)
+                    .strokeColor(Color.BLUE)
+                    .strokeWidth(1.5f));
+
+            circle.setTag(tag);
+            circle.setClickable(true);
+            circle.setZIndex(1000 - size);
+
         } catch (java.lang.NullPointerException e) {
             setMessage(true, "Error M" + Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
