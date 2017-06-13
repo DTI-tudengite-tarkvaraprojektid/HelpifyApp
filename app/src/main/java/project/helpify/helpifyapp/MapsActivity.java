@@ -138,19 +138,19 @@ public class MapsActivity
                                 if (user.email.equals(quest.email) && quest.quest.equals("NULL")) {
 
 
-                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
+                                    addMarker(new LatLng(user.latitude, user.longitude), 20, Color.BLUE, "NULL");
                                     break;
                                 } else if (!quests.contains(user.email)) {
 
 
-                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
+                                    addMarker(new LatLng(user.latitude, user.longitude), 20, Color.BLUE, "NULL");
                                     break;
                                 } else if (user.email.equals(quest.email) && !quest.quest.equals("NULL")) {
 
                                     questAfterUserTimestamp(user, quest);
                                     break;
                                 } else {
-                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
+                                    addMarker(new LatLng(user.latitude, user.longitude), 20, Color.RED, user.email);
                                 }
                             } else {
 
@@ -211,10 +211,7 @@ public class MapsActivity
 //                String username = circle.getTag().toString();
 //                i.putExtra("username", username);
 //                startActivity(i);
-
-                //DATA INTO DRAWER
-                //SHOW DRAWER
-                if (circle.getTag().toString() != "NULL" && circle.getTag().toString() != "USER") {
+                if (!circle.getTag().toString().equals("NULL") && !circle.getTag().toString().equals("USER")) {
                     FirebaseDatabase.getInstance().getReference().child("quests")
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -288,23 +285,28 @@ public class MapsActivity
             e.printStackTrace();
         }
 
-        String time = startDate.get(Calendar.HOUR_OF_DAY) + ":" + startDate.get(Calendar.MINUTE) +
-                " - " + endDate.get(Calendar.HOUR_OF_DAY) + ":" + endDate.get(Calendar.MINUTE);
+        String time = stringifyNumber(startDate.get(Calendar.HOUR_OF_DAY)) + ":" + stringifyNumber(startDate.get(Calendar.MINUTE)) +
+                " - " + stringifyNumber(endDate.get(Calendar.HOUR_OF_DAY)) + ":" + stringifyNumber(endDate.get(Calendar.MINUTE));
         missionTime.setText(time);
 
         Long timeLeftMilliseconds = endDate.getTimeInMillis() - now.getTimeInMillis();
-        Long  timeLeftHours = timeLeftMilliseconds / (60 * 60 * 1000) % 24;
-        Long timeLeftMinutes = timeLeftMilliseconds / (60 * 1000) % 60;
+        if (timeLeftMilliseconds >= 6.048e+8){
+            timeLeft.setText("More than a week");
+        } else {
+            Long  timeLeftHours = timeLeftMilliseconds / (60 * 60 * 1000) % 24;
+            Long timeLeftMinutes = timeLeftMilliseconds / (60 * 1000) % 60;
 
-        timeLeft.setText(timeLeftHours + ":" + timeLeftMinutes);
+            timeLeft.setText(stringifyNumber(timeLeftHours) + ":" + stringifyNumber(timeLeftMinutes));
+        }
+
     }
 
     private void showDrawer(){
         if(!drawerUp){
-            Animation bottomUp = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
-                    R.anim.bottom_up);
+//            Animation bottomUp = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
+//                    R.anim.bottom_up);
             ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
-            hiddenPanel.startAnimation(bottomUp);
+//            hiddenPanel.startAnimation(bottomUp);
             hiddenPanel.setVisibility(View.VISIBLE);
             drawerUp = true;
         }
@@ -312,16 +314,29 @@ public class MapsActivity
 
     private void hideDrawer(){
         if(drawerUp){
-            Animation bottomDown = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
-                    R.anim.bottom_down);
+//            Animation bottomDown = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
+//                    R.anim.bottom_down);
             ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
-
-            hiddenPanel.startAnimation(bottomDown);
+//
+//            hiddenPanel.startAnimation(bottomDown);
             hiddenPanel.setVisibility(View.INVISIBLE);
             drawerUp = false;
         }
     }
 /* -------------------------/DRAWER------------------------------------------------------------*/
+    private String stringifyNumber(Integer number){
+        if (number<10){
+            return "0" + number.toString();
+        }
+        return number.toString();
+    }
+
+    private String stringifyNumber(Long number){
+        if (number<10){
+            return "0" + number.toString();
+        }
+        return number.toString();
+    }
 
     private void questAfterUserTimestamp(final User user, final Quest quest) {
         Calendar cal = Calendar.getInstance();
@@ -379,7 +394,7 @@ public class MapsActivity
 
                     if (questDate.after(userDate)) {
 
-                        addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
+                        addMarker(new LatLng(user.latitude, user.longitude), 20, Color.RED, user.email);
 
                     } else if (questDate.equals(userDate)) {
                         if (Integer.parseInt(quest.endDate.substring(11, 13)) > Integer.parseInt(userTimestampToDate.substring(11, 13))) {
@@ -387,12 +402,12 @@ public class MapsActivity
                             setMessage(true, userDate.toString() + "\n" + questDate.toString());
                         } else if (Integer.parseInt(quest.endDate.substring(11, 13)) == Integer.parseInt(userTimestampToDate.substring(11, 13))) {
                             if (Integer.parseInt(quest.endDate.substring(14, 16)) >= Integer.parseInt(userTimestampToDate.substring(14, 16))) {
-                                addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
+                                addMarker(new LatLng(user.latitude, user.longitude), 20, Color.RED, user.email);
                             }
                         }
                     } else {
                         if (user.isOnline) {
-                            addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
+                            addMarker(new LatLng(user.latitude, user.longitude), 20, Color.BLUE, "NULL");
                         }
                     }
 
@@ -458,7 +473,7 @@ public class MapsActivity
             mDatabase.child("users").child(userId).onDisconnect().setValue(user);
 
             //USER LOCATION MARKER
-            addMarker(lastKnownLocation, 10, Color.GREEN, "USER");
+            addMarker(lastKnownLocation, 20, Color.GREEN, "USER");
             if (!startingCameraPosition) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
                 startingCameraPosition = true;
@@ -498,14 +513,24 @@ public class MapsActivity
 
     private void addMarker(LatLng location, Integer size, Integer color, String tag) {
         try {
-            Circle circle = mMap.addCircle(new CircleOptions()
+            Circle outerCircle = mMap.addCircle(new CircleOptions()
                     .center(location)
-                    .radius(10)
-                    .strokeColor(color)
-                    .fillColor(color));
-            circle.setTag(tag);
-            circle.setClickable(true);
-            circle.setZIndex(1000 - size);
+                    .radius(size)
+                    .strokeColor(Color.BLUE)
+                    .strokeWidth(1)
+                    .fillColor(Color.TRANSPARENT));
+            outerCircle.setTag(tag);
+            outerCircle.setClickable(true);
+            outerCircle.setZIndex(1000 - size);
+
+            Circle innerCircle = mMap.addCircle(new CircleOptions()
+            .center(location)
+            .radius(size/10)
+            .strokeColor(Color.TRANSPARENT)
+            .strokeWidth(1)
+            .fillColor(color));
+            innerCircle.setZIndex(1000 - size);
+
         } catch (java.lang.NullPointerException e) {
             setMessage(true, "Error M" + Thread.currentThread().getStackTrace()[2].getLineNumber());
         }
