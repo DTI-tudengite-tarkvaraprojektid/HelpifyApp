@@ -84,7 +84,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             public void onClick(View v) {
 
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(new ContextThemeWrapper(UserProfileActivity.this, R.style.AlertDialogCustom));
-                mBuilder.setTitle("Choose what skills are needed");
+                mBuilder.setTitle("   Choose what skills are needed");
                 mBuilder.setMultiChoiceItems(listSkills, checkedSkills, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -119,7 +119,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     }
                 });
 
-                mBuilder.setNeutralButton("Clear All", new DialogInterface.OnClickListener() {
+                mBuilder.setNeutralButton("  Clear All", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         for(int i = 0; i < checkedSkills.length; i++){
