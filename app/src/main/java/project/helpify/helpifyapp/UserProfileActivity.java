@@ -84,7 +84,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             public void onClick(View v) {
 
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(new ContextThemeWrapper(UserProfileActivity.this, R.style.AlertDialogCustom));
-                mBuilder.setTitle("   Choose what skills are needed");
+                mBuilder.setTitle("   Choose skills");
                 mBuilder.setMultiChoiceItems(listSkills, checkedSkills, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
