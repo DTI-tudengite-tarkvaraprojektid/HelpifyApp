@@ -45,7 +45,7 @@
             android:ems="10"
             android:text="@string/textUserName"
             android:textAlignment="center"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="15sp" />
 
         <EditText
@@ -53,11 +53,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
-            android:background="@android:color/white"
+            android:background="@drawable/forms_shape"
             android:hint="Enter your name"
             android:inputType="text"
             android:textColor="@android:color/black"
-            android:textColorHint="@android:color/black" />
+            android:textColorHint="@color/input_register_hint" />
 
         <TextView
             android:id="@+id/textUserQuest"
@@ -68,22 +68,22 @@
             android:ems="10"
             android:text="@string/textUserQuest"
             android:textAlignment="center"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="15sp" />
 
         <EditText
             android:id="@+id/editTextQuest"
             android:layout_width="match_parent"
-            android:layout_height="41dp"
+            android:layout_height="45dp"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="0dp"
             android:height="15sp"
-            android:background="@android:color/white"
+            android:background="@drawable/forms_shape"
             android:ellipsize="start"
             android:hint="Enter a quest"
             android:inputType="textEmailAddress"
             android:textColor="@android:color/black"
-            android:textColorHint="@android:color/black" />
+            android:textColorHint="@color/input_register_hint" />
 
         <Button
             android:id="@+id/SkillsSelect"
@@ -105,7 +105,7 @@
             android:ems="10"
             android:text="Your Selected Skills"
             android:textAlignment="center"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="12sp" />
 
         <TextView
@@ -117,14 +117,14 @@
             android:text="@string/textQuestExpiry"
             android:textAlignment="center"
             android:textSize="15sp"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
              />
 
         <TextView
             android:id="@+id/editTextDate"
             android:layout_width="match_parent"
             android:layout_height="20sp"
-            android:background="@color/white"
+            android:background="@drawable/forms_shape"
             android:ems="10"
             android:hint="Choose date"
             android:layout_margin="10dp"
@@ -133,10 +133,10 @@
         <TextView
             android:id="@+id/tv"
             android:layout_width="match_parent"
-            android:background="@color/white"
             android:layout_height="20dp"
             android:layout_margin="10dp"
             android:ems="10"
+            android:background="@drawable/forms_shape"
             android:inputType="time"
             android:hint="Choose time"/>
 

@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -54,6 +56,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         progressDialog = new ProgressDialog(this);
         firebaseAuth = FirebaseAuth.getInstance();
+
+        SpannableString content = new SpannableString("Signup");
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        textViewSignup.setText(content);
 
         //Checking if user is already logged in
         if(firebaseAuth.getCurrentUser() != null){

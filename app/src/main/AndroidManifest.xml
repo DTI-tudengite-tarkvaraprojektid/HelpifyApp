@@ -20,16 +20,6 @@ package="project.helpify.helpifyapp">
     android:supportsRtl="true"
     android:label="@string/app_name"
 >
-    <activity android:name=".FirstActivity"
-        android:screenOrientation="portrait"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme.NoActionBar"
-    >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
 
     <activity android:name=".MainActivity"
         android:screenOrientation="portrait"
@@ -43,7 +33,13 @@ package="project.helpify.helpifyapp">
     <activity android:name=".LoginActivity"
         android:label="@string/app_name"
         android:theme="@style/AppTheme.NoActionBar"
-        android:screenOrientation="portrait"/>
+        android:screenOrientation="portrait"
+        >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
 
     <activity android:name=".ProfileActivity"
         android:screenOrientation="portrait"
