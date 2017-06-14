@@ -36,6 +36,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -110,7 +111,36 @@ public class MapsActivity
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
-    }
+
+        ImageButton disableLocationButton = (ImageButton) findViewById(R.id.disableLocation);
+        disableLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseDatabase.getInstance().getReference().child("users")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                FirebaseUser cUser = firebaseAuth.getCurrentUser();
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    User user = snapshot.getValue(User.class);
+                                    if (user.email.equals(cUser.getEmail())) {
+                                        if (user.isHidden == null || !user.isHidden) {
+                                            mDatabase.child("users").child(cUser.getUid()).child("isHidden").setValue(true);
+                                        } else {
+                                            mDatabase.child("users").child(cUser.getUid()).child("isHidden").setValue(false);
+                                        }
+                                    }
+                                }
+                            }
+
+                                @Override
+                                public void onCancelled (DatabaseError databaseError){
+                                }
+                            });
+                        }
+            });
+
+        }
 
     private void generateUserMarkers() {
         FirebaseDatabase.getInstance().getReference().child("users")
@@ -119,6 +149,9 @@ public class MapsActivity
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             User user = snapshot.getValue(User.class);
+                            if (user.isHidden == null) {
+                                user.isHidden = false;
+                            }
                             hasUserTasks(user);
                         }
                     }
@@ -135,8 +168,8 @@ public class MapsActivity
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                            ArrayList<String> quests = new ArrayList<>();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        ArrayList<String> quests = new ArrayList<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Quest quest = snapshot.getValue(Quest.class);
                             quests.add(quest.email);
                         }
@@ -144,7 +177,7 @@ public class MapsActivity
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Quest quest = snapshot.getValue(Quest.class);
 
-                            if (user.isOnline) {
+                            if (user.isOnline && user.isHidden != true) {
 
 
                                 // IF USER HAS ENTERED QUEST, THEN HIS MARKER WILL BE RED, OTHERWISE BLUE
@@ -232,7 +265,7 @@ public class MapsActivity
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                         Quest quest = snapshot.getValue(Quest.class);
-                                        if(circle.getTag().toString().equals(quest.email)){
+                                        if (circle.getTag().toString().equals(quest.email)) {
                                             generateDrawer(quest.name, quest.email, quest.startDate, quest.endDate);
                                             showDrawer();
                                         }
@@ -243,9 +276,9 @@ public class MapsActivity
                                 public void onCancelled(DatabaseError databaseError) {
                                 }
                             });
-                        showDrawer();
+                    showDrawer();
                 } else {
-                        hideDrawer();
+                    hideDrawer();
                 }
             }
         });
@@ -279,7 +312,7 @@ public class MapsActivity
         setMessage(true, "No internet connection. Please connect the device.");
     }
 
-/* -------------------------DRAWER------------------------------------------------------------*/
+    /* -------------------------DRAWER------------------------------------------------------------*/
     public void generateDrawer(String name, String username, String start, String end) {
         final TextView uName = (TextView) findViewById(R.id.uName);
         TextView missionTime = (TextView) findViewById(R.id.missionTime);
@@ -293,7 +326,7 @@ public class MapsActivity
                 mDatabase.child("quests").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             String email = (String) snapshot.child("email").getValue();
                             boolean status = (boolean) snapshot.child("accepted").getValue();
                             String accepting_user = (String) snapshot.child("accepted_by").getValue();
@@ -301,17 +334,17 @@ public class MapsActivity
                             String current_user = firebaseAuth.getCurrentUser().getEmail();
                             String offering_user = uName.getText().toString();
 
-                            if(email.equals(offering_user) && v == accept){
+                            if (email.equals(offering_user) && v == accept) {
                                 mDatabase.child("quests").child(key).child("accepted").setValue(true);
                                 mDatabase.child("quests").child(key).child("accepted_by").setValue(current_user);
                                 v.setVisibility(View.GONE);
                             }
 
-                            if(status && drawerUp){
+                            if (status && drawerUp) {
                                 v.setVisibility(View.GONE);
                             }
 
-                            if(!status &&  drawerUp){
+                            if (!status && drawerUp) {
                                 v.setVisibility(View.VISIBLE);
                             }
                         }
@@ -330,11 +363,11 @@ public class MapsActivity
         Calendar now = Calendar.getInstance();
         Calendar startDate = new GregorianCalendar();
         Calendar endDate = new GregorianCalendar();
-        try{
+        try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.ENGLISH);
             startDate.setTime(dateFormat.parse(start));
             endDate.setTime(dateFormat.parse(end));
-        } catch (ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace();
         }
 
@@ -343,10 +376,10 @@ public class MapsActivity
         missionTime.setText(time);
 
         Long timeLeftMilliseconds = endDate.getTimeInMillis() - now.getTimeInMillis();
-        if (timeLeftMilliseconds >= 6.048e+8){
+        if (timeLeftMilliseconds >= 6.048e+8) {
             timeLeft.setText("More than a week");
         } else {
-            Long  timeLeftHours = timeLeftMilliseconds / (60 * 60 * 1000) % 24;
+            Long timeLeftHours = timeLeftMilliseconds / (60 * 60 * 1000) % 24;
             Long timeLeftMinutes = timeLeftMilliseconds / (60 * 1000) % 60;
 
             timeLeft.setText(stringifyNumber(timeLeftHours) + ":" + stringifyNumber(timeLeftMinutes));
@@ -354,8 +387,8 @@ public class MapsActivity
 
     }
 
-    private void showDrawer(){
-        if(!drawerUp){
+    private void showDrawer() {
+        if (!drawerUp) {
 //            Animation bottomUp = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
 //                    R.anim.bottom_up);
             ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
@@ -365,8 +398,8 @@ public class MapsActivity
         }
     }
 
-    private void hideDrawer(){
-        if(drawerUp){
+    private void hideDrawer() {
+        if (drawerUp) {
 //            Animation bottomDown = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
 //                    R.anim.bottom_down);
             ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
@@ -376,16 +409,17 @@ public class MapsActivity
             drawerUp = false;
         }
     }
-/* -------------------------/DRAWER------------------------------------------------------------*/
-    private String stringifyNumber(Integer number){
-        if (number<10){
+
+    /* -------------------------/DRAWER------------------------------------------------------------*/
+    private String stringifyNumber(Integer number) {
+        if (number < 10) {
             return "0" + number.toString();
         }
         return number.toString();
     }
 
-    private String stringifyNumber(Long number){
-        if (number<10){
+    private String stringifyNumber(Long number) {
+        if (number < 10) {
             return "0" + number.toString();
         }
         return number.toString();
@@ -470,9 +504,6 @@ public class MapsActivity
             }
         }
     }
-
-
-
 
 
     private void generateMap() {
@@ -592,7 +623,7 @@ public class MapsActivity
 
     @Override
     public void onCameraMove() {
-        if (drawerUp){
+        if (drawerUp) {
             setMessage(true, "drawerUp");
             Animation bottomDown = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
                     R.anim.bottom_down);

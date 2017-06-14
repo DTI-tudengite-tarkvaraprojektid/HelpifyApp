@@ -14,7 +14,9 @@ public  class User {
     public Double latitude;
     public Double longitude;
     public Boolean isOnline;
+    public Boolean isHidden;
     public Long timestamp;
+
   public User() {
       // Default constructor required for calls to DataSnapshot.getValue(User.class)
   }
@@ -38,5 +40,8 @@ public  class User {
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
+    public Boolean getHidden() {return isHidden;}
+    public void setHidden(Boolean hidden) {isHidden = hidden;}
+
 
 }
