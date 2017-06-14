@@ -68,6 +68,7 @@ public class MapsActivity
     private Timer autoUpdate;
     private Boolean startingCameraPosition = false;
     private Boolean drawerUp = false;
+    private Boolean isHidden = false;
     int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 0x00111;
 
 
@@ -126,8 +127,10 @@ public class MapsActivity
                                     User user = snapshot.getValue(User.class);
                                     if (user.email.equals(cUser.getEmail())) {
                                         if (user.isHidden == null || !user.isHidden) {
+                                            isHidden = true;
                                             mDatabase.child("users").child(cUser.getUid()).child("isHidden").setValue(true);
                                         } else {
+                                            isHidden = false;
                                             mDatabase.child("users").child(cUser.getUid()).child("isHidden").setValue(false);
                                         }
                                     }
@@ -255,10 +258,6 @@ public class MapsActivity
         mMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
             @Override
             public void onCircleClick(final Circle circle) {
-//                Intent i = new Intent(MapsActivity.this, MapsUserClickActivity.class);
-//                String username = circle.getTag().toString();
-//                i.putExtra("username", username);
-//                startActivity(i);
                 if (!circle.getTag().toString().equals("NULL") && !circle.getTag().toString().equals("USER")) {
                     FirebaseDatabase.getInstance().getReference().child("quests")
                             .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -607,13 +606,17 @@ public class MapsActivity
 
             Boolean isOnline = true;
             User user = new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), isOnline);
+            user.setHidden(isHidden);
             mDatabase.child("users").child(userId).setValue(user);
             isOnline = false;
             user = new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), isOnline);
+            user.setHidden(isHidden);
             mDatabase.child("users").child(userId).onDisconnect().setValue(user);
 
             //USER LOCATION MARKER
-            addMarker(lastKnownLocation, 10, Color.GREEN, "USER");
+            if(!user.isHidden){
+                addMarker(lastKnownLocation, 10, Color.GREEN, "USER");
+            }
             if (!startingCameraPosition) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
                 startingCameraPosition = true;
@@ -684,8 +687,6 @@ public class MapsActivity
             Animation bottomDown = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
                     R.anim.bottom_down);
             ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
-            TextView uEmail = (TextView) findViewById(R.id.uEmail);
-            uEmail.setText(null);
             hiddenPanel.startAnimation(bottomDown);
             hiddenPanel.setVisibility(View.INVISIBLE);
             drawerUp = false;
