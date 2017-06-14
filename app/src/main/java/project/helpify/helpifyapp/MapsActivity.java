@@ -14,10 +14,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,6 +38,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,7 +54,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -80,6 +85,8 @@ public class MapsActivity
     private DatabaseReference mDatabase;
     private FirebaseAuth firebaseAuth;
     private DataSnapshot dataSnapshot;
+    private String chat_msg;
+    private String chat_user_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -266,8 +273,12 @@ public class MapsActivity
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                         Quest quest = snapshot.getValue(Quest.class);
                                         if (circle.getTag().toString().equals(quest.email)) {
-                                            generateDrawer(quest.name, quest.email, quest.startDate, quest.endDate);
+
+                                            generateDrawer(quest.name, quest.email, quest.startDate, quest.endDate, quest.quest);
+                                            chat_box.setText(quest.quest + "\n");
                                             showDrawer();
+
+                                            break;
                                         }
                                     }
                                 }
@@ -281,6 +292,7 @@ public class MapsActivity
                     hideDrawer();
                 }
             }
+
         });
     }
 
@@ -312,13 +324,112 @@ public class MapsActivity
         setMessage(true, "No internet connection. Please connect the device.");
     }
 
+    TextView chat_box;
+    EditText msg_input;
+    private void append_chat_conversation(DataSnapshot snapshot) {
+
+
+        Iterator i = snapshot.getChildren().iterator();
+        while (i.hasNext()) {
+
+            chat_msg = (String) ((DataSnapshot) i.next()).getValue();
+            chat_user_name = (String) ((DataSnapshot) i.next()).getValue();
+
+            chat_box.append(chat_user_name + " : " + chat_msg + "\n");
+
+        }
+
+    }
+
+
+    Map<String, Object> chat = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> msg = new HashMap<String, Object>();
+
+    // final Map<String,Object> msg = new HashMap<String,Object>();
+
+    DatabaseReference root = FirebaseDatabase.getInstance().getReference().child("chat");
+    // mRoot2 -  "chat" child
+    DatabaseReference mRoot2;
+    // message_root - mRoot2 child
+    DatabaseReference mesage_root;
+
+    String temp_key;
+    int counter;
+
     /* -------------------------DRAWER------------------------------------------------------------*/
-    public void generateDrawer(String name, String username, String start, String end) {
+    public void generateDrawer(final String name, final String username, String start, final String end, final String description) {
         final TextView uName = (TextView) findViewById(R.id.uName);
         TextView missionTime = (TextView) findViewById(R.id.missionTime);
         TextView missionName = (TextView) findViewById(R.id.missionName);
+        chat_box = (TextView) findViewById(R.id.chatBox);
         TextView timeLeft = (TextView) findViewById(R.id.timeLeft);
+        msg_input = (EditText) findViewById(R.id.msg_input);
+
+
         final Button accept = (Button) findViewById(R.id.acceptButton);
+        final Button sendButton = (Button) findViewById(R.id.msg_send);
+
+
+        mRoot2 = FirebaseDatabase.getInstance().getReference().child("chat").child(name + description.substring(description.length() - 4, description.length()));
+
+        chat_box.setMovementMethod(new ScrollingMovementMethod());
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             //   chat_box.setText("");
+
+
+
+                // unique key
+                temp_key = mRoot2.push().getKey();
+                root.updateChildren(map);
+                mRoot2.updateChildren(chat);
+
+                mesage_root = mRoot2.child(temp_key);
+
+
+
+
+                msg.put("name", firebaseAuth.getCurrentUser().getEmail());
+                msg.put("msg", msg_input.getText().toString());
+
+                mesage_root.updateChildren(msg);
+                msg_input.setText("");
+
+            }
+        });
+
+            mRoot2.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                        append_chat_conversation(dataSnapshot);
+
+                }
+
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    append_chat_conversation(dataSnapshot);
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
