@@ -1,17 +1,22 @@
 package project.helpify.helpifyapp;
 
+import android.app.DatePickerDialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -29,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -41,23 +47,23 @@ import java.util.Locale;
 public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth firebaseAuth;
     private EditText editTextName;
-    private EditText editTextQuest;
     private Button buttonSaveUserData;
     private EditText questDate;
     private DatabaseReference mDatabase;
     private ImageButton buttonBack;
-    private EditText questEndDate;
     private Button mSkills;
     private TextView mSelectedSkills;
-
     private String[] listSkills;
     private boolean[] checkedSkills;
     private ArrayList<Integer> mUserSkills = new ArrayList<>();
     private int count;
-
     private ProgressDialog progressBar;
+    private TextView tv;
+    private TextView editTextDate;
+    private String date;
 
     @Override
+    @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userprofile);
@@ -140,12 +146,68 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         buttonSaveUserData = (Button) findViewById(R.id.buttonSaveUserData);
         buttonBack = (ImageButton) findViewById(R.id.buttonBack);
 
-        questDate = (EditText) findViewById(R.id.questDate);
-        questEndDate = (EditText) findViewById(R.id.questEndDate);
-        questEndDate.setGravity(Gravity.CENTER);
-        questDate.setGravity(Gravity.CENTER);
+        editTextDate  = (TextView) findViewById(R.id.editTextDate);
+        tv =(TextView) findViewById(R.id.tv);
+        tv.setGravity(Gravity.CENTER);
+        editTextDate.setGravity(Gravity.CENTER);
 
         buttonBack.setOnClickListener(this);
+
+        //**
+
+
+
+            tv.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+
+                    DialogFragment newFragment = new TimePickerFragment();
+                    newFragment.show(getFragmentManager(),"TimePicker");
+
+                }
+
+
+
+
+            });
+
+
+
+
+
+            //DATE PICKER
+            editTextDate.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    // TODO Auto-generated method stub
+                    //To show current date in the datepicker
+                    Calendar mcurrentDate = Calendar.getInstance();
+                    int mYear = mcurrentDate.get(Calendar.YEAR);
+                    int mMonth = mcurrentDate.get(Calendar.MONTH);
+                    int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+
+                    DatePickerDialog mDatePicker;
+                    mDatePicker = new DatePickerDialog(UserProfileActivity.this, new DatePickerDialog.OnDateSetListener() {
+                        public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                            // TODO Auto-generated method stub
+                    /*      Your code   to get date and time    */
+                            selectedmonth = selectedmonth + 1;
+                            editTextDate.setText(selectedday + "/" + selectedmonth + "/" + selectedyear);
+                            date = selectedday + "/" + selectedmonth + "/" + selectedyear;
+                        }
+                    }, mYear, mMonth, mDay);
+                    mDatePicker.setTitle("Select Date");
+                    mDatePicker.show();
+                }
+            });
+
+        //**
+
+
+
+
+
 
         buttonSaveUserData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,8 +218,8 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
                     String user_quest = quest.getText().toString();
                     String user_name = name.getText().toString();
-                    String start_date = questDate.getText().toString();
-                    String end_date = questEndDate.getText().toString();
+                    String time = tv.getText().toString();
+                    String dateTime = date+" "+time;
 
 
                     String userId = firebaseAuth.getCurrentUser().getUid();
@@ -167,29 +229,31 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
                     //http://tutorials.jenkov.com/java-internationalization/simpledateformat.html
                     String date_pattern = "dd/MM/yyyy HH:mm";
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(date_pattern, Locale.US);
+                   SimpleDateFormat simpleDateFormat = new SimpleDateFormat(date_pattern, Locale.US);
 
-                    String current_date = simpleDateFormat.format(new Date());
+
+                     String current_date = simpleDateFormat.format(new Date());
 
 
                     try {
 
                         Date c_Date = simpleDateFormat.parse(current_date);
-                        Date d_Date = simpleDateFormat.parse(start_date);
-                        Date e_Date = simpleDateFormat.parse(end_date);
+                        Date d_Date = simpleDateFormat.parse(current_date);
+                        Date e_Date = simpleDateFormat.parse(dateTime);
 
-                        System.out.println(c_Date.compareTo(d_Date));
-                        System.out.println(start_date);
+                       // System.out.println(c_Date.compareTo(d_Date));
+                        System.out.println(e_Date);
+
 
                         //https://stackoverflow.com/questions/23360599/regular-expression-for-dd-mm-yyyy-hhmm
-                        boolean pattern_check = start_date.matches("(0[1-9]|1\\d|2\\d|3[01])/(0[1-9]|1[12])/(20)\\d{2}\\s+(0[0-9]|1[0-9]|2[0-3])\\:(0[0-9]|[1-5][0-9])$");
+                      // boolean pattern_check = dateTime.matches("(0[1-9]|1\\d|2\\d|3[01])/(0[1-9]|1[12])/(20)\\d{2}\\s+(0[0-9]|1[0-9]|2[0-3])\\:(0[0-9]|[1-5][0-9])$");
 
-                        System.out.println(pattern_check);
 
-                        if(pattern_check){
+
+                      if(e_Date.compareTo(d_Date)>0){
                             if(c_Date.compareTo(d_Date) == 0 || c_Date.compareTo(d_Date) < 0){
                                 if(e_Date.compareTo(d_Date) > 0){
-                                    if(user_quest.equals("") || start_date.equals("") || user_name.equals("")){
+                                    if(user_quest.equals("") || dateTime.equals("") || user_name.equals("")){
 
                                         Quest new_quest = new Quest("NULL","NULL", userEmail, "NULL", "NULL");
                                         mDatabase.child("quests").child(userId).setValue(new_quest);
@@ -202,7 +266,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                                             return;
                                         }
 
-                                        Quest new_user_quest = new Quest(start_date,end_date,userEmail,user_name,user_quest);
+                                        Quest new_user_quest = new Quest(current_date,dateTime,userEmail,user_name,user_quest);
                                        
                                         mDatabase.child("quests").child(userId).setValue(new_user_quest);
                                         for(int i = 0; i < mUserSkills.size(); i++){
@@ -211,21 +275,19 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                                         Toast.makeText(UserProfileActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
 
                                     }
-                                } else {
-                                    Toast.makeText(UserProfileActivity.this, "End date must be after start date", Toast.LENGTH_SHORT).show();
-                                }
 
-                            } else if (c_Date.compareTo(d_Date) > 0) {
-                                Toast.makeText(UserProfileActivity.this, "Dates must be in the future", Toast.LENGTH_SHORT).show();
+                                }
                             }
 
                         } else {
-                            Toast.makeText(UserProfileActivity.this, "Wrong date format", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UserProfileActivity.this, "Quest must expire in the future.", Toast.LENGTH_SHORT).show();
+                          System.out.println(dateTime);
                         }
 
                     } catch (ParseException e) {
                         e.printStackTrace();
-                        Toast.makeText(UserProfileActivity.this, "Wrong date format", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserProfileActivity.this, "Wrong date format.", Toast.LENGTH_SHORT).show();
+                        System.out.println();
                     }
 
                 }

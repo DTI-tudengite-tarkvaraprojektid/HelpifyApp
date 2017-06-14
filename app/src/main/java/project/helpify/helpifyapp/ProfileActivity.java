@@ -25,6 +25,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private TextView textViewUserEmail;
     private Button buttonLogout;
     private Button buttonProfile;
+    //******
+    private Button button2;
+    //***
 
     private DatabaseReference mDatabase;
 
@@ -39,9 +42,16 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         buttonLogout = (Button) findViewById(R.id.buttonLogout);
         buttonProfile = (Button) findViewById(R.id.buttonProfile);
 
+        //**
+        button2 = (Button) findViewById(R.id.button2);
+        //***
 
         buttonLogout.setOnClickListener(this);
         buttonProfile.setOnClickListener(this);
+
+        //***
+        button2.setOnClickListener(this);
+        //**
 
         //Check if user is not signed in
         if (firebaseAuth.getCurrentUser() == null) {
@@ -94,6 +104,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if(view == buttonProfile){
             finish();
             startActivity(new Intent(this, UserProfileActivity.class));
+        }
+        //***
+
+        if(view==button2){
+            finish();
+            startActivity(new Intent(this, Katsetus.class));
         }
 
     }
