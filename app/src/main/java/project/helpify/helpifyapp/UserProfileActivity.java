@@ -272,6 +272,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                                         for(int i = 0; i < mUserSkills.size(); i++){
                                             mDatabase.child("quests").child(userId).child("skill"+i).setValue(listSkills[mUserSkills.get(i)]);
                                         }
+                                        mDatabase.child("quests").child(userId).child("accepted").setValue(false);
                                         Toast.makeText(UserProfileActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
 
                                     }

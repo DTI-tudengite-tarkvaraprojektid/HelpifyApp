@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.Timer;
@@ -324,31 +325,30 @@ public class MapsActivity
             @Override
             public void onClick(final View v) {
                 mDatabase.child("quests").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            String email = (String) snapshot.child("email").getValue();
-                            boolean status = (boolean) snapshot.child("accepted").getValue();
-                            String accepting_user = (String) snapshot.child("accepted_by").getValue();
-                            String key = (String) snapshot.getKey();
-                            String current_user = firebaseAuth.getCurrentUser().getEmail();
-                            String offering_user = uName.getText().toString();
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                String email = (String) snapshot.child("email").getValue();
+                                String key = snapshot.getKey();
+                                String current_user = firebaseAuth.getCurrentUser().getEmail();
+                                String current_user_uid = firebaseAuth.getCurrentUser().getUid();
+                                String offering_user = uName.getText().toString();
 
-                            if (email.equals(offering_user) && v == accept) {
-                                mDatabase.child("quests").child(key).child("accepted").setValue(true);
-                                mDatabase.child("quests").child(key).child("accepted_by").setValue(current_user);
-                                v.setVisibility(View.GONE);
-                            }
+                                final DatabaseReference quest_ref = FirebaseDatabase.getInstance()
+                                        .getReference().child("quests").child(key);
 
-                            if (status && drawerUp) {
-                                v.setVisibility(View.GONE);
-                            }
+                                final DatabaseReference quest_ref2 = FirebaseDatabase.getInstance()
+                                        .getReference().child("quests").child(key).child("accepted_by/");
 
-                            if (!status && drawerUp) {
-                                v.setVisibility(View.VISIBLE);
+                                if(email.equals(offering_user) && v == accept){
+                                    quest_ref.child("accepted").setValue(true);
+                                    HashMap<String, Object> accepting_user = new HashMap<>();
+                                    accepting_user.put(current_user_uid, current_user);
+                                    quest_ref2.updateChildren(accepting_user);
+                                    v.setVisibility(View.GONE);
+                                }
                             }
                         }
-                    }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -395,6 +395,7 @@ public class MapsActivity
 //            hiddenPanel.startAnimation(bottomUp);
             hiddenPanel.setVisibility(View.VISIBLE);
             drawerUp = true;
+            checkAcceptance();
         }
     }
 
@@ -424,6 +425,61 @@ public class MapsActivity
         }
         return number.toString();
     }
+
+
+    private void checkAcceptance() {
+
+        final Button accept_button = (Button) findViewById(R.id.acceptButton);
+
+        final TextView uName = (TextView) findViewById(R.id.uName);
+
+        mDatabase.child("quests").addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                    String offering_user = uName.getText().toString();
+                    String email = (String) snapshot.child("email").getValue();
+                    String key = snapshot.getKey();
+
+
+                    if (email.equals(offering_user) && drawerUp) {
+                        mDatabase.child("quests").child(key).child("accepted_by").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot datasnapshot : dataSnapshot.getChildren()) {
+                                    String data = datasnapshot.getKey();
+                                    String current_user = firebaseAuth.getCurrentUser().getUid();
+                                    if (current_user.equals(data)) {
+                                        accept_button.setVisibility(View.INVISIBLE);
+                                    } else {
+                                        accept_button.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            }
+
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+
 
     private void questAfterUserTimestamp(final User user, final Quest quest) {
         Calendar cal = Calendar.getInstance();
