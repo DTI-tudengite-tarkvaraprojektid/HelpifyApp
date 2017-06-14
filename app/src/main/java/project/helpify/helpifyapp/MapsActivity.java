@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -26,6 +28,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -92,10 +95,21 @@ public class MapsActivity
                     .build();
         }
 
-
         firebaseAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+
+        ImageButton ib = (ImageButton) findViewById(R.id.myLocationButton);
+        ib.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(lastUserLocation)
+                        .zoom(14.0f)
+                        .build();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+        });
     }
 
     private void generateUserMarkers() {
@@ -267,10 +281,49 @@ public class MapsActivity
 
 /* -------------------------DRAWER------------------------------------------------------------*/
     public void generateDrawer(String name, String username, String start, String end) {
-        TextView uName = (TextView) findViewById(R.id.uName);
+        final TextView uName = (TextView) findViewById(R.id.uName);
         TextView missionTime = (TextView) findViewById(R.id.missionTime);
         TextView missionName = (TextView) findViewById(R.id.missionName);
         TextView timeLeft = (TextView) findViewById(R.id.timeLeft);
+        final Button accept = (Button) findViewById(R.id.acceptButton);
+
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                mDatabase.child("quests").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                            String email = (String) snapshot.child("email").getValue();
+                            boolean status = (boolean) snapshot.child("accepted").getValue();
+                            String accepting_user = (String) snapshot.child("accepted_by").getValue();
+                            String key = (String) snapshot.getKey();
+                            String current_user = firebaseAuth.getCurrentUser().getEmail();
+                            String offering_user = uName.getText().toString();
+
+                            if(email.equals(offering_user) && v == accept){
+                                mDatabase.child("quests").child(key).child("accepted").setValue(true);
+                                mDatabase.child("quests").child(key).child("accepted_by").setValue(current_user);
+                                v.setVisibility(View.GONE);
+                            }
+
+                            if(status && drawerUp){
+                                v.setVisibility(View.GONE);
+                            }
+
+                            if(!status &&  drawerUp){
+                                v.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
 
         uName.setText(username);
         missionName.setText(name);
@@ -486,8 +539,6 @@ public class MapsActivity
         generateUserMarkers();
 
     }
-
-
 
     private void setMessage(boolean visibility) {
         final TextView message = (TextView) findViewById(R.id.message);

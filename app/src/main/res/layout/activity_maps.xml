@@ -11,7 +11,8 @@
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:background="@drawable/background_border">
 
         <fragment
             android:id="@+id/map"
@@ -23,17 +24,40 @@
             tools:context="project.helpify.helpifyapp.MapsActivity"
             android:layout_alignParentBottom="true" />
 
+        <ImageButton
+            android:id="@+id/myLocationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@android:drawable/ic_menu_mylocation"
+            map:srcCompat="@android:drawable/ic_menu_mylocation" />
+
+        <ImageButton
+            android:id="@+id/disableLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ei_eye"
+            map:srcCompat="@drawable/ei_eye"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
         <TextView
             android:id="@+id/message"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/map"
             android:text="Default message."
             android:textColor="#040404"
             android:textSize="30sp"
             android:textStyle="bold"
             android:typeface="sans"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:layout_marginTop="55dp"
+            android:layout_below="@+id/disableLocation"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
 
     </RelativeLayout>
@@ -42,71 +66,31 @@
         android:id="@+id/hidden_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
-        android:visibility="invisible"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
-
-        <TextView
-            android:id="@+id/timeLeftText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Time left: "
-            tools:text="Time left: "
-            android:layout_below="@+id/missionTime"
-            android:layout_toLeftOf="@+id/timeLeft"
-            android:layout_toStartOf="@+id/timeLeft" />
-
-        <TextView
-            android:id="@+id/timeLeft"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0:57"
-            android:layout_alignBaseline="@+id/timeLeftText"
-            android:layout_alignBottom="@+id/timeLeftText"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <TextView
-            android:id="@+id/missionTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/requestType"
-            android:layout_marginTop="26dp"
-            android:text="1:00PM - 4:30PM"
-            tools:text="1:00PM - 4:30PM" />
-
-        <Button
-            android:id="@+id/acceptButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Accept"
-            tools:text="Accept"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="229dp"
+        android:background="@drawable/background_border"
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/missionName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="missionName" />
+            android:text="missionName"
+            android:textSize="24sp" />
 
-        <TextView
-            android:id="@+id/uName"
+        <Button
+            android:id="@+id/acceptButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/missionTime"
-            android:layout_marginTop="19dp"
-            tools:text="Requester name" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="Accept"
+            android:textSize="18sp"
+            tools:text="Accept" />
 
         <TextView
             android:id="@+id/requestType"
@@ -116,6 +100,96 @@
             android:layout_alignParentStart="true"
             android:text="Public Request"
             tools:text="Public Request" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/acceptButton"
+            android:background="@drawable/background_border">
+
+            <TextView
+                android:id="@+id/timeLeftText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/missionTime"
+                android:layout_column="2"
+                android:layout_marginEnd="14dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginTop="24dp"
+                android:layout_row="1"
+                android:layout_toLeftOf="@+id/timeLeft"
+                android:layout_toStartOf="@+id/timeLeft"
+                android:text="Time left: "
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                tools:text="Time left: " />
+
+            <TextView
+                android:id="@+id/timeLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/timeLeftText"
+                android:layout_alignBottom="@+id/timeLeftText"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_column="3"
+                android:layout_row="1"
+                android:text="timeLeft"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                tools:text="timeLeft" />
+
+            <TextView
+                android:id="@+id/uName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/missionTime"
+                android:layout_column="0"
+                android:layout_marginTop="63dp"
+                android:layout_row="3"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                tools:text="Requester name" />
+
+            <TextView
+                android:id="@+id/missionTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:text="1:00PM - 4:30PM"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                tools:text="1:00PM - 4:30PM" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/acceptButton"
+            android:layout_marginTop="111dp"
+            android:background="@drawable/background_border">
+
+            <TextView
+                android:id="@+id/chatBox"
+                android:layout_width="match_parent"
+                android:layout_height="250px"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:background="@color/white"
+                android:text="Chat"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                tools:text="Chat" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
