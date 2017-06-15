@@ -8,7 +8,7 @@ import com.google.firebase.database.ServerValue;
  * Created by User on 06-Jun-17.
  */
 @IgnoreExtraProperties
-public  class User {
+public class User {
 
     public String email;
     public Double latitude;
@@ -17,9 +17,9 @@ public  class User {
     public Boolean isHidden;
     public Long timestamp;
 
-  public User() {
-      // Default constructor required for calls to DataSnapshot.getValue(User.class)
-  }
+    public User() {
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    }
 
     public User(String email, Double latitude, Double longitude, Boolean isOnline) {
         this.email = email;
@@ -37,11 +37,18 @@ public  class User {
     public Long getgetTimestampLong() {
         return timestamp;
     }
+
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
-    public Boolean getHidden() {return isHidden;}
-    public void setHidden(Boolean hidden) {isHidden = hidden;}
+
+    public Boolean getHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        isHidden = hidden;
+    }
 
 
 }

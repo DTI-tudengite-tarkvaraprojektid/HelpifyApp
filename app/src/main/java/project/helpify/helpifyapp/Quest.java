@@ -20,19 +20,18 @@ class Quest {
     public String name;
     public String quest;
 
-    public Quest(){
+    public Quest() {
 
     }
 
 
-    public Quest(String startDate, String endDate, String email, String name, String quest){
+    public Quest(String startDate, String endDate, String email, String name, String quest) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.email = email;
         this.name = name;
         this.quest = quest;
     }
-
 
 
 }

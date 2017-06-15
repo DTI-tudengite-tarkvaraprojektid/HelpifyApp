@@ -39,7 +39,6 @@ import java.util.Date;
 import java.util.Locale;
 
 
-
 /**
  * Created by Mariam on 12.06.2017.
  */
@@ -84,7 +83,8 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
         mSelectedSkills = (TextView) findViewById(R.id.SkillsView);
 
-        https://github.com/codingdemos/MultichoiceTutorial/blob/master/app/src/main/java/com/example/multichoicetutorial/MainActivity.java
+        https:
+//github.com/codingdemos/MultichoiceTutorial/blob/master/app/src/main/java/com/example/multichoicetutorial/MainActivity.java
         mSkills.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,7 +94,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 mBuilder.setMultiChoiceItems(listSkills, checkedSkills, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        if(isChecked){
+                        if (isChecked) {
                             mUserSkills.add(which);
                         } else {
                             mUserSkills.remove(Integer.valueOf(which));
@@ -107,9 +107,9 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String skill = "";
-                        for(int i = 0; i < mUserSkills.size(); i++){
+                        for (int i = 0; i < mUserSkills.size(); i++) {
                             skill = skill + listSkills[mUserSkills.get(i)];
-                            if(i != mUserSkills.size() - 1){
+                            if (i != mUserSkills.size() - 1) {
                                 skill = skill + ",";
                             }
                         }
@@ -128,7 +128,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                 mBuilder.setNeutralButton("  Clear All", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        for(int i = 0; i < checkedSkills.length; i++){
+                        for (int i = 0; i < checkedSkills.length; i++) {
                             checkedSkills[i] = false;
                             mUserSkills.clear();
                             mSelectedSkills.setText("");
@@ -146,8 +146,8 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         buttonSaveUserData = (Button) findViewById(R.id.buttonSaveUserData);
         buttonBack = (ImageButton) findViewById(R.id.buttonBack);
 
-        editTextDate  = (TextView) findViewById(R.id.editTextDate);
-        tv =(TextView) findViewById(R.id.tv);
+        editTextDate = (TextView) findViewById(R.id.editTextDate);
+        tv = (TextView) findViewById(R.id.tv);
         tv.setGravity(Gravity.CENTER);
         editTextDate.setGravity(Gravity.CENTER);
 
@@ -156,57 +156,47 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         //**
 
 
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-            tv.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
+                DialogFragment newFragment = new TimePickerFragment();
+                newFragment.show(getFragmentManager(), "TimePicker");
 
-                    DialogFragment newFragment = new TimePickerFragment();
-                    newFragment.show(getFragmentManager(),"TimePicker");
-
-                }
-
+            }
 
 
-
-            });
-
+        });
 
 
+        //DATE PICKER
+        editTextDate.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                //To show current date in the datepicker
+                Calendar mcurrentDate = Calendar.getInstance();
+                int mYear = mcurrentDate.get(Calendar.YEAR);
+                int mMonth = mcurrentDate.get(Calendar.MONTH);
+                int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
 
-            //DATE PICKER
-            editTextDate.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    //To show current date in the datepicker
-                    Calendar mcurrentDate = Calendar.getInstance();
-                    int mYear = mcurrentDate.get(Calendar.YEAR);
-                    int mMonth = mcurrentDate.get(Calendar.MONTH);
-                    int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
-
-                    DatePickerDialog mDatePicker;
-                    mDatePicker = new DatePickerDialog(UserProfileActivity.this, new DatePickerDialog.OnDateSetListener() {
-                        public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
-                            // TODO Auto-generated method stub
+                DatePickerDialog mDatePicker;
+                mDatePicker = new DatePickerDialog(UserProfileActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                        // TODO Auto-generated method stub
                     /*      Your code   to get date and time    */
-                            selectedmonth = selectedmonth + 1;
-                            editTextDate.setText(selectedday + "/" + selectedmonth + "/" + selectedyear);
-                            date = selectedday + "/" + selectedmonth + "/" + selectedyear;
-                        }
-                    }, mYear, mMonth, mDay);
-                    mDatePicker.setTitle("Select Date");
-                    mDatePicker.show();
-                }
-            });
+                        selectedmonth = selectedmonth + 1;
+                        editTextDate.setText(selectedday + "/" + selectedmonth + "/" + selectedyear);
+                        date = selectedday + "/" + selectedmonth + "/" + selectedyear;
+                    }
+                }, mYear, mMonth, mDay);
+                mDatePicker.setTitle("Select Date");
+                mDatePicker.show();
+            }
+        });
 
         //**
-
-
-
-
 
 
         buttonSaveUserData.setOnClickListener(new View.OnClickListener() {
@@ -219,7 +209,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                     String user_quest = quest.getText().toString();
                     String user_name = name.getText().toString();
                     String time = tv.getText().toString();
-                    String dateTime = date+" "+time;
+                    String dateTime = date + " " + time;
 
 
                     String userId = firebaseAuth.getCurrentUser().getUid();
@@ -229,10 +219,10 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
                     //http://tutorials.jenkov.com/java-internationalization/simpledateformat.html
                     String date_pattern = "dd/MM/yyyy HH:mm";
-                   SimpleDateFormat simpleDateFormat = new SimpleDateFormat(date_pattern, Locale.US);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(date_pattern, Locale.US);
 
 
-                     String current_date = simpleDateFormat.format(new Date());
+                    String current_date = simpleDateFormat.format(new Date());
 
 
                     try {
@@ -241,36 +231,35 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
                         Date d_Date = simpleDateFormat.parse(current_date);
                         Date e_Date = simpleDateFormat.parse(dateTime);
 
-                       // System.out.println(c_Date.compareTo(d_Date));
+                        // System.out.println(c_Date.compareTo(d_Date));
                         System.out.println(e_Date);
 
 
                         //https://stackoverflow.com/questions/23360599/regular-expression-for-dd-mm-yyyy-hhmm
-                      // boolean pattern_check = dateTime.matches("(0[1-9]|1\\d|2\\d|3[01])/(0[1-9]|1[12])/(20)\\d{2}\\s+(0[0-9]|1[0-9]|2[0-3])\\:(0[0-9]|[1-5][0-9])$");
+                        // boolean pattern_check = dateTime.matches("(0[1-9]|1\\d|2\\d|3[01])/(0[1-9]|1[12])/(20)\\d{2}\\s+(0[0-9]|1[0-9]|2[0-3])\\:(0[0-9]|[1-5][0-9])$");
 
 
+                        if (e_Date.compareTo(d_Date) > 0) {
+                            if (c_Date.compareTo(d_Date) == 0 || c_Date.compareTo(d_Date) < 0) {
+                                if (e_Date.compareTo(d_Date) > 0) {
+                                    if (user_quest.equals("") || dateTime.equals("") || user_name.equals("")) {
 
-                      if(e_Date.compareTo(d_Date)>0){
-                            if(c_Date.compareTo(d_Date) == 0 || c_Date.compareTo(d_Date) < 0){
-                                if(e_Date.compareTo(d_Date) > 0){
-                                    if(user_quest.equals("") || dateTime.equals("") || user_name.equals("")){
-
-                                        Quest new_quest = new Quest("NULL","NULL", userEmail, "NULL", "NULL");
+                                        Quest new_quest = new Quest("NULL", "NULL", userEmail, "NULL", "NULL");
                                         mDatabase.child("quests").child(userId).setValue(new_quest);
                                         Toast.makeText(UserProfileActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
 
                                     } else {
 
-                                        if(mUserSkills.size() == 0){
+                                        if (mUserSkills.size() == 0) {
                                             Toast.makeText(UserProfileActivity.this, "At least one skill must be chosen", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
 
-                                        Quest new_user_quest = new Quest(current_date,dateTime,userEmail,user_name,user_quest);
-                                       
+                                        Quest new_user_quest = new Quest(current_date, dateTime, userEmail, user_name, user_quest);
+
                                         mDatabase.child("quests").child(userId).setValue(new_user_quest);
-                                        for(int i = 0; i < mUserSkills.size(); i++){
-                                            mDatabase.child("quests").child(userId).child("skill"+i).setValue(listSkills[mUserSkills.get(i)]);
+                                        for (int i = 0; i < mUserSkills.size(); i++) {
+                                            mDatabase.child("quests").child(userId).child("skill" + i).setValue(listSkills[mUserSkills.get(i)]);
                                         }
                                         mDatabase.child("quests").child(userId).child("accepted").setValue(false);
                                         Toast.makeText(UserProfileActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
@@ -282,7 +271,7 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
 
                         } else {
                             Toast.makeText(UserProfileActivity.this, "Quest must expire in the future.", Toast.LENGTH_SHORT).show();
-                          System.out.println(dateTime);
+                            System.out.println(dateTime);
                         }
 
                     } catch (ParseException e) {
@@ -297,17 +286,17 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         });
 
 
-
-
     }
 
     @Override
-    public void onClick (View v) {
+    public void onClick(View v) {
         if (v == buttonBack) {
             finish();
             startActivity(new Intent(this, ProfileActivity.class));
         }
         ;
 
-    };
+    }
+
+    ;
 }

@@ -144,14 +144,14 @@ public class MapsActivity
                                 }
                             }
 
-                                @Override
-                                public void onCancelled (DatabaseError databaseError){
-                                }
-                            });
-                        }
-            });
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });
+            }
+        });
 
-        }
+    }
 
     private void generateUserMarkers() {
         FirebaseDatabase.getInstance().getReference().child("users")
@@ -326,6 +326,7 @@ public class MapsActivity
 
     TextView chat_box;
     EditText msg_input;
+
     private void append_chat_conversation(DataSnapshot snapshot) {
 
 
@@ -378,8 +379,7 @@ public class MapsActivity
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             //   chat_box.setText("");
-
+                //   chat_box.setText("");
 
 
                 // unique key
@@ -388,8 +388,6 @@ public class MapsActivity
                 mRoot2.updateChildren(chat);
 
                 mesage_root = mRoot2.child(temp_key);
-
-
 
 
                 msg.put("name", firebaseAuth.getCurrentUser().getEmail());
@@ -401,64 +399,64 @@ public class MapsActivity
             }
         });
 
-            mRoot2.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+        mRoot2.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                        append_chat_conversation(dataSnapshot);
+                append_chat_conversation(dataSnapshot);
 
-                }
+            }
 
 
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    append_chat_conversation(dataSnapshot);
-                }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                append_chat_conversation(dataSnapshot);
+            }
 
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                }
+            }
 
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-                }
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
+            }
+        });
 
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 mDatabase.child("quests").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                String email = (String) snapshot.child("email").getValue();
-                                String key = snapshot.getKey();
-                                String current_user = firebaseAuth.getCurrentUser().getEmail();
-                                String current_user_uid = firebaseAuth.getCurrentUser().getUid();
-                                String offering_user = uName.getText().toString();
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            String email = (String) snapshot.child("email").getValue();
+                            String key = snapshot.getKey();
+                            String current_user = firebaseAuth.getCurrentUser().getEmail();
+                            String current_user_uid = firebaseAuth.getCurrentUser().getUid();
+                            String offering_user = uName.getText().toString();
 
-                                final DatabaseReference quest_ref = FirebaseDatabase.getInstance()
-                                        .getReference().child("quests").child(key);
+                            final DatabaseReference quest_ref = FirebaseDatabase.getInstance()
+                                    .getReference().child("quests").child(key);
 
-                                final DatabaseReference quest_ref2 = FirebaseDatabase.getInstance()
-                                        .getReference().child("quests").child(key).child("accepted_by/");
+                            final DatabaseReference quest_ref2 = FirebaseDatabase.getInstance()
+                                    .getReference().child("quests").child(key).child("accepted_by/");
 
-                                if(email.equals(offering_user) && v == accept){
-                                    quest_ref.child("accepted").setValue(true);
-                                    HashMap<String, Object> accepting_user = new HashMap<>();
-                                    accepting_user.put(current_user_uid, current_user);
-                                    quest_ref2.updateChildren(accepting_user);
-                                    v.setVisibility(View.GONE);
-                                }
+                            if (email.equals(offering_user) && v == accept) {
+                                quest_ref.child("accepted").setValue(true);
+                                HashMap<String, Object> accepting_user = new HashMap<>();
+                                accepting_user.put(current_user_uid, current_user);
+                                quest_ref2.updateChildren(accepting_user);
+                                v.setVisibility(View.GONE);
                             }
                         }
+                    }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -587,8 +585,6 @@ public class MapsActivity
             }
         });
     }
-
-
 
 
     private void questAfterUserTimestamp(final User user, final Quest quest) {
@@ -725,7 +721,7 @@ public class MapsActivity
             mDatabase.child("users").child(userId).onDisconnect().setValue(user);
 
             //USER LOCATION MARKER
-            if(!user.isHidden){
+            if (!user.isHidden) {
                 addMarker(lastKnownLocation, 10, Color.GREEN, "USER");
             }
             if (!startingCameraPosition) {

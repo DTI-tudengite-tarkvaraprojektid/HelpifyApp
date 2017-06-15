@@ -17,8 +17,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
-
-
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth firebaseAuth;
@@ -41,7 +39,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         buttonProfile = (Button) findViewById(R.id.buttonProfile);
 
 
-
         buttonLogout.setOnClickListener(this);
         buttonProfile.setOnClickListener(this);
 
@@ -55,12 +52,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
         textViewUserEmail.setText("Welcome " + user.getEmail());
-
-
-
-
-
-
 
 
     }
@@ -94,11 +85,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             startActivity(new Intent(this, LoginActivity.class));
 
         }
-        if(view == buttonProfile){
+        if (view == buttonProfile) {
             finish();
             startActivity(new Intent(this, UserProfileActivity.class));
         }
-
 
 
     }
