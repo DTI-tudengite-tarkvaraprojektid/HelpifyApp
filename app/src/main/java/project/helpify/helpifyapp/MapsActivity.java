@@ -248,9 +248,6 @@ public class MapsActivity
                             Quest quest = snapshot.getValue(Quest.class);
 
                             if (user.isOnline && user.isHidden != null && !user.isHidden) {
-                            if (user.isOnline && !user.isHidden) {
-
-
                                 // IF USER HAS ENTERED QUEST, THEN HIS MARKER WILL BE RED, OTHERWISE BLUE
                                 if (user.email.equals(quest.email) && quest.quest.equals("NULL")) {
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
