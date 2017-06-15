@@ -28,6 +28,14 @@ public class User {
         this.isOnline = isOnline;
     }
 
+    public User(String email, Double latitude, Double longitude, Boolean isOnline, Boolean isHidden) {
+        this.email = email;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.isOnline = isOnline;
+        this.isHidden = isHidden;
+    }
+
 
     public java.util.Map<String, String> getTimestamp() {
         return ServerValue.TIMESTAMP;
@@ -41,14 +49,5 @@ public class User {
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
-
-    public Boolean getHidden() {
-        return isHidden;
-    }
-
-    public void setHidden(Boolean hidden) {
-        isHidden = hidden;
-    }
-
 
 }

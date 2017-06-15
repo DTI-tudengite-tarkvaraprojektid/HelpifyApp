@@ -1,12 +1,9 @@
 package project.helpify.helpifyapp;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -46,7 +43,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,20 +62,12 @@ public class MapsActivity
         implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener, GoogleMap.OnCameraMoveListener {
 
     private GoogleMap mMap;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
     private GoogleApiClient mGoogleApiClient;
     private LatLng lastUserLocation;
-    private Timer autoUpdate;
     private Boolean startingCameraPosition = false;
     private Boolean drawerUp = false;
-    private Boolean isHidden = false;
+    public Boolean isHidden;
     int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 0x00111;
-
-
-    private static final int MARKER_ICON_HEIGHT = 100;
-    private static final int MARKER_ICON_WIDTH = 100;
-
     // FIREBASE
 
     private DatabaseReference mDatabase;
@@ -90,10 +78,39 @@ public class MapsActivity
     private String chat_msg_receiver;
     private boolean flag = false;
 
+    private void getUserIsHidden(){
+        FirebaseDatabase.getInstance().getReference().child("users")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        FirebaseUser cUser = firebaseAuth.getCurrentUser();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            User user = snapshot.getValue(User.class);
+                            if (user.email.equals(cUser.getEmail().toString())) {
+                                if(user.isHidden == null){
+                                    isHidden = false;
+                                    break;
+                                } else {
+                                    isHidden = user.isHidden;
+                                    break;
+                                }
+                            }
+                        }
+                        //isHidden = userIsHidden[0];
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        setMessage(true, databaseError.toString());
+                    }
+                });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        getUserIsHidden();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -172,6 +189,7 @@ public class MapsActivity
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
+                        setMessage(true, databaseError.toString());
                     }
                 });
     }
@@ -229,44 +247,33 @@ public class MapsActivity
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Quest quest = snapshot.getValue(Quest.class);
 
+                            if (user.isOnline && user.isHidden != null && !user.isHidden) {
                             if (user.isOnline && !user.isHidden) {
 
 
                                 // IF USER HAS ENTERED QUEST, THEN HIS MARKER WILL BE RED, OTHERWISE BLUE
-
                                 if (user.email.equals(quest.email) && quest.quest.equals("NULL")) {
-
-
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
                                     break;
                                 } else if (!quests.contains(user.email)) {
-
-
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
                                     break;
                                 } else if (user.email.equals(quest.email) && !quest.quest.equals("NULL")) {
-
                                     questAfterUserTimestamp(user, quest);
                                     break;
                                 } else {
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
                                 }
                             } else {
-
                                 questAfterUserTimestamp(user, quest);
                                 // break;
                             }
-
                         }
-
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
                     }
                 });
-
     }
 
 
@@ -283,7 +290,8 @@ public class MapsActivity
     @Override
     public void onResume() {
         super.onResume();
-        autoUpdate = new Timer();
+        getUserIsHidden();
+        Timer autoUpdate = new Timer();
         autoUpdate.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -291,10 +299,11 @@ public class MapsActivity
                     @Override
                     public void run() {
                         generateMap();
+                        getUserIsHidden();
                     }
                 });
             }
-        }, 0, 30000);
+        }, 0, 15000);
     }
 
     @Override
@@ -314,11 +323,9 @@ public class MapsActivity
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                         Quest quest = snapshot.getValue(Quest.class);
                                         if (circle.getTag().toString().equals(quest.email)) {
-
                                             generateDrawer(quest.name, quest.email, quest.startDate, quest.endDate, quest.quest);
                                             chat_box.setText(quest.quest + "\n");
                                             showDrawer();
-
                                             break;
                                         }
                                     }
@@ -344,7 +351,7 @@ public class MapsActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_PERMISSIONS_REQUEST_COARSE_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -369,8 +376,6 @@ public class MapsActivity
     EditText msg_input;
 
     private void append_chat_conversation(DataSnapshot snapshot) {
-
-
         Iterator i = snapshot.getChildren().iterator();
         while (i.hasNext()) {
 
@@ -382,11 +387,9 @@ public class MapsActivity
         }
 
     }
-
-
-    Map<String, Object> chat = new HashMap<String, Object>();
-    Map<String, Object> map = new HashMap<String, Object>();
-    Map<String, Object> msg = new HashMap<String, Object>();
+    Map<String, Object> chat = new HashMap<>();
+    Map<String, Object> map = new HashMap<>();
+    Map<String, Object> msg = new HashMap<>();
 
     // final Map<String,Object> msg = new HashMap<String,Object>();
 
@@ -408,15 +411,27 @@ public class MapsActivity
         TextView timeLeft = (TextView) findViewById(R.id.timeLeft);
         msg_input = (EditText) findViewById(R.id.msg_input);
 
-
         final Button accept = (Button) findViewById(R.id.acceptButton);
         final Button sendButton = (Button) findViewById(R.id.msg_send);
 
-
         mRoot2 = FirebaseDatabase.getInstance().getReference().child("chat").child(name + description.substring(description.length() - 4, description.length()));
-
         chat_box.setMovementMethod(new ScrollingMovementMethod());
 
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //   chat_box.setText("");
+                // unique key
+                temp_key = mRoot2.push().getKey();
+                root.updateChildren(map);
+                mRoot2.updateChildren(chat);
+                mesage_root = mRoot2.child(temp_key);
+                msg.put("name", firebaseAuth.getCurrentUser().getEmail());
+                msg.put("msg", msg_input.getText().toString());
+                mesage_root.updateChildren(msg);
+                msg_input.setText("");
+            }
+        });
         /*if(!flag)
         {
             flag = true;
@@ -429,7 +444,6 @@ public class MapsActivity
         mRoot2.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
                 append_chat_conversation(dataSnapshot);
 /*
                 FirebaseDatabase.getInstance().getReference().child("quests")
@@ -460,22 +474,18 @@ public class MapsActivity
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 append_chat_conversation(dataSnapshot);
-
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
 
@@ -569,7 +579,6 @@ public class MapsActivity
 
             timeLeft.setText(stringifyNumber(timeLeftHours) + ":" + stringifyNumber(timeLeftMinutes));
         }
-
     }
 
     private void showDrawer() {
@@ -613,9 +622,7 @@ public class MapsActivity
 
 
     private void checkAcceptance() {
-
         final Button accept_button = (Button) findViewById(R.id.acceptButton);
-
         final TextView uName = (TextView) findViewById(R.id.uName);
 
         mDatabase.child("quests").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -628,7 +635,6 @@ public class MapsActivity
                     String offering_user = uName.getText().toString();
                     String email = (String) snapshot.child("email").getValue();
                     String key = snapshot.getKey();
-
 
                     if (email.equals(offering_user) && drawerUp) {
                         mDatabase.child("quests").child(key).child("accepted_by").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -644,7 +650,6 @@ public class MapsActivity
                                     }
                                 }
                             }
-
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
@@ -669,10 +674,10 @@ public class MapsActivity
         cal.setTimeZone(TimeZone.getTimeZone("UTC"));
         cal.setTimeInMillis(user.getgetTimestampLong());
 
-        String month = "";
-        String day = "";
-        String hour = "";
-        String minutes = "";
+        String month;
+        String day;
+        String hour;
+        String minutes;
 
         if (cal.get(Calendar.MINUTE) < 10) {
             minutes = "0" + cal.get(Calendar.MINUTE);
@@ -761,7 +766,6 @@ public class MapsActivity
                     Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-
                 ActivityCompat
                         .requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                                 MY_PERMISSIONS_REQUEST_COARSE_LOCATION);
@@ -787,18 +791,10 @@ public class MapsActivity
             checkoutData.put("time",ServerValue.TIMESTAMP);*/
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
-
-            Boolean isOnline = true;
-            User user = new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), isOnline);
-            user.setHidden(isHidden);
-            mDatabase.child("users").child(userId).setValue(user);
-            isOnline = false;
-            user = new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), isOnline);
-            user.setHidden(isHidden);
-            mDatabase.child("users").child(userId).onDisconnect().setValue(user);
-
-            //USER LOCATION MARKER
-            if (!user.isHidden) {
+            getUserIsHidden();
+            if (isHidden != null) {
+                mDatabase.child("users").child(userId).setValue(new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), true, isHidden));
+                mDatabase.child("users").child(userId).onDisconnect().setValue(new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), false, isHidden));
                 addMarker(lastKnownLocation, 10, Color.GREEN, "USER");
             }
             if (!startingCameraPosition) {
@@ -848,7 +844,7 @@ public class MapsActivity
             circle.setClickable(true);
             circle.setZIndex(1000 - size);
 
-            Circle circleOuter = mMap.addCircle(new CircleOptions()
+            mMap.addCircle(new CircleOptions()
                     .center(location)
                     .radius(20)
                     .strokeColor(Color.BLUE)
