@@ -14,16 +14,15 @@ import java.util.StringTokenizer;
 
 @IgnoreExtraProperties
 class Quest {
-    public String startDate;
-    public String endDate;
-    public String email;
-    public String name;
-    public String quest;
+    String startDate;
+    String endDate;
+    String email;
+    String name;
+    String quest;
 
     public Quest() {
 
     }
-
 
     public Quest(String startDate, String endDate, String email, String name, String quest) {
         this.startDate = startDate;

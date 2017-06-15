@@ -10,12 +10,12 @@ import com.google.firebase.database.ServerValue;
 @IgnoreExtraProperties
 public class User {
 
-    public String email;
-    public Double latitude;
-    public Double longitude;
-    public Boolean isOnline;
-    public Boolean isHidden;
-    public Long timestamp;
+    String email;
+    Double latitude;
+    Double longitude;
+    Boolean isOnline;
+    Boolean isHidden;
+    Long timestamp;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -42,11 +42,11 @@ public class User {
     }
 
     @Exclude
-    public Long getgetTimestampLong() {
+    Long getTimestampLong() {
         return timestamp;
     }
 
-    public void setTimestamp(Long timestamp) {
+    void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 

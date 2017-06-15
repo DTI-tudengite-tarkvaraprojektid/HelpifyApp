@@ -39,7 +39,6 @@ import java.util.Date;
 import java.util.Locale;
 
 
-
 /**
  * Created by Mariam on 12.06.2017.
  */
@@ -59,20 +58,11 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_userprofile);
         firebaseAuth = FirebaseAuth.getInstance();  //firebase object
         FirebaseUser user = firebaseAuth.getCurrentUser();
-
-
-
         buttonBack = (ImageButton) findViewById(R.id.buttonBack);
-
-
         buttonBack.setOnClickListener(this);
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
         String userId = firebaseAuth.getCurrentUser().getUid();
         String userEmail = firebaseAuth.getCurrentUser().getEmail();
-
-
-
     }
 
     @Override
@@ -81,10 +71,5 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
             finish();
             startActivity(new Intent(this, ProfileActivity.class));
         }
-        ;
-
     }
-
-    ;
-    }
-
+}

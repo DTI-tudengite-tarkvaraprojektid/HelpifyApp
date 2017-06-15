@@ -669,7 +669,7 @@ public class MapsActivity
     private void questAfterUserTimestamp(final User user, final Quest quest) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-        cal.setTimeInMillis(user.getgetTimestampLong());
+        cal.setTimeInMillis(user.getTimestampLong());
 
         String month;
         String day;

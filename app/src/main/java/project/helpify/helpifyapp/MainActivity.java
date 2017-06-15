@@ -2,7 +2,6 @@ package project.helpify.helpifyapp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button buttonRegister;
     private EditText editTextEmail;
     private EditText editTextPassword;
-    private TextView textViewSignin;
+    private TextView textViewSignIn;
     private TextView textResetPassword;
 
     private ProgressDialog progressDialog;
@@ -46,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
 
-        textViewSignin = (TextView) findViewById(R.id.textViewSignin);
+        textViewSignIn = (TextView) findViewById(R.id.textViewSignin);
         textResetPassword = (TextView) findViewById(R.id.textResetPassword);
 
         if (firebaseAuth.getCurrentUser() != null) {
@@ -56,14 +54,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         //Text in forms centered
-        EditText t = (EditText) findViewById(R.id.editTextEmail);
-        t.setGravity(Gravity.CENTER);
-        EditText p = (EditText) findViewById(R.id.editTextPassword);
-        p.setGravity(Gravity.CENTER);
+        editTextEmail.setGravity(Gravity.CENTER);
+        editTextPassword.setGravity(Gravity.CENTER);
 
 
         buttonRegister.setOnClickListener(this);
-        textViewSignin.setOnClickListener(this);
+        textViewSignIn.setOnClickListener(this);
         textResetPassword.setOnClickListener(this);
     }
 
@@ -114,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view == buttonRegister) {
             registerUser();
         }
-        if (view == textViewSignin) {
+        if (view == textViewSignIn) {
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }

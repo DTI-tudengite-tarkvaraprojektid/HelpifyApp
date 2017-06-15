@@ -3,10 +3,7 @@ package project.helpify.helpifyapp;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -23,13 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,18 +38,13 @@ import java.util.Locale;
 
 public class MyRequestsActivity extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth firebaseAuth;
-    private EditText editTextName;
     private Button buttonSaveUserData;
-    private EditText questDate;
     private DatabaseReference mDatabase;
     private ImageButton buttonBack;
-    private Button mSkills;
     private TextView mSelectedSkills;
     private String[] listSkills;
     private boolean[] checkedSkills;
     private ArrayList<Integer> mUserSkills = new ArrayList<>();
-    private int count;
-    private ProgressDialog progressBar;
     private TextView tv;
     private TextView editTextDate;
     private String date;
@@ -68,7 +55,6 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myrequests);
         firebaseAuth = FirebaseAuth.getInstance();  //firebase object
-        FirebaseUser user = firebaseAuth.getCurrentUser();
 
 
         //Text in forms centered
@@ -77,14 +63,14 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
         EditText p = (EditText) findViewById(R.id.editTextQuest);
         p.setGravity(Gravity.CENTER);
 
-        mSkills = (Button) findViewById(R.id.SkillsSelect);
+        Button mSkills = (Button) findViewById(R.id.SkillsSelect);
 
         listSkills = getResources().getStringArray(R.array.skills_list);
         checkedSkills = new boolean[listSkills.length];
 
         mSelectedSkills = (TextView) findViewById(R.id.SkillsView);
 
-        https://github.com/codingdemos/MultichoiceTutorial/blob/master/app/src/main/java/com/example/multichoicetutorial/MainActivity.java
+        // https://github.com/codingdemos/MultichoiceTutorial/blob/master/app/src/main/java/com/example/multichoicetutorial/MainActivity.java
         mSkills.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,9 +139,6 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
 
         buttonBack.setOnClickListener(this);
 
-        //**
-
-
 
         tv.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -204,70 +187,46 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
 
         //**
 
-
-
-
-
-
         buttonSaveUserData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v == buttonSaveUserData) {
                     EditText quest = (EditText) findViewById(R.id.editTextQuest);
                     EditText name = (EditText) findViewById((R.id.editTextName));
-
                     String user_quest = quest.getText().toString();
                     String user_name = name.getText().toString();
                     String time = tv.getText().toString();
                     String dateTime = date+" "+time;
-
-
                     String userId = firebaseAuth.getCurrentUser().getUid();
                     String userEmail = firebaseAuth.getCurrentUser().getEmail();
-
                     mDatabase = FirebaseDatabase.getInstance().getReference();
 
                     //http://tutorials.jenkov.com/java-internationalization/simpledateformat.html
                     String date_pattern = "dd/MM/yyyy HH:mm";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(date_pattern, Locale.US);
-
-
                     String current_date = simpleDateFormat.format(new Date());
-
-
                     try {
-
                         Date c_Date = simpleDateFormat.parse(current_date);
                         Date d_Date = simpleDateFormat.parse(current_date);
                         Date e_Date = simpleDateFormat.parse(dateTime);
-
-                        // System.out.println(c_Date.compareTo(d_Date));
                         System.out.println(e_Date);
 
-
+                        // System.out.println(c_Date.compareTo(d_Date));
                         //https://stackoverflow.com/questions/23360599/regular-expression-for-dd-mm-yyyy-hhmm
                         // boolean pattern_check = dateTime.matches("(0[1-9]|1\\d|2\\d|3[01])/(0[1-9]|1[12])/(20)\\d{2}\\s+(0[0-9]|1[0-9]|2[0-3])\\:(0[0-9]|[1-5][0-9])$");
-
-
-
                         if(e_Date.compareTo(d_Date)>0){
                             if(c_Date.compareTo(d_Date) == 0 || c_Date.compareTo(d_Date) < 0){
                                 if(e_Date.compareTo(d_Date) > 0){
                                     if(user_quest.equals("") || dateTime.equals("") || user_name.equals("")){
-
                                         Quest new_quest = new Quest("NULL","NULL", userEmail, "NULL", "NULL");
                                         mDatabase.child("quests").child(userId).setValue(new_quest);
                                         Toast.makeText(MyRequestsActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
-
                                     } else {
-
                                         if(mUserSkills.size() == 0){
                                             Toast.makeText(MyRequestsActivity.this, "At least one skill must be chosen", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
-
                                         Quest new_user_quest = new Quest(current_date,dateTime,userEmail,user_name,user_quest);
-
                                         mDatabase.child("quests").child(userId).setValue(new_user_quest);
                                         for(int i = 0; i < mUserSkills.size(); i++){
                                             mDatabase.child("quests").child(userId).child("skill"+i).setValue(listSkills[mUserSkills.get(i)]);
@@ -276,29 +235,20 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                                         Toast.makeText(MyRequestsActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
 
                                     }
-
                                 }
                             }
-
                         } else {
                             Toast.makeText(MyRequestsActivity.this, "Quest must expire in the future.", Toast.LENGTH_SHORT).show();
                             System.out.println(dateTime);
                         }
-
                     } catch (ParseException e) {
                         e.printStackTrace();
                         Toast.makeText(MyRequestsActivity.this, "Wrong date format.", Toast.LENGTH_SHORT).show();
                         System.out.println();
                     }
-
                 }
-
             }
         });
-
-
-
-
     }
 
     @Override
@@ -307,7 +257,5 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
             finish();
             startActivity(new Intent(this, ProfileActivity.class));
         }
-        ;
-
-    };
+    }
 }
