@@ -22,8 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth firebaseAuth;
-    private TextView textViewUserEmail;
-    private Button buttonLogout;
+    private Button textViewUserEmail;
+    private TextView buttonLogout;
     private Button buttonProfile;
 
 
@@ -36,14 +36,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         openGoogleMapsLayout();
         firebaseAuth = FirebaseAuth.getInstance();  //firebase object
 
-        textViewUserEmail = (TextView) findViewById(R.id.textViewUserEmail);
-        buttonLogout = (Button) findViewById(R.id.buttonLogout);
+        textViewUserEmail = (Button) findViewById(R.id.textViewUserEmail);
+        buttonLogout = (TextView) findViewById(R.id.buttonLogout);
         buttonProfile = (Button) findViewById(R.id.buttonProfile);
 
 
 
         buttonLogout.setOnClickListener(this);
         buttonProfile.setOnClickListener(this);
+        textViewUserEmail.setOnClickListener(this);
 
 
         //Check if user is not signed in
@@ -94,9 +95,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             startActivity(new Intent(this, LoginActivity.class));
 
         }
-        if(view == buttonProfile){
+        if (view==textViewUserEmail){
             finish();
             startActivity(new Intent(this, UserProfileActivity.class));
+
+        }
+        if(view == buttonProfile){
+            finish();
+            startActivity(new Intent(this, MyRequestsActivity.class));
         }
 
 
