@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -184,12 +185,50 @@ public class MapsActivity
                             }
                             hasUserTasks(user);
                             hasUserMessages(user);
+                            hasUserQuests(user);
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         setMessage(true, databaseError.toString());
+                    }
+                });
+    }
+
+    private void hasUserQuests(final User user){
+        FirebaseDatabase.getInstance().getReference().child("quests")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
+                            String key = snapshot.getKey();
+
+                            FirebaseDatabase.getInstance().getReference().child("quests").child(key)
+                                    .child("accepted_by").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for(DataSnapshot snapshot1 : dataSnapshot.getChildren()){
+                                        String data = (String) snapshot1.getValue();
+                                        if(data != null){
+                                            ImageButton questNotifier = (ImageButton) findViewById(R.id.questNotifier);
+                                            questNotifier.setVisibility(View.VISIBLE);
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
                     }
                 });
     }
@@ -640,7 +679,7 @@ public class MapsActivity
                                 for (DataSnapshot datasnapshot : dataSnapshot.getChildren()) {
                                     String data = datasnapshot.getKey();
                                     String current_user = firebaseAuth.getCurrentUser().getUid();
-                                    if (current_user.equals(data)) {
+                                    if(data.equals(current_user)){
                                         accept_button.setVisibility(View.INVISIBLE);
                                     } else {
                                         accept_button.setVisibility(View.VISIBLE);

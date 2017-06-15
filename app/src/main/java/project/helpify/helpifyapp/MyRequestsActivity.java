@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 
@@ -176,7 +177,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                         // TODO Auto-generated method stub
                     /*      Your code   to get date and time    */
                         selectedmonth = selectedmonth + 1;
-                        editTextDate.setText(selectedday + "/" + selectedmonth + "/" + selectedyear);
+                        editTextDate.setText(selectedday + "/" + "0" + selectedmonth + "/" + selectedyear);
                         date = selectedday + "/" + selectedmonth + "/" + selectedyear;
                     }
                 }, mYear, mMonth, mDay);
