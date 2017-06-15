@@ -87,6 +87,8 @@ public class MapsActivity
     private DataSnapshot dataSnapshot;
     private String chat_msg;
     private String chat_user_name;
+    private String chat_msg_receiver;
+    private boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,11 +166,50 @@ public class MapsActivity
                                 user.isHidden = false;
                             }
                             hasUserTasks(user);
+                            hasUserMessages(user);
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+    }
+
+    private void hasUserMessages(final User user) {
+        FirebaseDatabase.getInstance().getReference().child("chat")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            String roomName = snapshot.getKey();
+
+                            FirebaseDatabase.getInstance().getReference().child("chat").child(roomName)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            for (DataSnapshot snapshot1 : dataSnapshot.getChildren()) {
+
+                                                if (snapshot1.child("receiver").getValue().equals(user.email) && firebaseAuth.getCurrentUser().getEmail().equals(snapshot1.child("receiver").getValue())) {
+                                                    ImageButton messageIcon = (ImageButton) findViewById(R.id.messageRecieve);
+                                                    messageIcon.setVisibility(View.VISIBLE);
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
                     }
                 });
     }
@@ -188,7 +229,7 @@ public class MapsActivity
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Quest quest = snapshot.getValue(Quest.class);
 
-                            if (user.isOnline && user.isHidden != true) {
+                            if (user.isOnline && !user.isHidden) {
 
 
                                 // IF USER HAS ENTERED QUEST, THEN HIS MARKER WILL BE RED, OTHERWISE BLUE
@@ -335,7 +376,7 @@ public class MapsActivity
 
             chat_msg = (String) ((DataSnapshot) i.next()).getValue();
             chat_user_name = (String) ((DataSnapshot) i.next()).getValue();
-
+            chat_msg_receiver = (String) (((DataSnapshot) i.next()).getValue());
             chat_box.append(chat_user_name + " : " + chat_msg + "\n");
 
         }
@@ -376,34 +417,42 @@ public class MapsActivity
 
         chat_box.setMovementMethod(new ScrollingMovementMethod());
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //   chat_box.setText("");
-
-
-                // unique key
-                temp_key = mRoot2.push().getKey();
-                root.updateChildren(map);
-                mRoot2.updateChildren(chat);
-
-                mesage_root = mRoot2.child(temp_key);
-
-
-                msg.put("name", firebaseAuth.getCurrentUser().getEmail());
-                msg.put("msg", msg_input.getText().toString());
-
-                mesage_root.updateChildren(msg);
-                msg_input.setText("");
-
-            }
-        });
+        /*if(!flag)
+        {
+            flag = true;
+        }
+        else{
+            return;
+        }
+*/
 
         mRoot2.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                 append_chat_conversation(dataSnapshot);
+/*
+                FirebaseDatabase.getInstance().getReference().child("quests")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    Quest quest = snapshot.getValue(Quest.class);
+                                    if (circle.getTag().toString().equals(quest.email)) {
+
+                                        generateDrawer(quest.name, quest.email, quest.startDate, quest.endDate, quest.quest);
+                                        chat_box.setText(quest.quest + "\n");
+                                        showDrawer();
+
+                                        break;
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });*/
 
             }
 
@@ -411,6 +460,7 @@ public class MapsActivity
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 append_chat_conversation(dataSnapshot);
+
             }
 
             @Override
@@ -428,6 +478,33 @@ public class MapsActivity
 
             }
         });
+
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+
+
+            @Override
+            public void onClick(View v) {
+                //   chat_box.setText("");
+
+
+                // unique key
+                temp_key = mRoot2.push().getKey();
+                root.updateChildren(map);
+                mRoot2.updateChildren(chat);
+
+                mesage_root = mRoot2.child(temp_key);
+
+
+                msg.put("name", firebaseAuth.getCurrentUser().getEmail());
+                msg.put("msg", msg_input.getText().toString());
+                msg.put("receiver", username);
+                mesage_root.updateChildren(msg);
+                msg_input.setText("");
+
+            }
+        });
+
 
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
