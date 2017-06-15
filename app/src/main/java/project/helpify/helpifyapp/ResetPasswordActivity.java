@@ -40,7 +40,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
-                if(v == btnBack){
+                if (v == btnBack) {
                     finish();
                     Intent i = new Intent(ResetPasswordActivity.this, MainActivity.class);
                     startActivity(i);

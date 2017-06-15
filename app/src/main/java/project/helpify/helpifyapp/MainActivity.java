@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseAuth firebaseAuth; //Firebase object
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,17 +41,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         progressDialog = new ProgressDialog(this);
 
-        buttonRegister =(Button)findViewById(R.id.buttonRegister);
+        buttonRegister = (Button) findViewById(R.id.buttonRegister);
 
-        editTextEmail  = (EditText) findViewById(R.id.editTextEmail);
-        editTextPassword = (EditText )findViewById(R.id.editTextPassword);
+        editTextEmail = (EditText) findViewById(R.id.editTextEmail);
+        editTextPassword = (EditText) findViewById(R.id.editTextPassword);
 
-        textViewSignin = (TextView)findViewById(R.id.textViewSignin);
-        textResetPassword = (TextView)findViewById(R.id.textResetPassword);
+        textViewSignin = (TextView) findViewById(R.id.textViewSignin);
+        textResetPassword = (TextView) findViewById(R.id.textResetPassword);
 
-        if(firebaseAuth.getCurrentUser() != null){
+        if (firebaseAuth.getCurrentUser() != null) {
             finish();
-            startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
+            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
         }
 
 
@@ -68,19 +67,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textResetPassword.setOnClickListener(this);
     }
 
-    private void registerUser(){
+    private void registerUser() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(email)){
+        if (TextUtils.isEmpty(email)) {
             //email is empty
-            Toast.makeText(this,"Please enter email",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter email", Toast.LENGTH_SHORT).show();
             //Stops the function from excecuting further.
             return;
         }
-        if (TextUtils.isEmpty(password)){
+        if (TextUtils.isEmpty(password)) {
             //Same for password
-            Toast.makeText(this,"Please enter a password",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter a password", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -89,20 +88,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressDialog.show();
 
         // USER CREATION
-        firebaseAuth.createUserWithEmailAndPassword(email,password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>(){
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task){
+                    public void onComplete(@NonNull Task<AuthResult> task) {
                         //CHECKING IF REGISTRATION WAS SUCCESSFUL
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             //finish current activity and start profile
                             finish();
-                            startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
-                            Toast.makeText(MainActivity.this,"Siin peaks suunama", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                            Toast.makeText(MainActivity.this, "Siin peaks suunama", Toast.LENGTH_SHORT).show();
 
 
-                        }else{
-                            Toast.makeText(MainActivity.this,"Something went wrong, try again :(", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Something went wrong, try again :(", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -112,14 +111,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if(view == buttonRegister){
+        if (view == buttonRegister) {
             registerUser();
         }
-        if(view == textViewSignin){
+        if (view == textViewSignin) {
             finish();
-            startActivity(new Intent(this,LoginActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
         }
-        if(view == textResetPassword){
+        if (view == textResetPassword) {
             finish();
             startActivity(new Intent(this, ResetPasswordActivity.class));
         }

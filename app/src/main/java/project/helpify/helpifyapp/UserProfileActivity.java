@@ -76,10 +76,15 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     @Override
-    public void onClick (View v) {
+    public void onClick(View v) {
         if (v == buttonBack) {
             finish();
             startActivity(new Intent(this, ProfileActivity.class));
         }
+        ;
+
+    }
+
+    ;
     }
 }

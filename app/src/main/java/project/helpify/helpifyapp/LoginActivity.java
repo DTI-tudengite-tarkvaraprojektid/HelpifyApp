@@ -38,7 +38,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ProgressDialog progressDialog;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +47,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         buttonSignIn = (Button) findViewById(R.id.buttonSignIn);
         textViewSignup = (TextView) findViewById(R.id.textViewSignup);
-        textResetPassword =(TextView)findViewById(R.id.textResetPassword);
+        textResetPassword = (TextView) findViewById(R.id.textResetPassword);
 
         buttonSignIn.setOnClickListener(this);
         textViewSignup.setOnClickListener(this);
@@ -62,9 +61,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         textViewSignup.setText(content);
 
         //Checking if user is already logged in
-        if(firebaseAuth.getCurrentUser() != null){
+        if (firebaseAuth.getCurrentUser() != null) {
             finish();
-            startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
+            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
         }
 
         //Text in forms centered
@@ -75,41 +74,42 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private void userLogin(){
+    private void userLogin() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(email)){
+        if (TextUtils.isEmpty(email)) {
             //email is empty
-            Toast.makeText(this,"Please enter email",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter email", Toast.LENGTH_SHORT).show();
             //Stops the function from excecuting further.
             return;
         }
-        if (TextUtils.isEmpty(password)){
+        if (TextUtils.isEmpty(password)) {
             //Same for password
-            Toast.makeText(this,"Please enter a password",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter a password", Toast.LENGTH_SHORT).show();
             return;
         }
         progressDialog.setMessage("Logging in, please wait...");
         progressDialog.show();
 
-        firebaseAuth.signInWithEmailAndPassword(email,password)
-                .addOnCompleteListener(this,new OnCompleteListener<AuthResult>(){
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task){
+                    public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
 
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             //start the profile activity
 
                             //  if login was successful then we write to the database
 
                             finish();
-                            startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
+                            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                         }
                     }
                 });
     }
+
     //AAAA
     //AAAA AAAA
     //AAAA AAAA AAAA
@@ -117,16 +117,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     //AAAA
     @Override
     public void onClick(View view) {
-        if (view == buttonSignIn){
+        if (view == buttonSignIn) {
             userLogin();
         }
 
-        if(view == textViewSignup){
+        if (view == textViewSignup) {
             //If user doesnt't have an excisting account
             finish(); // Close this activity
-            startActivity(new Intent(this,MainActivity.class));//Start activity with registration form.
+            startActivity(new Intent(this, MainActivity.class));//Start activity with registration form.
         }
-        if(view == textResetPassword){
+        if (view == textResetPassword) {
             //Password reset page opens here
             finish();
             startActivity(new Intent(this, ResetPasswordActivity.class));
