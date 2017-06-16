@@ -134,7 +134,6 @@ public class MapsActivity
         if(newUserPref != null && !newUserCreated){
             isHidden = false;
             newUserCreated = true;
-
         }
         getUserIsHidden();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -627,7 +626,7 @@ public class MapsActivity
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                //append_chat_conversation(dataSnapshot);
+                append_chat_conversation(dataSnapshot);
             }
 
             @Override
@@ -645,7 +644,6 @@ public class MapsActivity
 
 
         sendButton.setOnClickListener(new View.OnClickListener() {
-
 
             @Override
             public void onClick(View v) {
