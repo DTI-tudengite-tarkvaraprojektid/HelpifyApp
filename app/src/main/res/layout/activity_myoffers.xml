@@ -31,7 +31,7 @@
             android:layout_gravity="center"
             android:layout_height="150dp"
             android:layout_marginBottom="5dp"
-            android:src="@drawable/logo2"
+            android:src="@mipmap/logo"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="8dp">
 

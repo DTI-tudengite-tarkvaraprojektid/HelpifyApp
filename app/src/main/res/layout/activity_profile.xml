@@ -74,7 +74,7 @@
             android:layout_marginTop="0dp"
             android:layout_weight="0.46"
             android:contentDescription="ProfileImage"
-            android:src="@drawable/logo2" />
+            android:src="@mipmap/logo" />
 
 
         <Button
