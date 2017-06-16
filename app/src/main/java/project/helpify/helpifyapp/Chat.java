@@ -8,29 +8,19 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class Chat {
 
- //  public String chatroom;
-   public String user;
-   public String message;
-   public String reciever;
-
-
-  /*  public String getChatroom() {
-        return chatroom;
-    }
-
-    public void setChatroom(String chatroom) {
-        this.chatroom = chatroom;
-    }*/
+    String user;
+    String message;
+    String receiver;
 
     public Chat() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
-    public Chat(String message,String user, String reciever) {
+
+    public Chat(String message, String user, String receiver) {
         this.user = user;
         this.message = message;
-        this.reciever = reciever;
+        this.receiver = receiver;
     }
-
 
 
 }
