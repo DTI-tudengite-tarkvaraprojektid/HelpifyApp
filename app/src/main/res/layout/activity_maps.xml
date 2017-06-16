@@ -166,12 +166,11 @@
                 android:textSize="18sp"
                 tools:text="timeLeft"
                 android:padding="5dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_alignBaseline="@+id/timeLeftText"
-                android:layout_alignBottom="@+id/timeLeftText"
-                android:layout_toRightOf="@+id/timeLeftText"
-                android:layout_toEndOf="@+id/timeLeftText" />
+                android:layout_above="@+id/uName"
+                android:layout_toRightOf="@+id/missionTime"
+                android:layout_toEndOf="@+id/missionTime"
+                android:layout_marginLeft="79dp"
+                android:layout_marginStart="79dp" />
 
             <TextView
                 android:id="@+id/uName"

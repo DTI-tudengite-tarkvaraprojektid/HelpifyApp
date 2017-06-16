@@ -1,6 +1,7 @@
 package project.helpify.helpifyapp;
 
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -68,6 +69,7 @@ public class MapsActivity
     private Boolean startingCameraPosition = false;
     private Boolean drawerUp = false;
     public Boolean isHidden;
+    public Boolean newUserCreated = false;
     int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 0x00111;
     // FIREBASE
 
@@ -111,6 +113,13 @@ public class MapsActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        SharedPreferences pref =
+                getApplicationContext().getSharedPreferences("NewUserPrefs", MODE_PRIVATE);
+        String newUserPref = pref.getString("newUser", null);
+        if(newUserPref != null && !newUserCreated){
+            isHidden = false;
+            newUserCreated = true;
+        }
         getUserIsHidden();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -654,6 +663,8 @@ public class MapsActivity
         Long timeLeftMilliseconds = endDate.getTimeInMillis() - now.getTimeInMillis();
         if (timeLeftMilliseconds >= 6.048e+8) {
             timeLeft.setText("More than a week");
+        } else if (timeLeftMilliseconds >= 8.64e+7) {
+            timeLeft.setText("More than a day");
         } else {
             Long timeLeftHours = timeLeftMilliseconds / (60 * 60 * 1000) % 24;
             Long timeLeftMinutes = timeLeftMilliseconds / (60 * 1000) % 60;
@@ -897,14 +908,12 @@ public class MapsActivity
             message.setVisibility(View.VISIBLE);
         } else {
             message.setVisibility(View.INVISIBLE);
-
         }
     }
 
     private void setMessage(boolean visibility, String text) {
         final TextView message = (TextView) findViewById(R.id.message);
         message.setText(text);
-
         if (visibility) {
             message.setVisibility(View.VISIBLE);
         } else {
