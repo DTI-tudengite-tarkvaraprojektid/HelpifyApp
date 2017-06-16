@@ -169,7 +169,7 @@ public class MapsActivity
             missionTime.setTypeface(custom_font_slim);
 
         }catch(Exception exc){
-            Toast.makeText(MapsActivity.this, "Couldn't load fonts", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MapsActivity.this, " ", Toast.LENGTH_SHORT).show();
         }
 
 

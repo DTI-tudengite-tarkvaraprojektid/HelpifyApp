@@ -76,7 +76,6 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
         TextView fonttime = (TextView) findViewById(R.id.tv);
         Button SkillsSelect = (Button) findViewById(R.id.SkillsSelect);
         Button buttonSaveUserDatas = (Button) findViewById(R.id.buttonSaveUserData);
-        TextView SkillsView = (TextView) findViewById(R.id.SkillsView);
         Button SkillsSelectButton = (Button) findViewById(R.id.SkillsSelect);
 
         //FONTS
@@ -95,14 +94,13 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
             fonttime.setTypeface(custom_font_slim);
             SkillsSelect.setTypeface(custom_font_bold);
             buttonSaveUserDatas.setTypeface(custom_font_bold);
-            SkillsView.setTypeface(custom_font);
             SkillsSelectButton.setTypeface(custom_font_bold);
 
 
 
 
         }catch(Exception exc){
-            Toast.makeText(MyRequestsActivity.this, "Couldn't load fonts", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyRequestsActivity.this, " ", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -111,7 +109,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
         listSkills = getResources().getStringArray(R.array.skills_list);
         checkedSkills = new boolean[listSkills.length];
 
-        mSelectedSkills = (TextView) findViewById(R.id.SkillsView);
+
 
         // https://github.com/codingdemos/MultichoiceTutorial/blob/master/app/src/main/java/com/example/multichoicetutorial/MainActivity.java
         mSkills.setOnClickListener(new View.OnClickListener() {
@@ -143,7 +141,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                             }
                         }
 
-                        mSelectedSkills.setText(skill);
+
                     }
                 });
 

@@ -3,6 +3,7 @@ package project.helpify.helpifyapp;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,10 +42,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressDialog = new ProgressDialog(this);
 
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
-
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
-
         textViewSignIn = (TextView) findViewById(R.id.textViewSignin);
         textResetPassword = (TextView) findViewById(R.id.textResetPassword);
 
@@ -58,6 +57,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editTextEmail.setGravity(Gravity.CENTER);
         editTextPassword.setGravity(Gravity.CENTER);
 
+
+
+        //FONTS
+        try{
+
+            Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Nirmala.ttf");
+            Typeface custom_font_bold = Typeface.createFromAsset(getAssets(),"fonts/NirmalaB.ttf");
+            Typeface custom_font_slim = Typeface.createFromAsset(getAssets(),"fonts/NirmalaS.ttf");
+
+
+
+            editTextEmail.setTypeface(custom_font_slim);
+            editTextPassword.setTypeface(custom_font_slim);
+            buttonRegister.setTypeface(custom_font_bold);
+            textViewSignIn.setTypeface(custom_font);
+            textResetPassword.setTypeface(custom_font);
+            textResetPassword.setTypeface(custom_font);
+
+
+
+        }catch(Exception exc){
+            System.out.println("Fontidega jama ");
+        }
 
         buttonRegister.setOnClickListener(this);
         textViewSignIn.setOnClickListener(this);

@@ -8,24 +8,27 @@
     android:background="@color/colorPrimary"
     tools:context="project.helpify.helpifyapp.MyRequestsActivity">
 
+
     <LinearLayout
-        android:layout_width="334dp"
-        android:layout_height="441dp"
+        android:id="@+id/linearLayout6"
+        android:layout_width="301dp"
+        android:layout_height="156dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:orientation="vertical"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="0.496"
-        android:id="@+id/linearLayout6">
+        app:layout_constraintVertical_bias="0.017"
+        android:weightSum="1"
+        app:layout_constraintHorizontal_bias="0.494">
 
 
         <TextView
@@ -37,17 +40,16 @@
             android:text="HELP REQUEST"
             android:textAlignment="center"
             android:textColor="@color/red"
-            android:textSize="25dp" />
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/textUserName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_margin="10dp"
+            android:layout_margin="0dp"
             android:ems="10"
             android:text="@string/textUserName"
-            android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="15sp" />
 
@@ -55,9 +57,10 @@
             android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:layout_marginTop="0dp"
-            android:background="@drawable/forms_shape"
-            android:hint="Enter your name"
+            android:background="@drawable/forms_shape_inner"
+            android:hint="Enter quest title"
             android:inputType="text"
             android:textColor="@android:color/black"
             android:textColorHint="@color/darkText" />
@@ -65,33 +68,82 @@
         <TextView
             android:id="@+id/textUserQuest"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_height="20dp"
+            android:layout_margin="0dp"
             android:layout_marginTop="20dp"
             android:ems="10"
             android:text="@string/textUserQuest"
-            android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="15sp" />
 
         <EditText
             android:id="@+id/editTextQuest"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginBottom="10dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="0dp"
             android:layout_marginTop="0dp"
             android:height="15sp"
-            android:background="@drawable/forms_shape"
+            android:background="@drawable/forms_shape_inner"
             android:ellipsize="start"
             android:hint="Enter a quest"
             android:inputType="textEmailAddress"
             android:textColor="@android:color/black"
             android:textColorHint="@color/darkText" />
 
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="322dp"
+        android:layout_height="54dp"
+        android:layout_marginBottom="84dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <ImageButton
+            android:id="@+id/buttonBack"
+            android:layout_width="320dp"
+            android:layout_height="26dp"
+            android:layout_marginBottom="117dp"
+            android:background="@drawable/mybutton"
+            android:src="@drawable/ic_back"
+            android:textColor="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="321dp"
+        android:layout_height="196dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="18dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
+
         <TextView
             android:id="@+id/QuestStartDate"
-            android:layout_width="match_parent"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/QuestStartDateTime"
+            android:layout_alignBottom="@+id/QuestStartDateTime"
+            android:layout_alignLeft="@+id/editTextDate"
+            android:layout_alignStart="@+id/editTextDate"
             android:layout_gravity="center_vertical"
             android:ems="10"
             android:text="@string/textQuestExpiry"
@@ -101,18 +153,25 @@
 
         <TextView
             android:id="@+id/editTextDate"
-            android:layout_width="match_parent"
-            android:layout_height="20sp"
-            android:layout_margin="10dp"
-            android:background="@drawable/forms_shape"
+            android:layout_width="120dp"
+            android:layout_height="35sp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/QuestStartDate"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/forms_shape_inner"
             android:ems="10"
             android:hint="Choose date"
             android:inputType="time" />
 
         <TextView
             android:id="@+id/QuestStartDateTime"
-            android:layout_width="match_parent"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/tv"
             android:layout_gravity="center_vertical"
             android:ems="10"
             android:text="@string/textQuestExpiryTime"
@@ -122,10 +181,14 @@
 
         <TextView
             android:id="@+id/tv"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/forms_shape"
+            android:layout_width="120dp"
+            android:layout_height="35sp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/QuestStartDateTime"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/forms_shape_inner"
             android:ems="10"
             android:hint="Choose time"
             android:inputType="time" />
@@ -134,10 +197,13 @@
             android:id="@+id/SkillsSelect"
             android:layout_width="match_parent"
             android:layout_height="65dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:background="@drawable/mybutton"
             android:text="Choose skills"
-            android:textSize="20dp"
             android:textColor="@android:color/white"
+            android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
@@ -147,35 +213,37 @@
             android:id="@+id/buttonSaveUserData"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:background="@drawable/mybutton3"
             android:text="activate request"
-            android:textSize="20dp"
             android:textColor="@android:color/white"
+            android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            tools:layout_editor_absoluteY="455dp" />
+            tools:layout_editor_absoluteY="455dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
 
-
-
-    </LinearLayout>
-
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout3"
-        android:layout_width="338dp"
-        android:layout_height="17dp"
-        android:layout_marginLeft="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginStart="16dp"
+        android:layout_width="306dp"
+        android:layout_height="34dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="16dp"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+        app:layout_constraintHorizontal_bias="0.425"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+        app:layout_constraintVertical_bias="0.0">
 
         <View
             android:layout_width="130dp"
@@ -203,37 +271,5 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="337dp"
-        android:layout_height="47dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="0.234">
-
-        <ImageButton
-            android:id="@+id/buttonBack"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/mybutton"
-            android:src="@drawable/ic_back"
-            android:textColor="@android:color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            tools:layout_editor_absoluteY="455dp" />
-
-
-    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

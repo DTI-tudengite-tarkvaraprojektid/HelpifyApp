@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
         }catch(Exception exc){
-            Toast.makeText(LoginActivity.this, "Couldn't load fonts", Toast.LENGTH_SHORT).show();
+             System.out.println("Fontidega jama ");
         }
 
 

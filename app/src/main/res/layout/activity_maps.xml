@@ -93,14 +93,14 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="229dp"
         android:background="@drawable/mybuttonblack"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/missionName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:paddingTop="10dp"
+            android:paddingTop="5dp"
             android:text="missionName"
             android:textColor="@color/colorAccent"
             android:textSize="24sp" />
@@ -124,7 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:padding="10dp"
+            android:padding="0dp"
             android:textSize="20dp"
             android:text="Close"
             android:textColor="@android:color/white"
@@ -189,15 +189,17 @@
                 android:id="@+id/missionTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
                 android:layout_column="0"
                 android:layout_row="1"
                 android:text="1:00PM - 4:30PM"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
-                tools:text="1:00PM - 4:30PM" />
+                tools:text="1:00PM - 4:30PM"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp" />
         </RelativeLayout>
 
         <RelativeLayout
