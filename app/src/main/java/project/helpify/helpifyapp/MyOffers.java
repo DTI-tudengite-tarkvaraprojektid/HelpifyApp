@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -44,7 +45,7 @@ public class MyOffers extends AppCompatActivity implements View.OnClickListener 
                 .child("accepted_by").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     String user = (String) dataSnapshot.getValue();
                     users.add(user);
                 } else {
@@ -59,7 +60,12 @@ public class MyOffers extends AppCompatActivity implements View.OnClickListener 
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                if (dataSnapshot.exists()) {
+                    String user_removed = (String) dataSnapshot.getValue();
+                    users.remove(user_removed);
+                } else {
+                    Toast.makeText(MyOffers.this, "An error occurred", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -75,6 +81,15 @@ public class MyOffers extends AppCompatActivity implements View.OnClickListener 
 
         buttonBack = (ImageButton) findViewById(R.id.buttonBack);
         buttonBack.setOnClickListener(this);
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int itempos = position;
+                String value = (String) mListView.getItemAtPosition(itempos);
+                Toast.makeText(MyOffers.this, "" + value , Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 

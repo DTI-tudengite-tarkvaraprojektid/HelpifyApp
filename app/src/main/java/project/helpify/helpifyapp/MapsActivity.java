@@ -1,12 +1,14 @@
 package project.helpify.helpifyapp;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.media.Image;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -261,6 +263,17 @@ public class MapsActivity
             @Override
             public void onClick(View v) {
                 hideDrawer();
+            }
+        });
+
+        final ImageButton questNotifier = (ImageButton) findViewById(R.id.questNotifier);
+        questNotifier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v == questNotifier){
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), MyOffers.class));
+                }
             }
         });
 
