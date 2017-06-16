@@ -171,6 +171,37 @@ public class MapsActivity
             }
         });
 
+
+        ImageButton messageIcon = (ImageButton) findViewById(R.id.messageRecieve);
+
+        messageIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseDatabase.getInstance().getReference().child("quests")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    Quest quest = snapshot.getValue(Quest.class);
+                                    if (firebaseAuth.getCurrentUser().getEmail().equals(quest.email)) {
+
+                                        generateDrawer(quest.name, quest.email, quest.startDate, quest.endDate, quest.quest);
+                                        chat_box.setText(quest.quest + "\n");
+                                        showDrawer();
+
+                                        break;
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        });
+            }
+        });
+
+
     }
 
     private void generateUserMarkers() {

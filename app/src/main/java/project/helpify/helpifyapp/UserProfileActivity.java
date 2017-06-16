@@ -39,18 +39,14 @@ import java.util.Date;
 import java.util.Locale;
 
 
-
 /**
  * Created by Mariam on 12.06.2017.
  */
 
 public class UserProfileActivity extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth firebaseAuth;
-    private EditText editTextName;
-    private Button buttonSaveUserData;
     private DatabaseReference mDatabase;
     private ImageButton buttonBack;
-    private ProgressDialog progressBar;
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -61,17 +57,13 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
 
-
         buttonBack = (ImageButton) findViewById(R.id.buttonBack);
-
 
         buttonBack.setOnClickListener(this);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         String userId = firebaseAuth.getCurrentUser().getUid();
         String userEmail = firebaseAuth.getCurrentUser().getEmail();
-
-
 
     }
 
@@ -80,4 +72,8 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         if (v == buttonBack) {
             finish();
             startActivity(new Intent(this, ProfileActivity.class));
-        }}}
+        }
+    }
+
+}
+
