@@ -2,15 +2,18 @@ package project.helpify.helpifyapp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +32,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText editTextPassword;
     private TextView textViewSignup;
     private TextView textResetPassword;
+    private CheckBox checkBox;
+    private TextView textViewOrLogIn;
+    private TextView QuestStartDateTime;
+    private TextView QuestStartDate;
 
     private FirebaseAuth firebaseAuth;
 
@@ -46,6 +53,38 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         buttonSignIn = (Button) findViewById(R.id.buttonSignIn);
         textViewSignup = (TextView) findViewById(R.id.textViewSignup);
         textResetPassword = (TextView) findViewById(R.id.textResetPassword);
+        checkBox = (CheckBox) findViewById(R.id.checkBox);
+        textViewOrLogIn = (TextView) findViewById(R.id.textViewOrLogIn);
+        QuestStartDateTime = (TextView) findViewById(R.id.QuestStartDateTime);
+        QuestStartDate = (TextView) findViewById(R.id.QuestStartDate);
+
+        //FONTS
+        try{
+
+            Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Nirmala.ttf");
+            Typeface custom_font_bold = Typeface.createFromAsset(getAssets(),"fonts/NirmalaB.ttf");
+            Typeface custom_font_slim = Typeface.createFromAsset(getAssets(),"fonts/NirmalaS.ttf");
+
+
+
+            editTextEmail.setTypeface(custom_font_slim);
+            editTextPassword.setTypeface(custom_font_slim);
+            buttonSignIn.setTypeface(custom_font_bold);
+            textViewSignup.setTypeface(custom_font);
+            textResetPassword.setTypeface(custom_font);
+            checkBox.setTypeface(custom_font);
+            textViewOrLogIn.setTypeface(custom_font);
+            QuestStartDate.setTypeface(custom_font);
+            QuestStartDateTime.setTypeface(custom_font);
+
+
+        }catch(Exception exc){
+            Toast.makeText(LoginActivity.this, "Couldn't load fonts", Toast.LENGTH_SHORT).show();
+        }
+
+
+
+
 
         buttonSignIn.setOnClickListener(this);
         textViewSignup.setOnClickListener(this);

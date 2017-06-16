@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Helpify</string>
     <string name="title_activity_maps">Map</string>
-    <string name="textUserName">*Enter name for other users to see*</string>
-    <string name="textUserQuest">*Enter a quest*</string>
-    <string name="textQuestExpiry">*Set quest expiry date and time*</string>
+    <string name="textUserName">Caption</string>
+    <string name="textUserQuest">Description</string>
+    <string name="textQuestExpiry">Date</string>
+    <string name="textQuestExpiryTime">Time</string>
     <string name="action_sign_in_short">Register</string>
     <string name="email">Email</string>
     <string name="minimum_password">Password too short, enter minimum 6 characters!</string>

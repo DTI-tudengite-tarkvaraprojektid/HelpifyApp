@@ -9,20 +9,22 @@
     tools:context="project.helpify.helpifyapp.MyRequestsActivity">
 
     <LinearLayout
-        android:layout_width="312dp"
-        android:layout_height="514dp"
+        android:layout_width="334dp"
+        android:layout_height="441dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:orientation="vertical"
-        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="8dp"
+        app:layout_constraintVertical_bias="0.496">
 
 
         <TextView
@@ -31,10 +33,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:ems="10"
-            android:text="Change your data"
+            android:text="HELP REQUEST"
             android:textAlignment="center"
-            android:textColor="@color/colorAccent"
-            android:textSize="30dp" />
+            android:textColor="@color/red"
+            android:textSize="25dp" />
 
         <TextView
             android:id="@+id/textUserName"
@@ -57,7 +59,7 @@
             android:hint="Enter your name"
             android:inputType="text"
             android:textColor="@android:color/black"
-            android:textColorHint="@color/input_register_hint" />
+            android:textColorHint="@color/darkText" />
 
         <TextView
             android:id="@+id/textUserQuest"
@@ -83,30 +85,7 @@
             android:hint="Enter a quest"
             android:inputType="textEmailAddress"
             android:textColor="@android:color/black"
-            android:textColorHint="@color/input_register_hint" />
-
-        <Button
-            android:id="@+id/SkillsSelect"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:height="20dp"
-            android:background="@drawable/mybutton"
-            android:text="Choose what skills are required"
-            android:textColor="@android:color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <TextView
-            android:id="@+id/SkillsView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:ems="10"
-            android:text="Your Selected Skills"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="12sp" />
+            android:textColorHint="@color/darkText" />
 
         <TextView
             android:id="@+id/QuestStartDate"
@@ -116,29 +95,51 @@
             android:ems="10"
             android:text="@string/textQuestExpiry"
             android:textAlignment="center"
-            android:textSize="15sp"
             android:textColor="@android:color/black"
-            />
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/editTextDate"
             android:layout_width="match_parent"
             android:layout_height="20sp"
+            android:layout_margin="10dp"
             android:background="@drawable/forms_shape"
             android:ems="10"
             android:hint="Choose date"
-            android:layout_margin="10dp"
             android:inputType="time" />
+
+        <TextView
+            android:id="@+id/QuestStartDateTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:ems="10"
+            android:text="@string/textQuestExpiryTime"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/tv"
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:layout_margin="10dp"
-            android:ems="10"
             android:background="@drawable/forms_shape"
-            android:inputType="time"
-            android:hint="Choose time"/>
+            android:ems="10"
+            android:hint="Choose time"
+            android:inputType="time" />
+
+        <Button
+            android:id="@+id/SkillsSelect"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:background="@drawable/mybutton"
+            android:text="Choose skills"
+            android:textSize="20dp"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
 
 
         <Button
@@ -146,13 +147,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/mybutton"
-            android:text="Save data"
-            android:textColor="@android:color/black"
+            android:background="@drawable/mybutton3"
+            android:text="activate request"
+            android:textSize="20dp"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             tools:layout_editor_absoluteY="455dp" />
+
+
+
+
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="21dp"
+        android:layout_height="643dp"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
+
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="337dp"
+        android:layout_height="47dp"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteY="560dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
 
         <ImageButton
             android:id="@+id/buttonBack"
@@ -169,4 +198,44 @@
 
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="338dp"
+        android:layout_height="17dp"
+        android:layout_marginLeft="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:layout_editor_absoluteY="560dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp">
+
+        <View
+            android:layout_width="130dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/black" />
+
+        <TextView
+            android:id="@+id/textViewOrLogIn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_weight="1"
+            android:text="Or"
+            android:textAlignment="center"
+            android:textColor="@color/darkText"
+            android:textSize="15sp" />
+
+        <View
+            android:layout_width="130dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/black" />
+
+
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

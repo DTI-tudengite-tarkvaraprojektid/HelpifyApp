@@ -2,7 +2,9 @@ package project.helpify.helpifyapp;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -20,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -42,6 +45,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -78,6 +83,15 @@ public class MapsActivity
     private String chat_user_name;
     private String chat_msg_receiver;
     private boolean flag = false;
+    private TextView missionName;
+    private TextView chatBox;
+    private Button acceptButton;
+    private Button msg_send;
+    private Button closebutton;
+    private TextView timeLeftText;
+    private TextView timeLeft;
+    private TextView uName;
+    private TextView missionTime;
 
     private void getUserIsHidden() {
         FirebaseDatabase.getInstance().getReference().child("users")
@@ -116,6 +130,39 @@ public class MapsActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        //FONTS
+        try{
+
+            Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Nirmala.ttf");
+            Typeface custom_font_bold = Typeface.createFromAsset(getAssets(),"fonts/NirmalaB.ttf");
+            Typeface custom_font_slim = Typeface.createFromAsset(getAssets(),"fonts/NirmalaS.ttf");
+
+            missionName=(TextView) findViewById(R.id.missionName);
+            chatBox=(TextView) findViewById(R.id.chatBox);
+            acceptButton=(Button) findViewById(R.id.acceptButton);
+            msg_send = (Button) findViewById(R.id.msg_send);
+            closebutton =(Button) findViewById(R.id.closebutton);
+            timeLeftText = (TextView) findViewById(R.id.timeLeftText);
+            timeLeft = (TextView) findViewById(R.id.timeLeft);
+            uName = (TextView) findViewById(R.id.uName);
+            missionTime = (TextView) findViewById(R.id.missionTime);
+
+
+            missionName.setTypeface(custom_font);
+            chatBox.setTypeface(custom_font);
+            msg_send.setTypeface(custom_font_bold);
+            acceptButton.setTypeface(custom_font_bold);
+            closebutton.setTypeface(custom_font_bold);
+            timeLeft.setTypeface(custom_font_bold);
+            timeLeftText.setTypeface(custom_font_bold);
+            uName.setTypeface(custom_font_bold);
+            missionTime.setTypeface(custom_font_slim);
+
+        }catch(Exception exc){
+            Toast.makeText(MapsActivity.this, "Couldn't load fonts", Toast.LENGTH_SHORT).show();
+        }
+
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)

@@ -54,7 +54,7 @@
             android:layout_height="match_parent"
             android:text="Sign up"
             android:textAlignment="center"
-            android:textColor="@color/darkText" />
+            android:textColor="@color/input_register_hint" />
 
 
     </LinearLayout>

@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -49,6 +50,10 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
     private TextView tv;
     private TextView editTextDate;
     private String date;
+    private Button SkillsSelect;
+    private TextView SkillsView;
+
+
 
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -63,6 +68,43 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
         t.setGravity(Gravity.CENTER);
         EditText p = (EditText) findViewById(R.id.editTextQuest);
         p.setGravity(Gravity.CENTER);
+
+
+        TextView textViewDataChange = (TextView) findViewById(R.id.textViewDataChange);
+
+        TextView fontdate = (TextView) findViewById(R.id.editTextDate);
+        TextView fonttime = (TextView) findViewById(R.id.tv);
+        Button SkillsSelect = (Button) findViewById(R.id.SkillsSelect);
+        Button buttonSaveUserDatas = (Button) findViewById(R.id.buttonSaveUserData);
+        TextView SkillsView = (TextView) findViewById(R.id.SkillsView);
+        Button SkillsSelectButton = (Button) findViewById(R.id.SkillsSelect);
+
+        //FONTS
+        try{
+
+            Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Nirmala.ttf");
+            Typeface custom_font_bold = Typeface.createFromAsset(getAssets(),"fonts/NirmalaB.ttf");
+            Typeface custom_font_slim = Typeface.createFromAsset(getAssets(),"fonts/NirmalaS.ttf");
+
+
+
+            textViewDataChange.setTypeface(custom_font_bold);
+            t.setTypeface(custom_font_slim);
+            p.setTypeface(custom_font_slim);
+            fontdate.setTypeface(custom_font_slim);
+            fonttime.setTypeface(custom_font_slim);
+            SkillsSelect.setTypeface(custom_font_bold);
+            buttonSaveUserDatas.setTypeface(custom_font_bold);
+            SkillsView.setTypeface(custom_font);
+            SkillsSelectButton.setTypeface(custom_font_bold);
+
+
+
+
+        }catch(Exception exc){
+            Toast.makeText(MyRequestsActivity.this, "Couldn't load fonts", Toast.LENGTH_SHORT).show();
+        }
+
 
         Button mSkills = (Button) findViewById(R.id.SkillsSelect);
 
@@ -188,7 +230,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
 
         //**
 
-        buttonSaveUserData.setOnClickListener(new View.OnClickListener() {
+         buttonSaveUserData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v == buttonSaveUserData) {

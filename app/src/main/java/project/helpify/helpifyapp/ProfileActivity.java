@@ -1,6 +1,7 @@
 package project.helpify.helpifyapp;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private TextView buttonLogout;
     private Button buttonProfile;
     private Button buttonHelpOffers;
+    private Button buttonMaps;
 
 
     private DatabaseReference mDatabase;
@@ -39,6 +41,27 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         buttonLogout = (TextView) findViewById(R.id.buttonLogout);
         buttonProfile = (Button) findViewById(R.id.buttonProfile);
         buttonHelpOffers = (Button) findViewById(R.id.buttonHelpOffers);
+        buttonMaps = (Button) findViewById(R.id.buttonMaps);
+
+        //fonts
+        try{
+
+            Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Nirmala.ttf");
+            Typeface custom_font_bold = Typeface.createFromAsset(getAssets(),"fonts/NirmalaB.ttf");
+            Typeface custom_font_slim = Typeface.createFromAsset(getAssets(),"fonts/NirmalaS.ttf");
+
+
+            textViewUserEmail.setTypeface(custom_font);
+            buttonHelpOffers.setTypeface(custom_font_bold);
+            buttonLogout.setTypeface(custom_font);
+            buttonProfile.setTypeface(custom_font_bold);
+            buttonMaps.setTypeface(custom_font_bold);
+
+
+        }catch(Exception exc){
+            Toast.makeText(ProfileActivity.this, "Couldn't load fonts", Toast.LENGTH_SHORT).show();
+        }
+
 
 
 
@@ -56,7 +79,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         //Create user object
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
-        textViewUserEmail.setText("Welcome " + user.getEmail());
+        textViewUserEmail.setText(user.getEmail());
 
 
     }
