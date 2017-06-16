@@ -59,7 +59,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -133,6 +132,7 @@ public class MapsActivity
         if(newUserPref != null && !newUserCreated){
             isHidden = false;
             newUserCreated = true;
+
         }
         getUserIsHidden();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -514,14 +514,11 @@ public class MapsActivity
     private void append_chat_conversation(DataSnapshot snapshot) {
         Iterator i = snapshot.getChildren().iterator();
         while (i.hasNext()) {
-
             chat_msg = (String) ((DataSnapshot) i.next()).getValue();
             chat_user_name = (String) ((DataSnapshot) i.next()).getValue();
             chat_msg_receiver = (String) (((DataSnapshot) i.next()).getValue());
             chat_box.append(chat_user_name + " : " + chat_msg + "\n");
-
         }
-
     }
 
     Map<String, Object> chat = new HashMap<>();
@@ -534,7 +531,7 @@ public class MapsActivity
     // mRoot2 -  "chat" child
     DatabaseReference mRoot2;
     // message_root - mRoot2 child
-    DatabaseReference mesage_root;
+    DatabaseReference message_root;
 
     String temp_key;
     int counter;
@@ -562,11 +559,11 @@ public class MapsActivity
                 temp_key = mRoot2.push().getKey();
                 root.updateChildren(map);
                 mRoot2.updateChildren(chat);
-                mesage_root = mRoot2.child(temp_key);
+                message_root = mRoot2.child(temp_key);
                 msg.put("name", firebaseAuth.getCurrentUser().getEmail());
                 msg.put("msg", msg_input.getText().toString());
-                mesage_root.updateChildren(msg);
-                msg_input.setText("");
+                message_root.updateChildren(msg);
+                msg_input.setText(null);
             }
         });
         /*if(!flag)
@@ -610,7 +607,7 @@ public class MapsActivity
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                append_chat_conversation(dataSnapshot);
+                //append_chat_conversation(dataSnapshot);
             }
 
             @Override
@@ -640,13 +637,13 @@ public class MapsActivity
                 root.updateChildren(map);
                 mRoot2.updateChildren(chat);
 
-                mesage_root = mRoot2.child(temp_key);
+                message_root = mRoot2.child(temp_key);
 
 
                 msg.put("name", firebaseAuth.getCurrentUser().getEmail());
                 msg.put("msg", msg_input.getText().toString());
                 msg.put("receiver", username);
-                mesage_root.updateChildren(msg);
+                message_root.updateChildren(msg);
                 msg_input.setText("");
 
             }
@@ -712,6 +709,8 @@ public class MapsActivity
             timeLeft.setText("More than a week");
         } else if (timeLeftMilliseconds >= 8.64e+7) {
             timeLeft.setText("More than a day");
+        } else if (timeLeftMilliseconds < 0) {
+            timeLeft.setText("Time over!");
         } else {
             Long timeLeftHours = timeLeftMilliseconds / (60 * 60 * 1000) % 24;
             Long timeLeftMinutes = timeLeftMilliseconds / (60 * 1000) % 60;
