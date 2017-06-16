@@ -46,7 +46,7 @@ Avada Android Studio.
 Jälgida, et Google Repository oleks up to date klõpsates nupule SDK Manager ülevalt menüüribalt.
 Klõpsata vahelehele SDK Tools. Vaadata, et Support Repository alt oleks Google Repository Status Installed.
 Kui ei ole siis teha linnuke Google Repository ees ja klõpsata nupule OK.
-
+![alt text](https://github.com/MReintop/HelpifyApp/blob/master/googleRepositoryUpdate.png)
 
 //Update other dependencies.
 Avada kaust app kohast, kuhu sai git repository kloonitud.
@@ -55,7 +55,7 @@ Veenduda, et kõik dependencies oleks up to date Android Studios.
 
 //Telefonis enable developer mode ja panna telefonis app tööle.
 Telefonis enable developer mode arendaja seadete alt. Kui arendaja seadeid pole, siis telefoni tarkvara detailides vajutage järgu numbrile 7 korda. Panna telefon usb kaabli abil arvutile järgi. Vajutada Android studio ülevalt Run ja valida telefon.
-
+![alt text](https://github.com/MReintop/HelpifyApp/blob/master/runAppInPhone.png)
 
 //Kui Androidi telefon puudub, saab Android Studios kasutada ka emulaatorit. Õpetus: https://developer.android.com/studio/run/managing-avds.html
 
