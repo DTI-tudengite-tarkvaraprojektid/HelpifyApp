@@ -93,7 +93,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="229dp"
         android:background="@drawable/mybuttonblack"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/missionName"
@@ -109,6 +109,7 @@
             android:id="@+id/acceptButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/relativeLayout"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
@@ -116,22 +117,21 @@
             android:text="Accept"
             android:textColor="@android:color/white"
             android:textSize="20dp"
-            tools:text="Accept"
-            android:layout_above="@+id/relativeLayout"/>
+            tools:text="Accept"/>
 
         <Button
             android:id="@+id/closebutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/relativeLayout"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:background="@drawable/mybutton8"
             android:text="Close"
             android:textColor="@android:color/white"
             android:textSize="20dp"
-            tools:text="Close"
-            android:layout_alignParentTop="true"
-            android:layout_above="@+id/relativeLayout"/>
+            tools:text="Close"/>
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
@@ -219,14 +219,14 @@
                 android:layout_above="@+id/msg_input"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:maxLines="20"
                 android:scrollbars="vertical"
                 android:text="Chat"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2"
                 android:textColor="@android:color/black"
                 android:textSize="24sp"
-                tools:text="Chat"
-                android:layout_alignParentTop="true"/>
+                tools:text="Chat"/>
 
             <EditText
                 android:id="@+id/msg_input"

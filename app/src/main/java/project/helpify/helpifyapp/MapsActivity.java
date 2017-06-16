@@ -131,7 +131,7 @@ public class MapsActivity
         SharedPreferences pref =
                 getApplicationContext().getSharedPreferences("NewUserPrefs", MODE_PRIVATE);
         String newUserPref = pref.getString("newUser", null);
-        if(newUserPref != null && !newUserCreated){
+        if (newUserPref != null && !newUserCreated) {
             isHidden = false;
             newUserCreated = true;
         }
@@ -142,17 +142,17 @@ public class MapsActivity
         mapFragment.getMapAsync(this);
 
         //FONTS
-        try{
+        try {
 
-            Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Nirmala.ttf");
-            Typeface custom_font_bold = Typeface.createFromAsset(getAssets(),"fonts/NirmalaB.ttf");
-            Typeface custom_font_slim = Typeface.createFromAsset(getAssets(),"fonts/NirmalaS.ttf");
+            Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Nirmala.ttf");
+            Typeface custom_font_bold = Typeface.createFromAsset(getAssets(), "fonts/NirmalaB.ttf");
+            Typeface custom_font_slim = Typeface.createFromAsset(getAssets(), "fonts/NirmalaS.ttf");
 
-            missionName=(TextView) findViewById(R.id.missionName);
-            chatBox=(TextView) findViewById(R.id.chatBox);
-            acceptButton=(Button) findViewById(R.id.acceptButton);
+            missionName = (TextView) findViewById(R.id.missionName);
+            chatBox = (TextView) findViewById(R.id.chatBox);
+            acceptButton = (Button) findViewById(R.id.acceptButton);
             msg_send = (Button) findViewById(R.id.msg_send);
-            closebutton =(Button) findViewById(R.id.closebutton);
+            closebutton = (Button) findViewById(R.id.closebutton);
             timeLeftText = (TextView) findViewById(R.id.timeLeftText);
             timeLeft = (TextView) findViewById(R.id.timeLeft);
             uName = (TextView) findViewById(R.id.uName);
@@ -169,7 +169,7 @@ public class MapsActivity
             uName.setTypeface(custom_font_bold);
             missionTime.setTypeface(custom_font_slim);
 
-        }catch(Exception exc){
+        } catch (Exception exc) {
             Toast.makeText(MapsActivity.this, " ", Toast.LENGTH_SHORT).show();
         }
 
@@ -269,13 +269,12 @@ public class MapsActivity
         questNotifier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v == questNotifier){
+                if (v == questNotifier) {
                     finish();
                     startActivity(new Intent(getApplicationContext(), MyOffers.class));
                 }
             }
         });
-
 
     }
 
@@ -311,7 +310,7 @@ public class MapsActivity
                             String key = snapshot.getKey();
                             String email = (String) snapshot.child("email").getValue();
 
-                            if(email.equals(firebaseAuth.getCurrentUser().getEmail())){
+                            if (email.equals(firebaseAuth.getCurrentUser().getEmail())) {
                                 FirebaseDatabase.getInstance().getReference().child("quests").child(key)
                                         .child("accepted_by").addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -431,7 +430,6 @@ public class MapsActivity
                 });
     }
 
-
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
@@ -544,8 +542,6 @@ public class MapsActivity
     Map<String, Object> map = new HashMap<>();
     Map<String, Object> msg = new HashMap<>();
 
-    // final Map<String,Object> msg = new HashMap<String,Object>();
-
     DatabaseReference root = FirebaseDatabase.getInstance().getReference().child("chat");
     // mRoot2 -  "chat" child
     DatabaseReference mRoot2;
@@ -585,41 +581,11 @@ public class MapsActivity
                 msg_input.setText(null);
             }
         });
-        /*if(!flag)
-        {
-            flag = true;
-        }
-        else{
-            return;
-        }
-*/
 
         mRoot2.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 append_chat_conversation(dataSnapshot);
-/*
-                FirebaseDatabase.getInstance().getReference().child("quests")
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                    Quest quest = snapshot.getValue(Quest.class);
-                                    if (circle.getTag().toString().equals(quest.email)) {
-
-                                        generateDrawer(quest.name, quest.email, quest.startDate, quest.endDate, quest.quest);
-                                        chat_box.setText(quest.quest + "\n");
-                                        showDrawer();
-
-                                        break;
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        });*/
 
             }
 
@@ -647,9 +613,6 @@ public class MapsActivity
 
             @Override
             public void onClick(View v) {
-                //   chat_box.setText("");
-
-
                 // unique key
                 temp_key = mRoot2.push().getKey();
                 root.updateChildren(map);
@@ -739,10 +702,8 @@ public class MapsActivity
 
     private void showDrawer() {
         if (!drawerUp) {
-//            Animation bottomUp = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
-//                    R.anim.bottom_up);
+
             ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
-//            hiddenPanel.startAnimation(bottomUp);
             hiddenPanel.setVisibility(View.VISIBLE);
             drawerUp = true;
             checkAcceptance();
@@ -751,11 +712,7 @@ public class MapsActivity
 
     private void hideDrawer() {
         if (drawerUp) {
-//            Animation bottomDown = AnimationUtils.loadAnimation(MapsActivity.this.getBaseContext(),
-//                    R.anim.bottom_down);
             ViewGroup hiddenPanel = (ViewGroup) findViewById(R.id.hidden_panel);
-//
-//            hiddenPanel.startAnimation(bottomDown);
             hiddenPanel.setVisibility(View.INVISIBLE);
             drawerUp = false;
         }
@@ -887,10 +844,10 @@ public class MapsActivity
                         if (Integer.parseInt(quest.endDate.substring(11, 13)) > Integer.parseInt(userTimestampToDate.substring(11, 13))) {
 
                             setMessage(true, userDate.toString() + "\n" + questDate.toString());
-                        } else if (Integer.parseInt(quest.endDate.substring(11, 13)) == Integer.parseInt(userTimestampToDate.substring(11, 13))) {
-                            if (Integer.parseInt(quest.endDate.substring(14, 16)) >= Integer.parseInt(userTimestampToDate.substring(14, 16))) {
-                                addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
-                            }
+                        } else if (Integer.parseInt(quest.endDate.substring(11, 13)) == Integer.parseInt(userTimestampToDate.substring(11, 13)) &&
+                                Integer.parseInt(quest.endDate.substring(14, 16)) >= Integer.parseInt(userTimestampToDate.substring(14, 16))) {
+
+                            addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
                         }
                     } else {
                         if (user.isOnline) {
@@ -940,11 +897,9 @@ public class MapsActivity
             LatLng lastKnownLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             lastUserLocation = lastKnownLocation;
 
-            // working here, save data to database
+            //  save data to database
             String userId = firebaseAuth.getCurrentUser().getUid();
             String userEmail = firebaseAuth.getCurrentUser().getEmail();
-          /*  Map<String,Object> checkoutData=new HashMap<>();
-            checkoutData.put("time",ServerValue.TIMESTAMP);*/
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
             getUserIsHidden();
