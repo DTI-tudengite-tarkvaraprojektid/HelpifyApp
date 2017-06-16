@@ -92,7 +92,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="229dp"
-        android:background="@drawable/background_border"
+        android:background="@android:color/black"
         android:visibility="visible">
 
         <TextView
@@ -101,6 +101,8 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="missionName"
+            android:paddingTop="10dp"
+            android:textColor="@color/colorAccent"
             android:textSize="24sp" />
 
         <Button
@@ -111,7 +113,9 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:text="Accept"
-            android:textSize="18sp"
+            android:textSize="20dp"
+            android:background="@drawable/mybutton2"
+            android:textColor="@android:color/white"
             tools:text="Accept" />
 
         <TextView
@@ -121,59 +125,65 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:text="Public Request"
+            android:textColor="@android:color/white"
+            android:padding="10dp"
             tools:text="Public Request" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/acceptButton"
-            android:background="@drawable/background_border">
+            android:background="@color/input_register_hint"
+            >
 
             <TextView
                 android:id="@+id/timeLeftText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/missionTime"
                 android:layout_column="2"
-                android:layout_marginEnd="14dp"
-                android:layout_marginRight="14dp"
-                android:layout_marginTop="24dp"
                 android:layout_row="1"
-                android:layout_toLeftOf="@+id/timeLeft"
-                android:layout_toStartOf="@+id/timeLeft"
                 android:text="Time left: "
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="18sp"
-                tools:text="Time left: " />
+                tools:text="Time left: "
+                android:background="@drawable/coolform"
+                android:padding="5dp"
+                android:layout_marginTop="17dp"
+                android:layout_below="@+id/missionTime"
+                android:layout_alignRight="@+id/uName"
+                android:layout_alignEnd="@+id/uName"
+                android:layout_marginRight="55dp"
+                android:layout_marginEnd="55dp" />
 
             <TextView
                 android:id="@+id/timeLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/timeLeftText"
-                android:layout_alignBottom="@+id/timeLeftText"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_column="3"
                 android:layout_row="1"
                 android:text="timeLeft"
-                android:textColor="@android:color/black"
+                android:textColor="@color/red"
                 android:textSize="18sp"
-                tools:text="timeLeft" />
+                tools:text="timeLeft"
+                android:padding="5dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_alignBaseline="@+id/timeLeftText"
+                android:layout_alignBottom="@+id/timeLeftText"
+                android:layout_toRightOf="@+id/timeLeftText"
+                android:layout_toEndOf="@+id/timeLeftText" />
 
             <TextView
                 android:id="@+id/uName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/missionTime"
                 android:layout_column="0"
-                android:layout_marginTop="63dp"
                 android:layout_row="3"
-                android:textColor="@android:color/black"
+                android:textColor="@color/colorAccent"
                 android:textSize="18sp"
-                tools:text="Requester name" />
+                tools:text="Requester name"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/timeLeftText" />
 
             <TextView
                 android:id="@+id/missionTime"
@@ -185,7 +195,7 @@
                 android:layout_column="0"
                 android:layout_row="1"
                 android:text="1:00PM - 4:30PM"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="18sp"
                 tools:text="1:00PM - 4:30PM" />
         </RelativeLayout>
