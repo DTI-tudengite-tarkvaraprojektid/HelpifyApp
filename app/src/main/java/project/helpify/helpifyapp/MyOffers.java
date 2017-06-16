@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -31,53 +32,46 @@ public class MyOffers extends AppCompatActivity implements View.OnClickListener 
         setContentView(R.layout.activity_myoffers);
 
         final ListView mListView = (ListView) findViewById(R.id.retrieved_users);
-
-
         final ArrayList<String> users = new ArrayList<String>();
-        FirebaseDatabase.getInstance().getReference().child("quests")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            String key = snapshot.getKey();
-                            final String email = (String) snapshot.child("email").getValue();
-                            String current_user = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
-                            if (email.equals(current_user)) {
-                                FirebaseDatabase.getInstance().getReference().child("quests").child(key)
-                                        .child("accepted_by").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot snapshot1 : dataSnapshot.getChildren()) {
-                                            String accepted_users = (String) snapshot1.getValue();
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
+                (getApplicationContext(), android.R.layout.simple_list_item_1, users);
 
-                                            if (accepted_users != null) {
-                                                users.add(accepted_users);
-                                                System.out.println(users);
-                                                final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
-                                                        (getApplicationContext(), android.R.layout.simple_list_item_1, users);
+        mListView.setAdapter(arrayAdapter);
 
-                                                mListView.setAdapter(arrayAdapter);
-                                                //    break;
-                                            }
-                                        }
-                                    }
+        String current_user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseDatabase.getInstance().getReference().child("quests").child(current_user_id)
+                .child("accepted_by").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if(dataSnapshot.exists()){
+                    String user = (String) dataSnapshot.getValue();
+                    users.add(user);
+                } else {
+                    Toast.makeText(MyOffers.this, "No data", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                                    }
-                                });
-                            }
-                        }
-                    }
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                    }
-                });
+            }
 
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         buttonBack = (ImageButton) findViewById(R.id.buttonBack);
         buttonBack.setOnClickListener(this);

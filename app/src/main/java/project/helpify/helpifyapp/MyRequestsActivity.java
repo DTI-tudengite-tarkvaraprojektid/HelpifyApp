@@ -72,12 +72,6 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
 
         TextView textViewDataChange = (TextView) findViewById(R.id.textViewDataChange);
 
-        TextView fontdate = (TextView) findViewById(R.id.editTextDate);
-        TextView fonttime = (TextView) findViewById(R.id.tv);
-        Button SkillsSelect = (Button) findViewById(R.id.SkillsSelect);
-        Button buttonSaveUserDatas = (Button) findViewById(R.id.buttonSaveUserData);
-        TextView SkillsView = (TextView) findViewById(R.id.SkillsView);
-        Button SkillsSelectButton = (Button) findViewById(R.id.SkillsSelect);
 
         //FONTS
         try{
@@ -91,12 +85,8 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
             textViewDataChange.setTypeface(custom_font_bold);
             t.setTypeface(custom_font_slim);
             p.setTypeface(custom_font_slim);
-            fontdate.setTypeface(custom_font_slim);
-            fonttime.setTypeface(custom_font_slim);
             SkillsSelect.setTypeface(custom_font_bold);
-            buttonSaveUserDatas.setTypeface(custom_font_bold);
             SkillsView.setTypeface(custom_font);
-            SkillsSelectButton.setTypeface(custom_font_bold);
 
 
 
@@ -111,7 +101,6 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
         listSkills = getResources().getStringArray(R.array.skills_list);
         checkedSkills = new boolean[listSkills.length];
 
-        mSelectedSkills = (TextView) findViewById(R.id.SkillsView);
 
         // https://github.com/codingdemos/MultichoiceTutorial/blob/master/app/src/main/java/com/example/multichoicetutorial/MainActivity.java
         mSkills.setOnClickListener(new View.OnClickListener() {
