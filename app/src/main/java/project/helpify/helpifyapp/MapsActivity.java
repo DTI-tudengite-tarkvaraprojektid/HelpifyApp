@@ -79,7 +79,7 @@ public class MapsActivity
     private String chat_msg_receiver;
     private boolean flag = false;
 
-    private void getUserIsHidden(){
+    private void getUserIsHidden() {
         FirebaseDatabase.getInstance().getReference().child("users")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -88,7 +88,7 @@ public class MapsActivity
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             User user = snapshot.getValue(User.class);
                             if (user.email.equals(cUser.getEmail().toString())) {
-                                if(user.isHidden == null){
+                                if (user.isHidden == null) {
                                     isHidden = false;
                                     break;
                                 } else {
@@ -196,33 +196,45 @@ public class MapsActivity
                 });
     }
 
-    private void hasUserQuests(final User user){
+    private void hasUserQuests(final User user) {
         FirebaseDatabase.getInstance().getReference().child("quests")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(final DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             String key = snapshot.getKey();
+                            String email = (String) snapshot.child("email").getValue();
 
-                            FirebaseDatabase.getInstance().getReference().child("quests").child(key)
-                                    .child("accepted_by").addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for(DataSnapshot snapshot1 : dataSnapshot.getChildren()){
-                                        String data = (String) snapshot1.getValue();
-                                        if(data != null){
-                                            ImageButton questNotifier = (ImageButton) findViewById(R.id.questNotifier);
-                                            questNotifier.setVisibility(View.VISIBLE);
-                                            break;
+                            if(email.equals(firebaseAuth.getCurrentUser().getEmail())){
+                                FirebaseDatabase.getInstance().getReference().child("quests").child(key)
+                                        .child("accepted_by").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot snapshot1 : dataSnapshot.getChildren()) {
+                                            String data = (String) snapshot1.getValue();
+                                            System.out.println(data);
+                                            if (data != null) {
+                                                ImageButton questNotifier = (ImageButton) findViewById(R.id.questNotifier);
+                                                questNotifier.setVisibility(View.VISIBLE);
+                                                break;
+                                            } else {
+                                                ImageButton questNotifier = (ImageButton) findViewById(R.id.questNotifier);
+                                                questNotifier.setVisibility(View.INVISIBLE);
+                                                break;
+                                            }
                                         }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                                }
-                            });
+                                    }
+                                });
+                            } else {
+                                ImageButton questNotifier = (ImageButton) findViewById(R.id.questNotifier);
+                                questNotifier.setVisibility(View.INVISIBLE);
+                            }
+
                         }
                     }
 
@@ -306,6 +318,7 @@ public class MapsActivity
                             }
                         }
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }
@@ -423,6 +436,7 @@ public class MapsActivity
         }
 
     }
+
     Map<String, Object> chat = new HashMap<>();
     Map<String, Object> map = new HashMap<>();
     Map<String, Object> msg = new HashMap<>();
@@ -679,7 +693,7 @@ public class MapsActivity
                                 for (DataSnapshot datasnapshot : dataSnapshot.getChildren()) {
                                     String data = datasnapshot.getKey();
                                     String current_user = firebaseAuth.getCurrentUser().getUid();
-                                    if(data.equals(current_user)){
+                                    if (data.equals(current_user)) {
                                         accept_button.setVisibility(View.INVISIBLE);
                                     } else {
                                         accept_button.setVisibility(View.VISIBLE);
