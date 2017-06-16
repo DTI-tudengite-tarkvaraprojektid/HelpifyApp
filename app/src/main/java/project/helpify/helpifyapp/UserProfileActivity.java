@@ -80,11 +80,4 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         if (v == buttonBack) {
             finish();
             startActivity(new Intent(this, ProfileActivity.class));
-        }
-        ;
-
-    }
-
-    ;
-    }
-}
+        }}}

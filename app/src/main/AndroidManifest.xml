@@ -24,6 +24,10 @@ package="project.helpify.helpifyapp">
         android:screenOrientation="portrait"
         android:theme="@style/AppTheme.NoActionBar"/>
 
+    <activity android:name=".MyOffers"
+        android:screenOrientation="portrait"
+        android:theme="@style/AppTheme.NoActionBar"/>
+
 
     <activity android:name=".MainActivity"
         android:screenOrientation="portrait"

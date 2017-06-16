@@ -23,6 +23,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Button textViewUserEmail;
     private TextView buttonLogout;
     private Button buttonProfile;
+    private Button buttonHelpOffers;
 
 
     private DatabaseReference mDatabase;
@@ -37,12 +38,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         textViewUserEmail = (Button) findViewById(R.id.textViewUserEmail);
         buttonLogout = (TextView) findViewById(R.id.buttonLogout);
         buttonProfile = (Button) findViewById(R.id.buttonProfile);
+        buttonHelpOffers = (Button) findViewById(R.id.buttonHelpOffers);
 
 
 
         buttonLogout.setOnClickListener(this);
         buttonProfile.setOnClickListener(this);
         textViewUserEmail.setOnClickListener(this);
+        buttonHelpOffers.setOnClickListener(this);
 
 
         //Check if user is not signed in
@@ -96,7 +99,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             finish();
             startActivity(new Intent(this, MyRequestsActivity.class));
         }
-
+        if(view==buttonHelpOffers){
+            finish();
+            startActivity(new Intent(this, MyOffers.class));
+        }
 
     }
 }
