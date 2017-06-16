@@ -42,11 +42,11 @@ public class User {
     }
 
     @Exclude
-    Long getTimestampLong() {
+   public Long getTimestampLong() {
         return timestamp;
     }
 
-    void setTimestamp(Long timestamp) {
+   public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
 
