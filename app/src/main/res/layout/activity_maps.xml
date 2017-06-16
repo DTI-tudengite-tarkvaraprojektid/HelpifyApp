@@ -109,6 +109,7 @@
             android:id="@+id/acceptButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/relativeLayout"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
@@ -116,12 +117,13 @@
             android:text="Accept"
             android:textColor="@android:color/white"
             android:textSize="20dp"
-            tools:text="Accept" />
+            tools:text="Accept"/>
 
         <Button
             android:id="@+id/closebutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/relativeLayout"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:padding="0dp"
@@ -132,9 +134,10 @@
             tools:text="Close" />
 
         <RelativeLayout
+            android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/acceptButton"
+            android:layout_below="@+id/missionName"
             android:background="@drawable/mybutton7">
 
             <TextView
@@ -189,6 +192,9 @@
                 android:id="@+id/missionTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:layout_column="0"
                 android:layout_row="1"
                 android:text="1:00PM - 4:30PM"
@@ -215,6 +221,7 @@
                 android:id="@+id/chatBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_above="@+id/msg_input"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
