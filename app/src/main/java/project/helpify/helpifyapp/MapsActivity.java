@@ -229,7 +229,6 @@ public class MapsActivity
 
 
         ImageButton messageIcon = (ImageButton) findViewById(R.id.messageRecieve);
-
         messageIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -254,6 +253,14 @@ public class MapsActivity
                             public void onCancelled(DatabaseError databaseError) {
                             }
                         });
+            }
+        });
+
+        Button closeButton = (Button) findViewById(R.id.closebutton);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideDrawer();
             }
         });
 
