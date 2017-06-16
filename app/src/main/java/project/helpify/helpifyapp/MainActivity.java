@@ -2,6 +2,7 @@ package project.helpify.helpifyapp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -91,6 +92,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         //CHECKING IF REGISTRATION WAS SUCCESSFUL
                         if (task.isSuccessful()) {
                             //finish current activity and start profile
+                            SharedPreferences pref =
+                                    getApplicationContext().getSharedPreferences("NewUserPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = pref.edit();
+                            editor.putString("newUser", "true");
+                            editor.commit();
                             finish();
                             startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                             Toast.makeText(MainActivity.this, "Siin peaks suunama", Toast.LENGTH_SHORT).show();
