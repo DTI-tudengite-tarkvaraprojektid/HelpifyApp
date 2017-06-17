@@ -35,10 +35,6 @@ public class MyOffers extends AppCompatActivity implements View.OnClickListener 
         final ListView mListView = (ListView) findViewById(R.id.retrieved_users);
         final ArrayList<String> users = new ArrayList<String>();
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
-                (getApplicationContext(), android.R.layout.simple_list_item_1, users);
-
-        mListView.setAdapter(arrayAdapter);
 
         String current_user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance().getReference().child("quests").child(current_user_id)
@@ -48,8 +44,10 @@ public class MyOffers extends AppCompatActivity implements View.OnClickListener 
                 if (dataSnapshot.exists()) {
                     String user = (String) dataSnapshot.getValue();
                     users.add(user);
-                } else {
-                    Toast.makeText(MyOffers.this, "No data", Toast.LENGTH_SHORT).show();
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
+                            (MyOffers.this, android.R.layout.simple_list_item_1, users);
+
+                    mListView.setAdapter(arrayAdapter);
                 }
             }
 
@@ -63,8 +61,10 @@ public class MyOffers extends AppCompatActivity implements View.OnClickListener 
                 if (dataSnapshot.exists()) {
                     String user_removed = (String) dataSnapshot.getValue();
                     users.remove(user_removed);
-                } else {
-                    Toast.makeText(MyOffers.this, "An error occurred", Toast.LENGTH_SHORT).show();
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
+                            (MyOffers.this, android.R.layout.simple_list_item_1, users);
+
+                    mListView.setAdapter(arrayAdapter);
                 }
             }
 
@@ -87,7 +87,7 @@ public class MyOffers extends AppCompatActivity implements View.OnClickListener 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int itempos = position;
                 String value = (String) mListView.getItemAtPosition(itempos);
-                Toast.makeText(MyOffers.this, "" + value , Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyOffers.this, "" + value, Toast.LENGTH_SHORT).show();
             }
         });
 
