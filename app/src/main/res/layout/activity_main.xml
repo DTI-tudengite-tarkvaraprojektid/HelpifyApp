@@ -130,7 +130,7 @@
             android:layout_gravity="center"
             android:layout_height="150dp"
             android:layout_marginBottom="5dp"
-            android:src="@mipmap/icon"
+            android:src="@drawable/logo_main"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="8dp"/>
 

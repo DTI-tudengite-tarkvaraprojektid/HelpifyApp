@@ -121,9 +121,9 @@
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="198dp"
+            android:layout_width="130dp"
             android:layout_gravity="center"
-            android:layout_height="150dp"
+            android:layout_height="145dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/logo_main"
             tools:layout_editor_absoluteX="8dp"
