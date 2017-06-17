@@ -32,8 +32,9 @@
             android:layout_marginBottom="10dp"
             android:layout_marginTop="0dp"
             android:layout_weight="0.46"
-            android:contentDescription="ProfileImage"
-            android:src="@mipmap/logo" />
+
+            android:contentDescription="ProfileImage"/>
+
 
         <ImageButton
             android:id="@+id/buttonBack"
