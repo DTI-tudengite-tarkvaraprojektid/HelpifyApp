@@ -137,8 +137,10 @@
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/missionName"
-            android:background="@drawable/mybutton7">
+            android:background="@drawable/mybutton7"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
             <TextView
                 android:id="@+id/timeLeftText"

@@ -134,6 +134,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(this, LoginActivity.class));
+
+    };
+
+    @Override
     public void onClick(View view) {
         if (view == buttonRegister) {
             registerUser();

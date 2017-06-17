@@ -104,4 +104,11 @@ public class MyOffers extends AppCompatActivity implements View.OnClickListener 
         }
 
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(this, ProfileActivity.class));
+
+    };
 }

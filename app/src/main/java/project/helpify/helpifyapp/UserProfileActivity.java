@@ -75,5 +75,12 @@ public class UserProfileActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(this, ProfileActivity.class));
+
+    };
+
 }
 

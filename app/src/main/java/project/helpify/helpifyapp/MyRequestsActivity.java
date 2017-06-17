@@ -299,4 +299,11 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
             startActivity(new Intent(this, ProfileActivity.class));
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(this, ProfileActivity.class));
+
+    };
 }

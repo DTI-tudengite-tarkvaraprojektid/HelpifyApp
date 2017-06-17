@@ -981,7 +981,16 @@ public class MapsActivity
             drawerUp = false;
         }
     }
+
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(this, ProfileActivity.class));
+
+    };
 }
 
 
 //https://stackoverflow.com/questions/3438276/how-to-change-the-text-on-the-action-bar/3438352#3438352
+
