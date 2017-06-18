@@ -1,8 +1,11 @@
 package project.helpify.helpifyapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -86,15 +89,91 @@ public class MyOffers extends AppCompatActivity implements View.OnClickListener 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int itempos = position;
-                String value = (String) mListView.getItemAtPosition(itempos);
-                Toast.makeText(MyOffers.this, "" + value, Toast.LENGTH_SHORT).show();
+                final String user = (String) mListView.getItemAtPosition(itempos);
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(MyOffers.this);
+                mBuilder.setMessage(user)
+                        .setTitle("Accept this users help?");
+
+                mBuilder.setCancelable(false);
+                mBuilder.setPositiveButton("ACCEPT", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        acceptUserHelp(user);
+                    }
+                });
+
+                mBuilder.setNegativeButton("DECLINE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        declineUserHelp(user);
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+
             }
         });
 
     }
 
-    //final ArrayList<String> users = new ArrayList<String>();
+    private void acceptUserHelp(final String user) {
 
+        final String current_user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        FirebaseDatabase.getInstance().getReference().child("quests").child(current_user)
+                .child("accepted_by").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String removed_keys = snapshot.getKey();
+                        String removed_users = (String) snapshot.getValue();
+                        if (!removed_users.equals(user)) {
+                            FirebaseDatabase.getInstance().getReference().child("quests")
+                                    .child(current_user).child("accepted_by").child(removed_keys).removeValue();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void declineUserHelp(final String user) {
+
+        final String current_user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        FirebaseDatabase.getInstance().getReference().child("quests").child(current_user)
+                .child("accepted_by").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String key_to_remove = snapshot.getKey();
+                        String user_to_remove = (String) snapshot.getValue();
+                        if (user_to_remove.equals(user)) {
+                            FirebaseDatabase.getInstance().getReference().child("quests")
+                                    .child(current_user).child("accepted_by")
+                                    .child(key_to_remove).removeValue();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
 
     @Override
     public void onClick(View v) {
@@ -110,5 +189,7 @@ public class MyOffers extends AppCompatActivity implements View.OnClickListener 
         finish();
         startActivity(new Intent(this, ProfileActivity.class));
 
-    };
+    }
+
+
 }

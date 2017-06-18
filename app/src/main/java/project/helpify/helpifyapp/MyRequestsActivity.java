@@ -218,7 +218,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                     /*      Your code   to get date and time    */
                         selectedmonth = selectedmonth + 1;
                         editTextDate.setText(selectedday + "/" + "0" + selectedmonth + "/" + selectedyear);
-                        date = selectedday + "/" + selectedmonth + "/" + selectedyear;
+                        date = selectedday + "/" + "0" + selectedmonth + "/" + selectedyear;
                     }
                 }, mYear, mMonth, mDay);
                 mDatePicker.setTitle("Select Date");
