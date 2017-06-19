@@ -416,10 +416,11 @@ public class MapsActivity
                                     break;
                                 } else {
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
+                                    break;
                                 }
                             } else {
                                 questAfterUserTimestamp(user, quest);
-                                // break;
+                                 break;
                             }
                         }
                     }
@@ -835,7 +836,8 @@ public class MapsActivity
                 try {
                     Date userDate = format.parse(userTimestampToDate);
                     Date questDate = format.parse(quest.endDate);
-
+                    System.out.println(questDate);
+                    System.out.println(userDate);
                     if (questDate.after(userDate)) {
 
                         addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
