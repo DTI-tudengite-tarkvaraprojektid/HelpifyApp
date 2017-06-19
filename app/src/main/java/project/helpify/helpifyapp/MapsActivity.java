@@ -4,11 +4,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
-import android.media.Image;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -49,8 +47,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,25 +72,11 @@ public class MapsActivity
     private Boolean drawerUp = false;
     public Boolean isHidden;
     public Boolean newUserCreated = false;
-    int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 0x00111;
+    int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 0x111;
     // FIREBASE
 
     private DatabaseReference mDatabase;
     private FirebaseAuth firebaseAuth;
-    private DataSnapshot dataSnapshot;
-    private String chat_msg;
-    private String chat_user_name;
-    private String chat_msg_receiver;
-    private boolean flag = false;
-    private TextView missionName;
-    private TextView chatBox;
-    private Button acceptButton;
-    private Button msg_send;
-    private Button closebutton;
-    private TextView timeLeftText;
-    private TextView timeLeft;
-    private TextView uName;
-    private TextView missionTime;
 
     private void getUserIsHidden() {
         FirebaseDatabase.getInstance().getReference().child("users")
@@ -104,7 +86,7 @@ public class MapsActivity
                         FirebaseUser cUser = firebaseAuth.getCurrentUser();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             User user = snapshot.getValue(User.class);
-                            if (user.email.equals(cUser.getEmail().toString())) {
+                            if (user.email.equals(cUser.getEmail())) {
                                 if (user.isHidden == null) {
                                     isHidden = false;
                                     break;
@@ -148,15 +130,15 @@ public class MapsActivity
             Typeface custom_font_bold = Typeface.createFromAsset(getAssets(), "fonts/NirmalaB.ttf");
             Typeface custom_font_slim = Typeface.createFromAsset(getAssets(), "fonts/NirmalaS.ttf");
 
-            missionName = (TextView) findViewById(R.id.missionName);
-            chatBox = (TextView) findViewById(R.id.chatBox);
-            acceptButton = (Button) findViewById(R.id.acceptButton);
-            msg_send = (Button) findViewById(R.id.msg_send);
-            closebutton = (Button) findViewById(R.id.closebutton);
-            timeLeftText = (TextView) findViewById(R.id.timeLeftText);
-            timeLeft = (TextView) findViewById(R.id.timeLeft);
-            uName = (TextView) findViewById(R.id.uName);
-            missionTime = (TextView) findViewById(R.id.missionTime);
+            TextView missionName = (TextView) findViewById(R.id.missionName);
+            TextView chatBox = (TextView) findViewById(R.id.chatBox);
+            Button acceptButton = (Button) findViewById(R.id.acceptButton);
+            Button msg_send = (Button) findViewById(R.id.msg_send);
+            Button closebutton = (Button) findViewById(R.id.closebutton);
+            TextView timeLeftText = (TextView) findViewById(R.id.timeLeftText);
+            TextView timeLeft = (TextView) findViewById(R.id.timeLeft);
+            TextView uName = (TextView) findViewById(R.id.uName);
+            TextView missionTime = (TextView) findViewById(R.id.missionTime);
 
 
             missionName.setTypeface(custom_font);
@@ -534,9 +516,9 @@ public class MapsActivity
     private void append_chat_conversation(DataSnapshot snapshot) {
         Iterator i = snapshot.getChildren().iterator();
         while (i.hasNext()) {
-            chat_msg = (String) ((DataSnapshot) i.next()).getValue();
-            chat_user_name = (String) ((DataSnapshot) i.next()).getValue();
-            chat_msg_receiver = (String) (((DataSnapshot) i.next()).getValue());
+            String chat_msg = (String) ((DataSnapshot) i.next()).getValue();
+            String chat_user_name = (String) ((DataSnapshot) i.next()).getValue();
+            String chat_msg_receiver = (String) (((DataSnapshot) i.next()).getValue());
             chat_box.append(chat_user_name + " : " + chat_msg + "\n");
         }
     }
@@ -552,7 +534,6 @@ public class MapsActivity
     DatabaseReference message_root;
 
     String temp_key;
-    int counter;
 
     /* -------------------------DRAWER------------------------------------------------------------*/
     public void generateDrawer(final String name, final String username, String start, final String end, final String description) {
@@ -690,11 +671,11 @@ public class MapsActivity
 
         Long timeLeftMilliseconds = endDate.getTimeInMillis() - now.getTimeInMillis();
         if (timeLeftMilliseconds >= 6.048e+8) {
-            timeLeft.setText("More than a week");
+            timeLeft.setText(project.helpify.helpifyapp.R.string.timeGrtWeek);
         } else if (timeLeftMilliseconds >= 8.64e+7) {
-            timeLeft.setText("More than a day");
+            timeLeft.setText(project.helpify.helpifyapp.R.string.timeGrtDay);
         } else if (timeLeftMilliseconds < 0) {
-            timeLeft.setText("Time over!");
+            timeLeft.setText(project.helpify.helpifyapp.R.string.timeOver);
         } else {
             Long timeLeftHours = timeLeftMilliseconds / (60 * 60 * 1000) % 24;
             Long timeLeftMinutes = timeLeftMilliseconds / (60 * 1000) % 60;
@@ -907,7 +888,7 @@ public class MapsActivity
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
             getUserIsHidden();
-            if (isHidden != null) {
+            if (isHidden != null && isHidden == false) {
                 mDatabase.child("users").child(userId).setValue(new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), true, isHidden));
                 mDatabase.child("users").child(userId).onDisconnect().setValue(new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), false, isHidden));
                 addMarker(lastKnownLocation, 10, Color.GREEN, "USER");
@@ -991,8 +972,7 @@ public class MapsActivity
     public void onBackPressed() {
         finish();
         startActivity(new Intent(this, ProfileActivity.class));
-
-    };
+    }
 }
 
 
