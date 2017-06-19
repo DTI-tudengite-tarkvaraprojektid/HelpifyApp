@@ -2,6 +2,8 @@
 
  Ekraanipilt või eraldi loodud pilt lahendusest.
 
+![alt text](https://github.com/MReintop/HelpifyApp/blob/master/addQuest.png)
+
 ### Eesmärk
 
 Põhieesmärk: Kasutada digitaalseid tööriistu pärismaailmas ja muuta need reaalseks, mõnikord mõõdetavateks oskusteks.
