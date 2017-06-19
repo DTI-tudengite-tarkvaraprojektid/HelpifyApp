@@ -2,7 +2,6 @@
 
  Ekraanipilt või eraldi loodud pilt lahendusest.
 
-![alt text](https://github.com/MReintop/HelpifyApp/blob/master/register.png)
 ![alt text](https://github.com/MReintop/HelpifyApp/blob/master/login.png)
 ![alt text](https://github.com/MReintop/HelpifyApp/blob/master/resetPassword.png)
 ![alt text](https://github.com/MReintop/HelpifyApp/blob/master/loggedInPage.png)
