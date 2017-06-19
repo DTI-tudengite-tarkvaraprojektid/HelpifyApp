@@ -425,6 +425,8 @@ public class MapsActivity
                         }
                     }
 
+                    // TEST
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }
