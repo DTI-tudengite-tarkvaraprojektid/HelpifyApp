@@ -35,6 +35,13 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
         TextView tv = (TextView) getActivity().findViewById(R.id.tv);
 
         //Display the user changed time on TextView
-        tv.setText(hourOfDay + ":" + minute);
+        tv.setText(stringifyNumber(hourOfDay) + ":" + stringifyNumber(minute));
+    }
+
+    private String stringifyNumber(Integer number) {
+        if (number < 10) {
+            return "0" + number.toString();
+        }
+        return number.toString();
     }
 }
