@@ -2,38 +2,38 @@
 
  Ekraanipilt või eraldi loodud pilt lahendusest.
 
-## Eesmärk
+### Eesmärk
 
 Põhieesmärk: Kasutada digitaalseid tööriistu pärismaailmas ja muuta need reaalseks, mõnikord mõõdetavateks oskusteks.
 
-## Kirjeldus
+### Kirjeldus
 
 Lühikirjeldus: Inimesed saavad luua kaardi peal missioone. Teised inimesed saavad antud missioone aksepteerida 
 ja aidata antud inimest. /* Teisi inimesi aidates ja missioone luues saavad inimesed oskuste alla oskuspunkte
 ja kogemuspunkte, mis teevad avatari kaardil suuremaks.*/
 
 
-## Viide instituudile ja paar sõna, et mille raames projekt loodud (üks lause nt, et tehtud
-selle ja selle raames….)
+### Viide instituudile ja paar sõna, et mille raames projekt loodud
 Helpify projekt on tehtud selle raames, et Digitehnoloogiate instituudi magistri tasemel õppival tudengil on vaja järgmiseks aastaks magistri tööks projekt teha, meie osaleme projektis tarkvara arenduse praktika raames.
 
 
-## Kasutatud tehnoloogiad ja nende versioonid;
-Android Studio 2.3
-Firebase
-Git
+### Kasutatud tehnoloogiad ja nende versioonid
+
+* Android Studio 2.3
+* Firebase
+* Git
 
 
-## Autorid
+### Autorid
 
-Alar Aasa
-Kristjan Liiva
-Mariam Reintop
-Martin Holtsmeier
-Stanislav Majevski
+* Alar Aasa
+* Kristjan Liiva
+* Mariam Reintop
+* Martin Holtsmeier
+* Stanislav Majevski
 
 
-## Paigaldusjuhised
+### Paigaldusjuhised
 
 Download ja Install Android Studio.
 Alla laadida Android Studio aadressil https://developer.android.com/studio/index.html
@@ -67,5 +67,5 @@ Avada projekti firebase andmebaas.
 Minna firebase lehele. Logida sisse emailiga helpifytest@gmail.com ja parooliga Testtest. Valida projekt Helpify.
 
 
-## Viide litsentsile.
+## Litsents
 https://github.com/MReintop/HelpifyApp/blob/master/LICENCE.txt
