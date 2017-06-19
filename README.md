@@ -51,6 +51,9 @@ Kui ei ole siis teha linnuke Google Repository ees ja klõpsata nupule OK.
 
 ![alt text](https://github.com/MReintop/HelpifyApp/blob/master/googleRepositoryUpdate.png)
 
+Install dependencies
+Vajadusel tuleb installeerida erinevaid sõltuvusi/pakette, millest Android Studio annab märku ning pakub ka lingi selle jaoks.
+
 Update other dependencies.
 Avada kaust app kohast, kuhu sai git repository kloonitud.
 Antud kaustast avada build.gradle fail.
