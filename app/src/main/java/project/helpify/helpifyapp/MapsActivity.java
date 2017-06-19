@@ -888,7 +888,7 @@ public class MapsActivity
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
             getUserIsHidden();
-            if (isHidden != null && isHidden == false) {
+            if (isHidden != null) {
                 mDatabase.child("users").child(userId).setValue(new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), true, isHidden));
                 mDatabase.child("users").child(userId).onDisconnect().setValue(new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), false, isHidden));
                 addMarker(lastKnownLocation, 10, Color.GREEN, "USER");
