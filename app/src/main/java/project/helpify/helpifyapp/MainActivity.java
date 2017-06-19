@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             editor.commit();
                             finish();
                             startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-                            Toast.makeText(MainActivity.this, "Siin peaks suunama", Toast.LENGTH_SHORT).show();
+                            
 
 
                         } else {
