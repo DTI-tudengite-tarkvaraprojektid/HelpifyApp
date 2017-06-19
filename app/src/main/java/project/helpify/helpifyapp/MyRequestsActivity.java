@@ -217,8 +217,11 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                         // TODO Auto-generated method stub
                     /*      Your code   to get date and time    */
                         selectedmonth = selectedmonth + 1;
-                        editTextDate.setText(selectedday + "/" + "0" + selectedmonth + "/" + selectedyear);
-                        date = selectedday + "/" + "0" + selectedmonth + "/" + selectedyear;
+
+                            date = stringifyNumber(selectedday) + "/" + stringifyNumber(selectedday) + "/" + selectedyear;
+                            editTextDate.setText(date);
+
+
                     }
                 }, mYear, mMonth, mDay);
                 mDatePicker.setTitle("Select Date");
@@ -290,6 +293,13 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                 }
             }
         });
+    }
+
+    private String stringifyNumber(Integer number) {
+        if (number < 10) {
+            return "0" + number.toString();
+        }
+        return number.toString();
     }
 
     @Override
