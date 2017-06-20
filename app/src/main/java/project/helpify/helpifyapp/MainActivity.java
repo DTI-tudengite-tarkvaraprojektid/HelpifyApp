@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                         } else {
-                            Toast.makeText(MainActivity.this, "Something went wrong, try again :(", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Password is too short!", Toast.LENGTH_SHORT).show();
                         }
                     }
 

@@ -21,8 +21,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,7 +35,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-
 
 
 /**
@@ -54,7 +57,6 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
     private TextView SkillsView;
 
 
-
     @Override
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
         //Text in forms centered
         EditText t = (EditText) findViewById(R.id.editTextName);
         t.setGravity(Gravity.CENTER);
-        EditText p = (EditText) findViewById(R.id.editTextQuest);
+        final EditText p = (EditText) findViewById(R.id.editTextQuest);
         p.setGravity(Gravity.CENTER);
 
 
@@ -79,12 +81,11 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
         Button SkillsSelectButton = (Button) findViewById(R.id.SkillsSelect);
 
         //FONTS
-        try{
+        try {
 
-            Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Nirmala.ttf");
-            Typeface custom_font_bold = Typeface.createFromAsset(getAssets(),"fonts/NirmalaB.ttf");
-            Typeface custom_font_slim = Typeface.createFromAsset(getAssets(),"fonts/NirmalaS.ttf");
-
+            Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Nirmala.ttf");
+            Typeface custom_font_bold = Typeface.createFromAsset(getAssets(), "fonts/NirmalaB.ttf");
+            Typeface custom_font_slim = Typeface.createFromAsset(getAssets(), "fonts/NirmalaS.ttf");
 
 
             textViewDataChange.setTypeface(custom_font_bold);
@@ -97,9 +98,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
             SkillsSelectButton.setTypeface(custom_font_bold);
 
 
-
-
-        }catch(Exception exc){
+        } catch (Exception exc) {
             Toast.makeText(MyRequestsActivity.this, " ", Toast.LENGTH_SHORT).show();
         }
 
@@ -108,7 +107,6 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
 
         listSkills = getResources().getStringArray(R.array.skills_list);
         checkedSkills = new boolean[listSkills.length];
-
 
 
         // https://github.com/codingdemos/MultichoiceTutorial/blob/master/app/src/main/java/com/example/multichoicetutorial/MainActivity.java
@@ -121,7 +119,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                 mBuilder.setMultiChoiceItems(listSkills, checkedSkills, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        if(isChecked){
+                        if (isChecked) {
                             mUserSkills.add(which);
                         } else {
                             mUserSkills.remove(Integer.valueOf(which));
@@ -134,9 +132,9 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String skill = "";
-                        for(int i = 0; i < mUserSkills.size(); i++){
+                        for (int i = 0; i < mUserSkills.size(); i++) {
                             skill = skill + listSkills[mUserSkills.get(i)];
-                            if(i != mUserSkills.size() - 1){
+                            if (i != mUserSkills.size() - 1) {
                                 skill = skill + ",";
                             }
                         }
@@ -155,7 +153,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                 mBuilder.setNeutralButton("  Clear All", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        for(int i = 0; i < checkedSkills.length; i++){
+                        for (int i = 0; i < checkedSkills.length; i++) {
                             checkedSkills[i] = false;
                             mUserSkills.clear();
                             mSelectedSkills.setText("");
@@ -173,30 +171,25 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
         buttonSaveUserData = (Button) findViewById(R.id.buttonSaveUserData);
         buttonBack = (ImageButton) findViewById(R.id.buttonBack);
 
-        editTextDate  = (TextView) findViewById(R.id.editTextDate);
-        tv =(TextView) findViewById(R.id.tv);
+        editTextDate = (TextView) findViewById(R.id.editTextDate);
+        tv = (TextView) findViewById(R.id.tv);
         tv.setGravity(Gravity.CENTER);
         editTextDate.setGravity(Gravity.CENTER);
 
         buttonBack.setOnClickListener(this);
 
 
-        tv.setOnClickListener(new View.OnClickListener(){
+        tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 DialogFragment newFragment = new TimePickerFragment();
-                newFragment.show(getFragmentManager(),"TimePicker");
+                newFragment.show(getFragmentManager(), "TimePicker");
 
             }
 
 
-
-
         });
-
-
-
 
 
         //DATE PICKER
@@ -218,8 +211,8 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                     /*      Your code   to get date and time    */
                         selectedmonth = selectedmonth + 1;
 
-                            date = stringifyNumber(selectedday) + "/" + stringifyNumber(selectedmonth) + "/" + selectedyear;
-                            editTextDate.setText(date);
+                        date = stringifyNumber(selectedday) + "/" + stringifyNumber(selectedmonth) + "/" + selectedyear;
+                        editTextDate.setText(date);
 
 
                     }
@@ -229,9 +222,27 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
-        //**
+        FirebaseDatabase.getInstance().getReference().child("quests").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String current_user = firebaseAuth.getCurrentUser().getUid();
+                    String key = snapshot.getKey();
 
-         buttonSaveUserData.setOnClickListener(new View.OnClickListener() {
+                    if (key.equals(current_user)) {
+                        String qQuest = (String) snapshot.child("quest").getValue();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        buttonSaveUserData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v == buttonSaveUserData) {
@@ -240,10 +251,11 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                     String user_quest = quest.getText().toString();
                     String user_name = name.getText().toString();
                     String time = tv.getText().toString();
-                    String dateTime = date+" "+time;
+                    String dateTime = date + " " + time;
                     String userId = firebaseAuth.getCurrentUser().getUid();
                     String userEmail = firebaseAuth.getCurrentUser().getEmail();
                     mDatabase = FirebaseDatabase.getInstance().getReference();
+
 
                     //http://tutorials.jenkov.com/java-internationalization/simpledateformat.html
                     String date_pattern = "dd/MM/yyyy HH:mm";
@@ -258,22 +270,22 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                         // System.out.println(c_Date.compareTo(d_Date));
                         //https://stackoverflow.com/questions/23360599/regular-expression-for-dd-mm-yyyy-hhmm
                         // boolean pattern_check = dateTime.matches("(0[1-9]|1\\d|2\\d|3[01])/(0[1-9]|1[12])/(20)\\d{2}\\s+(0[0-9]|1[0-9]|2[0-3])\\:(0[0-9]|[1-5][0-9])$");
-                        if(e_Date.compareTo(d_Date)>0){
-                            if(c_Date.compareTo(d_Date) == 0 || c_Date.compareTo(d_Date) < 0){
-                                if(e_Date.compareTo(d_Date) > 0){
-                                    if(user_quest.equals("") || dateTime.equals("") || user_name.equals("")){
-                                        Quest new_quest = new Quest("NULL","NULL", userEmail, "NULL", "NULL");
+                        if (e_Date.compareTo(d_Date) > 0) {
+                            if (c_Date.compareTo(d_Date) == 0 || c_Date.compareTo(d_Date) < 0) {
+                                if (e_Date.compareTo(d_Date) > 0) {
+                                    if (user_quest.equals("") || dateTime.equals("") || user_name.equals("")) {
+                                        Quest new_quest = new Quest("NULL", "NULL", userEmail, "NULL", "NULL");
                                         mDatabase.child("quests").child(userId).setValue(new_quest);
                                         Toast.makeText(MyRequestsActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
                                     } else {
-                                        if(mUserSkills.size() == 0){
+                                        if (mUserSkills.size() == 0) {
                                             Toast.makeText(MyRequestsActivity.this, "At least one skill must be chosen", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
-                                        Quest new_user_quest = new Quest(current_date,dateTime,userEmail,user_name,user_quest);
+                                        Quest new_user_quest = new Quest(current_date, dateTime, userEmail, user_name, user_quest);
                                         mDatabase.child("quests").child(userId).setValue(new_user_quest);
-                                        for(int i = 0; i < mUserSkills.size(); i++){
-                                            mDatabase.child("quests").child(userId).child("skill"+i).setValue(listSkills[mUserSkills.get(i)]);
+                                        for (int i = 0; i < mUserSkills.size(); i++) {
+                                            mDatabase.child("quests").child(userId).child("skill" + i).setValue(listSkills[mUserSkills.get(i)]);
                                         }
                                         mDatabase.child("quests").child(userId).child("accepted").setValue(false);
                                         Toast.makeText(MyRequestsActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
@@ -303,7 +315,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
     }
 
     @Override
-    public void onClick (View v) {
+    public void onClick(View v) {
         if (v == buttonBack) {
             finish();
             startActivity(new Intent(this, ProfileActivity.class));
@@ -315,5 +327,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
         finish();
         startActivity(new Intent(this, ProfileActivity.class));
 
-    };
+    }
+
+    ;
 }
