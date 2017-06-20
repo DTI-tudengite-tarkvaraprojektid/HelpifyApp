@@ -66,7 +66,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
 
 
         //Text in forms centered
-        EditText t = (EditText) findViewById(R.id.editTextName);
+        final EditText t = (EditText) findViewById(R.id.editTextName);
         t.setGravity(Gravity.CENTER);
         final EditText p = (EditText) findViewById(R.id.editTextQuest);
         p.setGravity(Gravity.CENTER);
@@ -74,8 +74,8 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
 
         TextView textViewDataChange = (TextView) findViewById(R.id.textViewDataChange);
 
-        TextView fontdate = (TextView) findViewById(R.id.editTextDate);
-        TextView fonttime = (TextView) findViewById(R.id.tv);
+        final TextView fontdate = (TextView) findViewById(R.id.editTextDate);
+        final TextView fonttime = (TextView) findViewById(R.id.tv);
         Button SkillsSelect = (Button) findViewById(R.id.SkillsSelect);
         Button buttonSaveUserDatas = (Button) findViewById(R.id.buttonSaveUserData);
         Button SkillsSelectButton = (Button) findViewById(R.id.SkillsSelect);
@@ -231,6 +231,15 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
 
                     if (key.equals(current_user)) {
                         String qQuest = (String) snapshot.child("quest").getValue();
+                        String qName = (String) snapshot.child("name").getValue();
+                        String qDate = (String) snapshot.child("endDate").getValue();
+
+                        t.setText(qName);
+                        p.setText(qQuest);
+
+                        String [] pieces = qDate.split(" ");
+                        fontdate.setText(pieces[0]);
+                        fonttime.setText(pieces[1]);
 
                     }
                 }
