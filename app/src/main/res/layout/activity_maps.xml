@@ -60,11 +60,10 @@
             android:id="@+id/questNotifier"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:background="@android:drawable/ic_dialog_info"
-            map:srcCompat="@android:drawable/ic_dialog_info"
+            android:background="@android:drawable/ic_menu_info_details"
+            map:srcCompat="@android:drawable/ic_menu_info_details"
             android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/myLocationButton"
-            android:layout_marginTop="5dp"/>
+            android:layout_toLeftOf="@+id/myLocationButton" />
 
         <TextView
             android:id="@+id/message"
