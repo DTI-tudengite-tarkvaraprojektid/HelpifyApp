@@ -52,7 +52,6 @@ Kui ei ole siis teha linnuke Google Repository ees ja klõpsata nupule OK.
 
 ![alt text](https://github.com/MReintop/HelpifyApp/blob/master/googleRepositoryUpdate.png)
 
-
 **Update other dependencies.**
 Avada kaust app kohast, kuhu sai git repository kloonitud.
 Antud kaustast avada build.gradle fail.
@@ -66,9 +65,12 @@ Kui Androidi telefon puudub, saab Android Studios kasutada ka emulaatorit.
 
 Rakenduse tööle panekuks vajutage "Run" nupule ning valige seade või emulaator. Kui ühtegi seadet või emulaatorit pole, vajutage "Create New Virtual Device", "Next", Nougat kõrval vajutage "Download", "Next", "Finsh", "Run". Arvutil võib vaja olla ka HAXM pakette, mida Android Studio võimaldab kergelt alla laadida. Emulaatori seaded võivad jääda vaikimisi. Pärast seda avaneb Androidi emulaator ning selles rakendus.
 
+**Gradle valik**
+Gradle-iks valige kõige ülemises kaustas olev gradle.
+
 ![alt text](https://github.com/MReintop/HelpifyApp/blob/master/runAppInPhone.png)
  Õpetus: https://developer.android.com/studio/run/managing-avds.html
-
+ 
 **Avada projekti firebase andmebaas.**
 Minna firebase lehele. Logida sisse emailiga helpifytest@gmail.com ja parooliga Testtest. Valida projekt Helpify.
 
