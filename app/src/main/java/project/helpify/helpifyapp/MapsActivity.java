@@ -387,27 +387,20 @@ public class MapsActivity
 
                             if (user.isOnline && user.isHidden != null && !user.isHidden) {
                                 // IF USER HAS ENTERED QUEST, THEN HIS MARKER WILL BE RED, OTHERWISE BLUE
-                                if (user.email.equals(quest.email) && quest.quest.equals("NULL")) {
+                                if (user.email.equals(quest.email) && !questAfterUserTimestamp(user, quest)) {
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
-                                    break;
                                 } else if (!quests.contains(user.email)) {
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
-                                    break;
-                                } else if (user.email.equals(quest.email) && !quest.quest.equals("NULL")) {
-                                    questAfterUserTimestamp(user, quest);
-                                    break;
-                                } else {
+                                } else if (user.email.equals(quest.email) && !quest.quest.equals("NULL") && questAfterUserTimestamp(user, quest)) {
                                     addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
-                                    break;
                                 }
-                            } else {
-                                questAfterUserTimestamp(user, quest);
-                                 break;
+                            } else if (!user.isOnline && !user.isHidden && user.email.equals(quest.email)) {
+                                if (questAfterUserTimestamp(user, quest)) {
+                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
+                                }
                             }
                         }
                     }
-
-                    // TEST
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
@@ -766,78 +759,24 @@ public class MapsActivity
     }
 
 
-    private void questAfterUserTimestamp(final User user, final Quest quest) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-        cal.setTimeInMillis(user.getTimestampLong());
-
-        String month;
-        String day;
-        String hour;
-        String minutes;
-
-        if (cal.get(Calendar.MINUTE) < 10) {
-            minutes = "0" + cal.get(Calendar.MINUTE);
-
-        } else {
-            minutes = "" + cal.get(Calendar.MINUTE);
-        }
-
-        if ((cal.get(Calendar.HOUR_OF_DAY) + 3) < 10) {
-            hour = "0" + (cal.get(Calendar.HOUR_OF_DAY) + 3);
-
-        } else {
-            hour = "" + (cal.get(Calendar.HOUR_OF_DAY) + 3);
-        }
-
-        if (cal.get(Calendar.DAY_OF_MONTH) < 10) {
-            day = "0" + cal.get(Calendar.DAY_OF_MONTH);
-
-        } else {
-            day = "" + cal.get(Calendar.DAY_OF_MONTH);
-        }
-
-        if ((cal.get(Calendar.MONTH) + 1) < 10) {
-            month = "0" + (cal.get(Calendar.MONTH) + 1);
-
-        } else {
-            month = "" + (cal.get(Calendar.MONTH) + 1);
-        }
-
-        String userTimestampToDate = day +
-                "/" + month +
-                "/" + cal.get(Calendar.YEAR) +
-                " " + hour +
-                ":" + minutes;
+    private boolean questAfterUserTimestamp(final User user, final Quest quest) {
 
         if (user.email.equals(quest.email)) {
 
             if (!quest.endDate.equals("NULL")) {
 
-                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-
                 try {
-                    Date userDate = format.parse(userTimestampToDate);
-                    Date questDate = format.parse(quest.endDate);
+                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                    Calendar userDate = Calendar.getInstance();
+                    Calendar questDate = new GregorianCalendar();
+                    questDate.setTime(format.parse(quest.endDate));
                     System.out.println(questDate);
                     System.out.println(userDate);
-                    if (questDate.after(userDate)) {
 
-                        addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
+                    Long left = questDate.getTimeInMillis() - userDate.getTimeInMillis();
 
-                    } else if (questDate.equals(userDate)) {
-                        if (Integer.parseInt(quest.endDate.substring(11, 13)) > Integer.parseInt(userTimestampToDate.substring(11, 13))) {
-
-                            setMessage(true, userDate.toString() + "\n" + questDate.toString());
-                        } else if (Integer.parseInt(quest.endDate.substring(11, 13)) == Integer.parseInt(userTimestampToDate.substring(11, 13)) &&
-                                Integer.parseInt(quest.endDate.substring(14, 16)) >= Integer.parseInt(userTimestampToDate.substring(14, 16))) {
-
-                            addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
-                        }
-                    } else {
-                        if (user.isOnline) {
-                            addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
-                        }
+                    if (left > 0 || left == 0) {
+                        return true;
                     }
 
                 } catch (ParseException e) {
@@ -845,8 +784,8 @@ public class MapsActivity
                 }
             }
         }
+        return false;
     }
-
 
     private void generateMap() {
         /*
