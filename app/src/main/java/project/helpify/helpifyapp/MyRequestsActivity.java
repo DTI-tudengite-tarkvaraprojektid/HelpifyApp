@@ -156,9 +156,9 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                         for (int i = 0; i < checkedSkills.length; i++) {
                             checkedSkills[i] = false;
                             mUserSkills.clear();
-                            mSelectedSkills.setText("");
                         }
                     }
+
                 });
 
                 AlertDialog mDialog = mBuilder.create();
@@ -237,7 +237,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                         t.setText(qName);
                         p.setText(qQuest);
 
-                        String [] pieces = qDate.split(" ");
+                        String[] pieces = qDate.split(" ");
                         fontdate.setText(pieces[0]);
                         fonttime.setText(pieces[1]);
 
@@ -247,7 +247,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Toast.makeText(MyRequestsActivity.this, "" + databaseError.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -260,6 +260,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                     String user_quest = quest.getText().toString();
                     String user_name = name.getText().toString();
                     String time = tv.getText().toString();
+                    String date = editTextDate.getText().toString();
                     String dateTime = date + " " + time;
                     String userId = firebaseAuth.getCurrentUser().getUid();
                     String userEmail = firebaseAuth.getCurrentUser().getEmail();
@@ -268,10 +269,9 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
 
                     //http://tutorials.jenkov.com/java-internationalization/simpledateformat.html
                     String date_pattern = "dd/MM/yyyy HH:mm";
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(date_pattern, Locale.US);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(date_pattern);
                     String current_date = simpleDateFormat.format(new Date());
                     try {
-                        Date c_Date = simpleDateFormat.parse(current_date);
                         Date d_Date = simpleDateFormat.parse(current_date);
                         Date e_Date = simpleDateFormat.parse(dateTime);
                         System.out.println(e_Date);
@@ -280,28 +280,33 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                         //https://stackoverflow.com/questions/23360599/regular-expression-for-dd-mm-yyyy-hhmm
                         // boolean pattern_check = dateTime.matches("(0[1-9]|1\\d|2\\d|3[01])/(0[1-9]|1[12])/(20)\\d{2}\\s+(0[0-9]|1[0-9]|2[0-3])\\:(0[0-9]|[1-5][0-9])$");
                         if (e_Date.compareTo(d_Date) > 0) {
-                            if (c_Date.compareTo(d_Date) == 0 || c_Date.compareTo(d_Date) < 0) {
-                                if (e_Date.compareTo(d_Date) > 0) {
-                                    if (user_quest.equals("") || dateTime.equals("") || user_name.equals("")) {
-                                        Quest new_quest = new Quest("NULL", "NULL", userEmail, "NULL", "NULL");
-                                        mDatabase.child("quests").child(userId).setValue(new_quest);
-                                        Toast.makeText(MyRequestsActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        if (mUserSkills.size() == 0) {
-                                            Toast.makeText(MyRequestsActivity.this, "At least one skill must be chosen", Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
-                                        Quest new_user_quest = new Quest(current_date, dateTime, userEmail, user_name, user_quest);
-                                        mDatabase.child("quests").child(userId).setValue(new_user_quest);
-                                        for (int i = 0; i < mUserSkills.size(); i++) {
-                                            mDatabase.child("quests").child(userId).child("skill" + i).setValue(listSkills[mUserSkills.get(i)]);
-                                        }
-                                        mDatabase.child("quests").child(userId).child("accepted").setValue(false);
-                                        Toast.makeText(MyRequestsActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
 
-                                    }
-                                }
+                            if (user_quest.length() < 4) {
+                                Toast.makeText(MyRequestsActivity.this, "Description must be at least 4 characters long", Toast.LENGTH_SHORT).show();
+                                return;
                             }
+                            if (user_quest.contains(".") || user_name.contains(".") || user_quest.contains("#") || user_name.contains("#") ||
+                                    user_quest.contains("$") || user_name.contains("$") || user_quest.contains("]") || user_name.contains("]") || user_quest.contains("[") || user_name.contains("[")) {
+                                Toast.makeText(MyRequestsActivity.this, "Description or caption must not contain . # $ [ ]", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            if (user_quest.equals("") || dateTime.equals("") || user_name.equals("")) {
+                                Toast.makeText(MyRequestsActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            if (mUserSkills.size() == 0) {
+                                Toast.makeText(MyRequestsActivity.this, "At least one skill must be chosen", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Quest new_user_quest = new Quest(current_date, dateTime, userEmail, user_name, user_quest);
+                                mDatabase.child("quests").child(userId).setValue(new_user_quest);
+                                for (int i = 0; i < mUserSkills.size(); i++) {
+                                    mDatabase.child("quests").child(userId).child("skill" + i).setValue(listSkills[mUserSkills.get(i)]);
+                                }
+                                mDatabase.child("quests").child(userId).child("accepted").setValue(false);
+                                Toast.makeText(MyRequestsActivity.this, "Quest saved!", Toast.LENGTH_SHORT).show();
+
+                            }
+
                         } else {
                             Toast.makeText(MyRequestsActivity.this, "Quest must expire in the future.", Toast.LENGTH_SHORT).show();
                             System.out.println(dateTime);
