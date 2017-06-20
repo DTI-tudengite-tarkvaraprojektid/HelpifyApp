@@ -210,7 +210,7 @@ public class MapsActivity
             }
         });
 
-
+        //a
         ImageButton messageIcon = (ImageButton) findViewById(R.id.messageRecieve);
         messageIcon.setOnClickListener(new View.OnClickListener() {
             @Override
