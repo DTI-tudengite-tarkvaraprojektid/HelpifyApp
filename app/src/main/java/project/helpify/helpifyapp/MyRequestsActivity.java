@@ -70,7 +70,7 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
         //Text in forms centered
         EditText t = (EditText) findViewById(R.id.editTextName);
         t.setGravity(Gravity.CENTER);
-        EditText p = (EditText) findViewById(R.id.editTextQuest);
+        final EditText p = (EditText) findViewById(R.id.editTextQuest);
         p.setGravity(Gravity.CENTER);
 
 
@@ -229,29 +229,6 @@ public class MyRequestsActivity extends AppCompatActivity implements View.OnClic
                 mDatePicker.show();
             }
         });
-
-        String user = firebaseAuth.getCurrentUser().getUid();
-        mDatabase.child("quests").child(user).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-
-                   for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    String qName = (String) snapshot.child("name").getValue();
-                    String qQuest = (String) snapshot.child("quest").getValue();
-                    String qDate = (String) snapshot.child("endDate").getValue();
-
-                       System.out.println(qName+" "+qQuest+" "+qDate);
-
-                }}
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
 
          buttonSaveUserData.setOnClickListener(new View.OnClickListener() {
             @Override
