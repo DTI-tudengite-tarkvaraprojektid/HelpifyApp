@@ -1,8 +1,7 @@
 # Helpify
 
- Ekraanipilt või eraldi loodud pilt lahendusest.
-
-![alt text](https://github.com/MReintop/HelpifyApp/blob/master/addQuest.png)
+![alt text](https://github.com/MReintop/HelpifyApp/blob/master/login.png)
+![alt text](https://github.com/MReintop/HelpifyApp/blob/master/helpRequest.png)
 
 ### Eesmärk
 

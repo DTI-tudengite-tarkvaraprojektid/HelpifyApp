@@ -453,7 +453,7 @@ public class MapsActivity
         mMap.setOnCircleClickListener(new GoogleMap.OnCircleClickListener() {
             @Override
             public void onCircleClick(final Circle circle) {
-                if (!circle.getTag().toString().equals("NULL") && !circle.getTag().toString().equals("USER")) {
+                if (!circle.getTag().toString().equals("NULL") && !circle.getTag().toString().equals("USER") && circle.getFillColor() != Color.BLUE) {
                     FirebaseDatabase.getInstance().getReference().child("quests")
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
