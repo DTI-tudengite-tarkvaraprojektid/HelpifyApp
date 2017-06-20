@@ -33,7 +33,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -49,15 +48,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -73,6 +69,7 @@ public class MapsActivity
     public Boolean isHidden;
     public Boolean newUserCreated = false;
     int MY_PERMISSIONS_REQUEST_COARSE_LOCATION = 0x111;
+    MapsFunctions mMapsFunctions = new MapsFunctions();
     // FIREBASE
 
     private DatabaseReference mDatabase;
@@ -210,7 +207,6 @@ public class MapsActivity
             }
         });
 
-        //a
         ImageButton messageIcon = (ImageButton) findViewById(R.id.messageRecieve);
         messageIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,7 +222,6 @@ public class MapsActivity
                                         generateDrawer(quest.name, quest.email, quest.startDate, quest.endDate, quest.quest);
                                         chat_box.setText(quest.quest + "\n");
                                         showDrawer();
-
                                         break;
                                     }
                                 }
@@ -257,7 +252,6 @@ public class MapsActivity
                 }
             }
         });
-
     }
 
     private void generateUserMarkers() {
@@ -270,9 +264,9 @@ public class MapsActivity
                             if (user.isHidden == null) {
                                 user.isHidden = false;
                             }
-                            hasUserTasks(user);
+                            mMapsFunctions.hasUserTasks(user, mMap);
                             hasUserMessages(user);
-                            hasUserQuests(user);
+                            hasUserQuests();
                         }
                     }
 
@@ -283,7 +277,7 @@ public class MapsActivity
                 });
     }
 
-    private void hasUserQuests(final User user) {
+    private void hasUserQuests() {
         FirebaseDatabase.getInstance().getReference().child("quests")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -366,44 +360,6 @@ public class MapsActivity
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
-    }
-
-    private void hasUserTasks(final User user) {
-
-        FirebaseDatabase.getInstance().getReference().child("quests")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        ArrayList<String> quests = new ArrayList<>();
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            Quest quest = snapshot.getValue(Quest.class);
-                            quests.add(quest.email);
-                        }
-
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            Quest quest = snapshot.getValue(Quest.class);
-
-                            if (user.isOnline && user.isHidden != null && !user.isHidden) {
-                                // IF USER HAS ENTERED QUEST, THEN HIS MARKER WILL BE RED, OTHERWISE BLUE
-                                if (user.email.equals(quest.email) && !questAfterUserTimestamp(user, quest)) {
-                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
-                                } else if (!quests.contains(user.email)) {
-                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.BLUE, user.email);
-                                } else if (user.email.equals(quest.email) && !quest.quest.equals("NULL") && questAfterUserTimestamp(user, quest)) {
-                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
-                                }
-                            } else if (!user.isOnline && !user.isHidden && user.email.equals(quest.email)) {
-                                if (questAfterUserTimestamp(user, quest)) {
-                                    addMarker(new LatLng(user.latitude, user.longitude), 400, Color.RED, user.email);
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
                     }
                 });
     }
@@ -546,7 +502,6 @@ public class MapsActivity
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //   chat_box.setText("");
                 // unique key
                 temp_key = mRoot2.push().getKey();
                 root.updateChildren(map);
@@ -565,7 +520,6 @@ public class MapsActivity
                 append_chat_conversation(dataSnapshot);
 
             }
-
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -606,7 +560,6 @@ public class MapsActivity
 
             }
         });
-
 
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -658,8 +611,8 @@ public class MapsActivity
             e.printStackTrace();
         }
 
-        String time = stringifyNumber(startDate.get(Calendar.HOUR_OF_DAY)) + ":" + stringifyNumber(startDate.get(Calendar.MINUTE)) +
-                " - " + stringifyNumber(endDate.get(Calendar.HOUR_OF_DAY)) + ":" + stringifyNumber(endDate.get(Calendar.MINUTE));
+        String time = mMapsFunctions.stringifyNumber(startDate.get(Calendar.HOUR_OF_DAY)) + ":" + mMapsFunctions.stringifyNumber(startDate.get(Calendar.MINUTE)) +
+                " - " + mMapsFunctions.stringifyNumber(endDate.get(Calendar.HOUR_OF_DAY)) + ":" + mMapsFunctions.stringifyNumber(endDate.get(Calendar.MINUTE));
         missionTime.setText(time);
 
         Long timeLeftMilliseconds = endDate.getTimeInMillis() - now.getTimeInMillis();
@@ -673,7 +626,7 @@ public class MapsActivity
             Long timeLeftHours = timeLeftMilliseconds / (60 * 60 * 1000) % 24;
             Long timeLeftMinutes = timeLeftMilliseconds / (60 * 1000) % 60;
 
-            timeLeft.setText(stringifyNumber(timeLeftHours) + ":" + stringifyNumber(timeLeftMinutes));
+            timeLeft.setText(mMapsFunctions.stringifyNumber(timeLeftHours) + ":" + mMapsFunctions.stringifyNumber(timeLeftMinutes));
         }
     }
 
@@ -696,20 +649,6 @@ public class MapsActivity
     }
 
     /* -------------------------/DRAWER------------------------------------------------------------*/
-    private String stringifyNumber(Integer number) {
-        if (number < 10) {
-            return "0" + number.toString();
-        }
-        return number.toString();
-    }
-
-    private String stringifyNumber(Long number) {
-        if (number < 10) {
-            return "0" + number.toString();
-        }
-        return number.toString();
-    }
-
 
     private void checkAcceptance() {
         final Button accept_button = (Button) findViewById(R.id.acceptButton);
@@ -758,35 +697,6 @@ public class MapsActivity
         });
     }
 
-
-    private boolean questAfterUserTimestamp(final User user, final Quest quest) {
-
-        if (user.email.equals(quest.email)) {
-
-            if (!quest.endDate.equals("NULL")) {
-
-                try {
-                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    Calendar userDate = Calendar.getInstance();
-                    Calendar questDate = new GregorianCalendar();
-                    questDate.setTime(format.parse(quest.endDate));
-                    System.out.println(questDate);
-                    System.out.println(userDate);
-
-                    Long left = questDate.getTimeInMillis() - userDate.getTimeInMillis();
-
-                    if (left > 0 || left == 0) {
-                        return true;
-                    }
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return false;
-    }
-
     private void generateMap() {
         /*
         Check Android GPS permissions
@@ -830,7 +740,7 @@ public class MapsActivity
             if (isHidden != null) {
                 mDatabase.child("users").child(userId).setValue(new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), true, isHidden));
                 mDatabase.child("users").child(userId).onDisconnect().setValue(new User(userEmail, mLastLocation.getLatitude(), mLastLocation.getLongitude(), false, isHidden));
-                addMarker(lastKnownLocation, 10, Color.GREEN, "USER");
+                mMapsFunctions.addMarker(lastKnownLocation, 10, Color.GREEN, "USER", mMap);
             }
             if (!startingCameraPosition) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastKnownLocation, 14.0f));
@@ -839,7 +749,6 @@ public class MapsActivity
         } else {
             setMessage(true, "Your location could not be accessed.");
         }
-
         //OTHER LOCATION MARKERS
         generateUserMarkers();
 
@@ -864,35 +773,6 @@ public class MapsActivity
         }
     }
 
-
-    private void addMarker(LatLng location, Integer size, Integer color, String tag) {
-        try {
-            Circle circle = mMap.addCircle(new CircleOptions()
-                    .center(location)
-                    .radius(10)
-                    .strokeColor(Color.TRANSPARENT)
-                    .fillColor(color));
-
-            circle.setTag(tag);
-            circle.setClickable(true);
-            circle.setZIndex(1000 - size);
-
-            mMap.addCircle(new CircleOptions()
-                    .center(location)
-                    .radius(20)
-                    .strokeColor(Color.BLUE)
-                    .strokeWidth(1.5f));
-
-            circle.setTag(tag);
-            circle.setClickable(true);
-            circle.setZIndex(1000 - size);
-
-        } catch (java.lang.NullPointerException e) {
-            setMessage(true, "Error M" + Thread.currentThread().getStackTrace()[2].getLineNumber());
-        }
-    }
-
-
     @Override
     public void onCameraMove() {
         if (drawerUp) {
@@ -906,14 +786,12 @@ public class MapsActivity
         }
     }
 
-
     @Override
     public void onBackPressed() {
         finish();
         startActivity(new Intent(this, ProfileActivity.class));
     }
 }
-
 
 //https://stackoverflow.com/questions/3438276/how-to-change-the-text-on-the-action-bar/3438352#3438352
 

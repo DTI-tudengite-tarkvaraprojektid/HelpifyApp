@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "174291538412",
+    "firebase_url": "xxxxxxxxxxx",
+    "project_id": "xxxxxxxxxxx",
+    "storage_bucket": "xxxxxxxxxxx.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174291538412:android:f9dde163871ab8fa",
+        "android_client_info": {
+          "package_name": "project.xxxxxxxxxxx.xxxxxxxxxxx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "174291538412-r2023qdghc180kn1bsoj32iudle2gf12.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "project.xxxxxxxxxxx.xxxxxxxxxxx",
+            "certificate_hash": "be12ca72414d82049d9489f7d38c0b89953d8c64"
+          }
+        },
+        {
+          "client_id": "174291538412-8fk6gdudronv7tcc9hc3vl01midll7bo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "project.helpify.helpifyapp",
+            "certificate_hash": "29ccc350eaa59e6a0fd93ec5cbcb4b049ecbbcb8"
+          }
+        },
+        {
+          "client_id": "174291538412-d4h08qtnl2sn4o20nlrkldmojmsrsqn1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "xxxxxxxxxxx"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "174291538412-d4h08qtnl2sn4o20nlrkldmojmsrsqn1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
